@@ -1500,10 +1500,11 @@ def generate_timetable_stream():
             building_distances_data=building_graph,
         )
         coord_res = coordinator.run_scheduling()
-        draft_entries = coord_res.get("entries", [])
-        unscheduled = coord_res.get("unscheduled_requests", [])
+        draft_entries = coord_res.get("timetable_entries") or coord_res.get("entries") or []
+        unscheduled = coord_res.get("unscheduled_lectures") or coord_res.get("unscheduled_requests") or []
+        backtrack_cnt = coord_res.get("backtracking_attempts", 0)
 
-        yield f"event: progress\ndata: {json.dumps({'event': 'SCHEDULING_PROGRESS', 'message': f'Allocated {len(draft_entries)} candidate lecture & lab sessions.', 'progress': 68, 'partial_count': len(draft_entries), 'current_entries_count': len(draft_entries)})}\n\n"
+        yield f"event: progress\ndata: {json.dumps({'event': 'SCHEDULING_PROGRESS', 'message': f'Allocated {len(draft_entries)} candidate lecture & lab sessions.', 'progress': 68, 'partial_count': len(draft_entries), 'current_entries_count': len(draft_entries), 'backtracking_attempts': backtrack_cnt})}\n\n"
 
         # 3. Automatic Clash Detection & Self-Repair Loop
         validator = ConstraintValidator(faculty, rooms, subjects, settings)
@@ -1603,7 +1604,7 @@ def generate_timetable_stream():
                 user=get_current_user(),
             )
 
-            yield f"event: complete\ndata: {json.dumps({'event': 'COMPLETE', 'success': True, 'message': f'Timetable generated successfully! {len(draft_entries)} lectures scheduled, 0 clashes.', 'scheduled_count': len(draft_entries), 'entries': draft_entries, 'validation_report': final_val, 'progress': 100})}\n\n"
+            yield f"event: complete\ndata: {json.dumps({'event': 'COMPLETE', 'success': True, 'message': f'Timetable generated successfully! {len(draft_entries)} lectures scheduled, 0 clashes.', 'scheduled_count': len(draft_entries), 'timetable_entries': draft_entries, 'entries': draft_entries, 'backtracking_attempts': backtrack_cnt, 'self_repair_applied': True, 'cooling_factor_applied': True, 'validation_report': final_val, 'progress': 100})}\n\n"
         else:
             # Safe Draft: preserve existing published timetable!
             store.write("draft_timetable.json", {
@@ -1612,7 +1613,7 @@ def generate_timetable_stream():
                 "validation_report": final_val,
             })
             unres_cnt = final_val.get("hard_conflicts_count", 0)
-            yield f"event: complete\ndata: {json.dumps({'event': 'COMPLETE', 'success': False, 'message': f'Draft generated with {unres_cnt} unresolved conflicts. Published timetable preserved safely.', 'unresolved_count': unres_cnt, 'entries': draft_entries, 'validation_report': final_val, 'progress': 100})}\n\n"
+            yield f"event: complete\ndata: {json.dumps({'event': 'COMPLETE', 'success': False, 'message': f'Draft generated with {unres_cnt} unresolved conflicts. Published timetable preserved safely.', 'unresolved_count': unres_cnt, 'scheduled_count': len(draft_entries), 'timetable_entries': draft_entries, 'entries': draft_entries, 'backtracking_attempts': backtrack_cnt, 'validation_report': final_val, 'progress': 100})}\n\n"
 
     return Response(stream_with_context(event_stream()), mimetype="text/event-stream")
 

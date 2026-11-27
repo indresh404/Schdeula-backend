@@ -4099,7 +4099,7 @@ function setupEventListeners() {
 
         try {
           const resData = JSON.parse(e.data);
-          const finalEntries = resData.timetable_entries || (resData.timetable && resData.timetable.entries) || [];
+          const finalEntries = resData.timetable_entries || resData.entries || (resData.timetable && resData.timetable.entries) || [];
           const execLogs = (resData.log && resData.log.execution_logs) || resData.execution_logs || [];
 
           await playProgressiveAllocation(finalEntries, execLogs, resData.backtracking_attempts);
@@ -4154,7 +4154,7 @@ function setupEventListeners() {
             return;
           }
 
-          const finalEntries = data.timetable_entries || (data.timetable && data.timetable.entries) || [];
+          const finalEntries = data.timetable_entries || data.entries || (data.timetable && data.timetable.entries) || [];
           const execLogs = (data.log && data.log.execution_logs) || data.execution_logs || [];
           await playProgressiveAllocation(finalEntries, execLogs, data.backtracking_attempts);
           showBanner(
@@ -4197,7 +4197,7 @@ function setupEventListeners() {
         return;
       }
 
-      const finalEntries = data.timetable_entries || (data.timetable && data.timetable.entries) || [];
+      const finalEntries = data.timetable_entries || data.entries || (data.timetable && data.timetable.entries) || [];
       const execLogs = (data.log && data.log.execution_logs) || data.execution_logs || [];
       await playProgressiveAllocation(finalEntries, execLogs, data.backtracking_attempts);
 

@@ -548,6 +548,7 @@ class SchedulingCoordinator:
 
         return {
             "success": success,
+            "entries": scheduled_entries,
             "timetable_entries": scheduled_entries,
             "total_requests": total_requests_count,
             "scheduled_count": len(scheduled_entries),

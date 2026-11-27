@@ -1,1 +1,72 @@
-[]
+[
+  {
+    "id": "fac_01",
+    "name": "Prof. Utkarsha Patil",
+    "workload_limit": 22,
+    "is_available": true,
+    "staff_room_floor_id": "floor_3"
+  },
+  {
+    "id": "fac_02",
+    "name": "Dr. Rajesh Sharma",
+    "workload_limit": 22,
+    "is_available": true,
+    "staff_room_floor_id": "floor_3"
+  },
+  {
+    "id": "fac_03",
+    "name": "Prof. Sneha Mehta",
+    "workload_limit": 22,
+    "is_available": true,
+    "staff_room_floor_id": "floor_2"
+  },
+  {
+    "id": "fac_04",
+    "name": "Dr. Amit Verma",
+    "workload_limit": 22,
+    "is_available": true,
+    "staff_room_floor_id": "floor_2"
+  },
+  {
+    "id": "fac_05",
+    "name": "Prof. Neha Kulkarni",
+    "workload_limit": 22,
+    "is_available": true,
+    "staff_room_floor_id": "floor_3"
+  },
+  {
+    "id": "fac_06",
+    "name": "Prof. Rohan Joshi",
+    "workload_limit": 22,
+    "is_available": true,
+    "staff_room_floor_id": "floor_2"
+  },
+  {
+    "id": "fac_07",
+    "name": "Prof. Pooja Shah",
+    "workload_limit": 22,
+    "is_available": true,
+    "staff_room_floor_id": "floor_2"
+  },
+  {
+    "id": "fac_08",
+    "name": "Dr. Vikram Deshmukh",
+    "workload_limit": 22,
+    "is_available": true,
+    "staff_room_floor_id": "floor_3"
+  },
+  {
+    "id": "fac_09",
+    "name": "Prof. Aniket Kadam",
+    "workload_limit": 22,
+    "is_available": true,
+    "staff_room_floor_id": "floor_2"
+  },
+  {
+    "id": "fac_10",
+    "name": "Dr. Kavita Nair",
+    "workload_limit": 22,
+    "is_available": true,
+    "staff_room_floor_id": "floor_3"
+  }
+]

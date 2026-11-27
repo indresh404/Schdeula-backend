@@ -1,1 +1,74 @@
-[]
+[
+  {
+    "id": "batch_sy_a1",
+    "division_id": "div_sy_a",
+    "name": "Batch A1",
+    "capacity": 33
+  },
+  {
+    "id": "batch_sy_a2",
+    "division_id": "div_sy_a",
+    "name": "Batch A2",
+    "capacity": 32
+  },
+  {
+    "id": "batch_sy_b1",
+    "division_id": "div_sy_b",
+    "name": "Batch B1",
+    "capacity": 33
+  },
+  {
+    "id": "batch_sy_b2",
+    "division_id": "div_sy_b",
+    "name": "Batch B2",
+    "capacity": 32
+  },
+  {
+    "id": "batch_sy_c1",
+    "division_id": "div_sy_c",
+    "name": "Batch C1",
+    "capacity": 33
+  },
+  {
+    "id": "batch_sy_c2",
+    "division_id": "div_sy_c",
+    "name": "Batch C2",
+    "capacity": 32
+  },
+  {
+    "id": "batch_ty_a1",
+    "division_id": "div_ty_a",
+    "name": "Batch A1",
+    "capacity": 33
+  },
+  {
+    "id": "batch_ty_a2",
+    "division_id": "div_ty_a",
+    "name": "Batch A2",
+    "capacity": 32
+  },
+  {
+    "id": "batch_ty_b1",
+    "division_id": "div_ty_b",
+    "name": "Batch B1",
+    "capacity": 33
+  },
+  {
+    "id": "batch_ty_b2",
+    "division_id": "div_ty_b",
+    "name": "Batch B2",
+    "capacity": 32
+  },
+  {
+    "id": "batch_ty_c1",
+    "division_id": "div_ty_c",
+    "name": "Batch C1",
+    "capacity": 33
+  },
+  {
+    "id": "batch_ty_c2",
+    "division_id": "div_ty_c",
+    "name": "Batch C2",
+    "capacity": 32
+  }
+]
