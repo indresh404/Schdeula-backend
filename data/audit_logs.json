@@ -1,0 +1,80 @@
+[
+  {
+    "id": "audit_87b65f30",
+    "timestamp": "2026-11-27T19:34:03.007076",
+    "action": "TIMETABLE_AUTO_GENERATION",
+    "username": "admin",
+    "details": "Generated and published clash-free timetable with 0 lectures.",
+    "metadata": {}
+  },
+  {
+    "id": "audit_c4b4b5f6",
+    "timestamp": "2026-11-27T19:42:27.029805",
+    "action": "TIMETABLE_AUTO_GENERATION",
+    "username": "admin",
+    "details": "Generated and published clash-free timetable with 0 lectures.",
+    "metadata": {}
+  },
+  {
+    "id": "audit_003f3683",
+    "timestamp": "2026-11-27T19:43:13.184863",
+    "action": "EXPLICIT_CLASH_OVERRIDE",
+    "username": "admin",
+    "details": "Admin explicitly authorized clash override for 'None' (Monday 09:15).",
+    "metadata": {
+      "id": "manual_3adf5b4b",
+      "lecture_request_id": "manual_86cab9",
+      "subject_id": "sub_sy_dsa_lab",
+      "subject_name": null,
+      "year_id": null,
+      "division_id": "div_ty_b",
+      "division_name": null,
+      "batch_id": null,
+      "batch_name": null,
+      "faculty_id": "fac_03",
+      "faculty_name": null,
+      "room_id": "lab_204",
+      "room_name": null,
+      "day": "Monday",
+      "start_time": "09:15",
+      "end_time": "11:15",
+      "type": "Theory",
+      "duration_minutes": 60,
+      "student_capacity": 65,
+      "is_manual": true,
+      "manual_override": true,
+      "confirmed_clash_override": true
+    }
+  },
+  {
+    "id": "audit_62ad65c6",
+    "timestamp": "2026-11-27T19:43:13.406212",
+    "action": "MANUAL_ENTRY_DELETED",
+    "username": "admin",
+    "details": "Admin deleted timetable lecture 'None'.",
+    "metadata": {
+      "id": "manual_3adf5b4b",
+      "lecture_request_id": "manual_86cab9",
+      "subject_id": "sub_sy_dsa_lab",
+      "subject_name": null,
+      "year_id": null,
+      "division_id": "div_ty_b",
+      "division_name": null,
+      "batch_id": null,
+      "batch_name": null,
+      "faculty_id": "fac_03",
+      "faculty_name": null,
+      "room_id": "lab_204",
+      "room_name": null,
+      "day": "Monday",
+      "start_time": "09:15",
+      "end_time": "11:15",
+      "type": "Theory",
+      "duration_minutes": 60,
+      "student_capacity": 65,
+      "is_manual": true,
+      "manual_override": true,
+      "confirmed_clash_override": true
+    }
+  }
+]

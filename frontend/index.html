@@ -430,6 +430,10 @@
                 </button>
               </div>
             </div>
+            <button id="btn-toggle-insights-hdr" class="btn btn-outline" type="button" title="Open Persistent Timetable Insights & Analytics Panel" style="display:inline-flex; align-items:center; gap:6px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+              <span>Insights & Analytics</span>
+            </button>
             <button id="btn-toggle-timetable-fullview" class="btn btn-outline" type="button" title="Toggle Full Screen Mode" style="display:inline-flex; align-items:center; gap:6px;">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
               <span>Full Screen</span>
@@ -603,6 +607,10 @@
 
             <div class="tt-toolbar-right">
               <span id="tt-active-filter-indicator" class="badge badge-info" style="font-size:11px;">View: All Years</span>
+              <button type="button" id="btn-toggle-insights" class="btn btn-xs btn-primary" style="font-weight:600; display:inline-flex; align-items:center; gap:4px;" title="Open Timetable Insights & Analytics">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                <span>Insights & Analytics</span>
+              </button>
               <button type="button" id="btn-canvas-fullscreen" class="btn btn-xs btn-outline" style="font-weight:600; display:inline-flex; align-items:center; gap:4px;" title="Toggle Full Screen Mode (Press Esc to Exit)">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
                 <span class="btn-text">Full Screen</span>
@@ -2138,6 +2146,84 @@
       </div>
     </div>
   </div>
+
+  <!-- Persistent Right-Side Timetable Insights Panel -->
+  <aside id="timetable-insights-panel" class="insights-slide-panel hidden" aria-label="Timetable Insights and Analytics">
+    <div class="insights-panel-header">
+      <div class="insights-header-title">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+        <span class="insights-title-text">Timetable Insights</span>
+        <span id="insights-live-badge" class="badge badge-success" style="font-size:10px; padding:2px 6px;">LIVE</span>
+      </div>
+      <div class="insights-header-actions">
+        <button type="button" id="btn-refresh-insights" class="btn btn-xs btn-outline" title="Refresh Analytics Data">🔄 Refresh</button>
+        <button type="button" id="btn-close-insights" class="insights-close-btn" title="Close Panel (Esc)">&times;</button>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="insights-nav-tabs">
+      <button type="button" class="insights-tab-btn active" data-insight-tab="clashes">
+        <span>⚠️ Clashes</span>
+        <span id="insights-clash-count-badge" class="badge badge-danger" style="display:none; font-size:10px; padding:1px 5px; margin-left:4px;">0</span>
+      </button>
+      <button type="button" class="insights-tab-btn" data-insight-tab="workload">
+        <span>👨‍🏫 Workload</span>
+      </button>
+      <button type="button" class="insights-tab-btn" data-insight-tab="subjects">
+        <span>📚 Subjects</span>
+      </button>
+      <button type="button" class="insights-tab-btn" data-insight-tab="rooms">
+        <span>🏛️ Rooms & Labs</span>
+      </button>
+      <button type="button" class="insights-tab-btn" data-insight-tab="logs">
+        <span>📋 Logs</span>
+      </button>
+    </div>
+
+    <!-- Tab Contents Container (Independently Scrollable) -->
+    <div class="insights-content-body">
+      <!-- 1. Clashes & Warnings Tab -->
+      <div id="insights-tab-clashes" class="insights-tab-content active">
+        <div class="insights-section-desc">Click any clash card below to highlight and scroll directly to the affected timetable entry.</div>
+        <div id="insights-clashes-container" class="insights-cards-list">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+
+      <!-- 2. Faculty Workload Tab -->
+      <div id="insights-tab-workload" class="insights-tab-content">
+        <div class="insights-section-desc">Weekly teaching hours, daily limits, and excess workload indicators per faculty member.</div>
+        <div id="insights-workload-container" class="insights-cards-list">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+
+      <!-- 3. Subject Completion Tab -->
+      <div id="insights-tab-subjects" class="insights-tab-content">
+        <div class="insights-section-desc">Actual vs required lectures & practicals scheduled per division.</div>
+        <div id="insights-subjects-container" class="insights-cards-list">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+
+      <!-- 4. Room & Lab Analytics Tab -->
+      <div id="insights-tab-rooms" class="insights-tab-content">
+        <div class="insights-section-desc">Room & laboratory utilization percentage, peak occupancy, and lab hours.</div>
+        <div id="insights-rooms-container" class="insights-cards-list">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+
+      <!-- 5. Generation & Repair Logs Tab -->
+      <div id="insights-tab-logs" class="insights-tab-content">
+        <div class="insights-section-desc">Real-time scheduling agent steps, self-repair attempts, and cooling optimization logs.</div>
+        <div id="insights-logs-container" class="insights-logs-box">
+          <!-- Populated dynamically -->
+        </div>
+      </div>
+    </div>
+  </aside>
 
   <!-- Export Libraries: html2canvas & jsPDF for pristine PNG & Landscape PDF exports -->
   <script src="/vendor/html2canvas.min.js"></script>

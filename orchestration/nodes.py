@@ -15,7 +15,9 @@ from resources.room_manager import RoomManager
 from scheduler.constraint_validator import ConstraintValidator
 from scheduler.feasibility import FeasibilityEngine
 from scheduler.flexibility_engine import FlexibilityEngine
+from scheduler.normalization_engine import TimetableNormalizationEngine
 from scheduler.priority_engine import PriorityEngine
+from scheduler.self_repair import TimetableSelfRepair
 from scheduler.spatial_engine import SpatialEngine
 
 
@@ -511,7 +513,10 @@ def schedule_step_node(state: SchedulingState) -> Dict[str, Any]:
                     continue
 
                 if b_req.get("fixed_room_id"):
-                    avail_rooms.sort(key=lambda r: 0 if r.get("id") == b_req.get("fixed_room_id") else 1)
+                    req_fixed = b_req.get("fixed_room_id")
+                    fixed_matches = [r for r in avail_rooms if r.get("id") == req_fixed]
+                    if fixed_matches:
+                        avail_rooms = fixed_matches
 
                 avail_fac = [
                     f_id for f_id in b_req.get("eligible_faculty_ids", [])
@@ -540,8 +545,8 @@ def schedule_step_node(state: SchedulingState) -> Dict[str, Any]:
                     "faculty_name": chosen_fac_name,
                     "room_id": chosen_room["id"],
                     "room_name": chosen_room.get("name", chosen_room["id"]),
-                    "fixed_room_id": None,
-                    "fixed_room_name": None,
+                    "fixed_room_id": b_req.get("fixed_room_id"),
+                    "fixed_room_name": b_req.get("fixed_room_name"),
                     "is_elective": False,
                     "parent_subject_id": None,
                     "elective_group_id": None,
@@ -756,13 +761,51 @@ def admin_intervention_node(state: SchedulingState) -> Dict[str, Any]:
 
 
 def validate_and_finalize_node(state: SchedulingState) -> Dict[str, Any]:
-    """Validates the final timetable and compiles division breakdowns and agent summaries."""
+    """Validates the final timetable, executes automated self-repair and normalization, and compiles analytics."""
     fm, rm, fe, pe, fl, cv = build_managers(state)
-    scheduled_entries = state.get("scheduled_entries", [])
-    unscheduled = state.get("unscheduled_requests", [])
+    scheduled_entries = list(state.get("scheduled_entries", []))
+    unscheduled = list(state.get("unscheduled_requests", []))
     all_reqs = state.get("all_requests", [])
     divisions_data = state.get("divisions_data", [])
+    exec_logs = list(state.get("execution_logs", []))
 
+    # Phase A: Automated Timetable Self-Repair (detect and resolve any clashes or unscheduled lectures)
+    initial_val = cv.validate_all(scheduled_entries)
+    if not initial_val["is_valid"] or unscheduled:
+        repairer = TimetableSelfRepair(
+            faculty_data=state.get("faculty_data", []),
+            rooms_data=state.get("rooms_data", []),
+            subjects_data=state.get("subjects_data", []),
+            divisions_data=divisions_data,
+            batches_data=state.get("batches_data", []),
+            assignments_data=state.get("faculty_assignments_data", []),
+            settings_data=state.get("settings_data", {}),
+            max_attempts=40,
+            time_limit_sec=12.0,
+        )
+        repair_res = repairer.repair(scheduled_entries, unscheduled)
+        scheduled_entries = repair_res["entries"]
+        unscheduled = repair_res["unscheduled_requests"]
+        exec_logs.extend(repair_res.get("repair_logs", []))
+
+    # Phase B: Timetable Balancing & Normalization with Simulated Annealing Cooling
+    normalizer = TimetableNormalizationEngine(
+        faculty_data=state.get("faculty_data", []),
+        rooms_data=state.get("rooms_data", []),
+        subjects_data=state.get("subjects_data", []),
+        settings_data=state.get("settings_data", {}),
+        initial_temperature=1.0,
+        cooling_rate=0.90,
+        min_temperature=0.08,
+        max_iterations=100,
+        time_limit_sec=8.0,
+    )
+    norm_res = normalizer.normalize(scheduled_entries)
+    if norm_res["success"]:
+        scheduled_entries = norm_res["entries"]
+        exec_logs.extend(norm_res.get("logs", []))
+
+    # Final Independent Validation
     val_report = cv.validate_all(scheduled_entries)
     success = (len(unscheduled) == 0 and val_report["is_valid"])
 
@@ -839,7 +882,7 @@ def validate_and_finalize_node(state: SchedulingState) -> Dict[str, Any]:
             "status": "100% Scheduled" if len(yr_sch) >= len(yr_reqs) and len(yr_reqs) > 0 else ("Idle (0 Demands)" if len(yr_reqs) == 0 else "Partially Scheduled"),
         }
 
-    logs = list(state.get("execution_logs", []))
+    logs = exec_logs
     logs.append({
         "timestamp": datetime.datetime.now().isoformat(),
         "agent": "Python Rule-Based Orchestrator",
@@ -848,6 +891,8 @@ def validate_and_finalize_node(state: SchedulingState) -> Dict[str, Any]:
     })
 
     return {
+        "scheduled_entries": scheduled_entries,
+        "unscheduled_requests": unscheduled,
         "validation_report": val_report,
         "spatial_metrics": spatial_metrics,
         "division_breakdown": division_breakdown,

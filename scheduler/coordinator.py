@@ -13,7 +13,9 @@ from scheduler.backtracking import BacktrackingSolver
 from scheduler.constraint_validator import ConstraintValidator
 from scheduler.feasibility import FeasibilityEngine
 from scheduler.flexibility_engine import FlexibilityEngine
+from scheduler.normalization_engine import TimetableNormalizationEngine
 from scheduler.priority_engine import PriorityEngine
+from scheduler.self_repair import TimetableSelfRepair
 from scheduler.spatial_engine import SpatialEngine
 
 
@@ -275,6 +277,64 @@ class SchedulingCoordinator:
 
             self._apply_assignment(chosen_req, best_placement, scheduled_entries)
             pending_requests.remove(chosen_req)
+
+            # Synchronize concurrent practical batches for this division so no batch is left free
+            if chosen_req.type == "Practical" and chosen_req.batch_id:
+                div_id = chosen_req.division_id
+                chosen_b_id = chosen_req.batch_id
+                day = best_placement["day"]
+                s_t = best_placement["start_time"]
+                e_t = best_placement["end_time"]
+
+                div_batches = [
+                    b for b in self.batches_data
+                    if b.get("division_id") == div_id and b.get("id") != chosen_b_id
+                ]
+
+                for oth_b in div_batches:
+                    oth_b_id = oth_b["id"]
+                    matching_reqs = [
+                        r for r in pending_requests
+                        if r.type == "Practical" and
+                        r.division_id == div_id and
+                        r.batch_id == oth_b_id
+                    ]
+
+                    for b_req in matching_reqs:
+                        avail_rooms = [
+                            r for r in self.rooms_data
+                            if r.get("type") == "Laboratory" and
+                            self.room_manager.is_available(r.get("id"), day, s_t, e_t)[0]
+                        ]
+                        if not avail_rooms:
+                            continue
+
+                        if getattr(b_req, "fixed_room_id", None):
+                            req_f = b_req.fixed_room_id
+                            f_matches = [r for r in avail_rooms if r.get("id") == req_f]
+                            if f_matches:
+                                avail_rooms = f_matches
+
+                        avail_fac = [
+                            f_id for f_id in b_req.eligible_faculty_ids
+                            if self.faculty_manager.is_available(f_id, day, s_t, e_t)[0]
+                        ]
+                        if not avail_fac:
+                            continue
+
+                        chosen_room = avail_rooms[0]
+                        chosen_f_id = avail_fac[0]
+
+                        self._apply_assignment(b_req, {
+                            "day": day,
+                            "start_time": s_t,
+                            "end_time": e_t,
+                            "faculty_id": chosen_f_id,
+                            "room_id": chosen_room["id"],
+                        }, scheduled_entries)
+                        pending_requests.remove(b_req)
+                        break
+
             assignment_stack.append((chosen_req, best_placement, remaining_options))
 
             fac_obj = self.faculty_manager.get_faculty(best_placement["faculty_id"])
@@ -292,7 +352,65 @@ class SchedulingCoordinator:
                 "message": f"Assigned: {chosen_req.year_id} {chosen_req.division_name}{batch_str} - {chosen_req.subject_name} ({chosen_req.type}) -> {best_placement['day']} {best_placement['start_time']}–{best_placement['end_time']} | 📍 {room_name} | 👨‍🏫 {fac_name} (Flexibility Score: {ranked_placements[0][0]:.2f}).",
             })
 
-        # 4. Independent validation & Spatial Metrics
+        # 4. Automated Timetable Self-Repair (detect and resolve any clashes or unscheduled lectures)
+        init_val = self.validator.validate_all(scheduled_entries)
+        if not init_val["is_valid"] or unscheduled_requests:
+            u_dicts = [
+                {
+                    "id": req.id,
+                    "subject_id": req.subject_id,
+                    "subject_name": req.subject_name,
+                    "year_id": req.year_id,
+                    "division_id": req.division_id,
+                    "division_name": req.division_name,
+                    "batch_id": req.batch_id,
+                    "batch_name": req.batch_name,
+                    "duration_minutes": req.duration_minutes,
+                    "type": req.type,
+                    "eligible_faculty_ids": req.eligible_faculty_ids,
+                    "student_capacity": req.student_capacity,
+                    "fixed_room_id": getattr(req, "fixed_room_id", None),
+                    "fixed_room_name": getattr(req, "fixed_room_name", None),
+                }
+                for req in unscheduled_requests
+            ]
+            repairer = TimetableSelfRepair(
+                faculty_data=self.faculty_data,
+                rooms_data=self.rooms_data,
+                subjects_data=self.subjects_data,
+                divisions_data=self.divisions_data,
+                batches_data=self.batches_data,
+                assignments_data=self.faculty_assignments_data,
+                settings_data=self.settings,
+                max_attempts=40,
+                time_limit_sec=12.0,
+            )
+            repair_res = repairer.repair(scheduled_entries, u_dicts)
+            scheduled_entries = repair_res["entries"]
+            unscheduled_requests = [
+                req for req in unscheduled_requests
+                if any(u["id"] == req.id for u in repair_res["unscheduled_requests"])
+            ]
+            execution_logs.extend(repair_res.get("repair_logs", []))
+
+        # 4b. Timetable Balancing & Normalization with Simulated Annealing Cooling
+        normalizer = TimetableNormalizationEngine(
+            faculty_data=self.faculty_data,
+            rooms_data=self.rooms_data,
+            subjects_data=self.subjects_data,
+            settings_data=self.settings,
+            initial_temperature=1.0,
+            cooling_rate=0.90,
+            min_temperature=0.08,
+            max_iterations=100,
+            time_limit_sec=8.0,
+        )
+        norm_res = normalizer.normalize(scheduled_entries)
+        if norm_res["success"]:
+            scheduled_entries = norm_res["entries"]
+            execution_logs.extend(norm_res.get("logs", []))
+
+        # 4c. Independent validation & Spatial Metrics
         validation_report = self.validator.validate_all(scheduled_entries)
         spatial_metrics = self.spatial_engine.calculate_spatial_metrics(scheduled_entries)
 

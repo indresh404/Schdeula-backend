@@ -45,6 +45,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   setupEventListeners();
   setupDataExportImport();
   setupInteractiveHelpTour();
+  initTimetableInsightsPanel();
 
   await checkAuthStatus();
   await refreshAllData();
@@ -498,6 +499,9 @@ async function refreshAllData() {
     populateSettingsForm();
     populateFilterDropdowns();
     renderTimetableGrid();
+    if (typeof loadTimetableInsights === "function") {
+      loadTimetableInsights();
+    }
   } catch (err) {
     console.error("Error loading data:", err);
     showBanner("Failed to load data from server. Check backend connection.", "danger");
@@ -2780,9 +2784,51 @@ async function handleSaveLectureEdit(e) {
       const sugList = document.getElementById("edit-suggestions-list");
 
       clashBox.classList.remove("hidden");
-      clashMsgList.innerHTML = (data.conflicts || [data.message])
+      clashMsgList.innerHTML = (data.conflicts || [data.error || data.message])
         .map((m) => `<li>${m}</li>`)
         .join("");
+
+      if (data.requires_override_confirmation || res.status === 409) {
+        let overrideBtn = document.getElementById("btn-force-admin-override");
+        if (!overrideBtn) {
+          overrideBtn = document.createElement("button");
+          overrideBtn.id = "btn-force-admin-override";
+          overrideBtn.type = "button";
+          overrideBtn.className = "btn btn-sm btn-danger";
+          overrideBtn.style.marginTop = "8px";
+          overrideBtn.style.fontWeight = "600";
+          overrideBtn.style.display = "inline-flex";
+          overrideBtn.style.alignItems = "center";
+          overrideBtn.style.gap = "4px";
+          overrideBtn.innerHTML = "⚠️ Force Save Schedule (Admin Manual Override)";
+          clashBox.appendChild(overrideBtn);
+        }
+        overrideBtn.onclick = async () => {
+          overrideBtn.disabled = true;
+          overrideBtn.textContent = "Saving Override...";
+          try {
+            const ovRes = await fetch(url, {
+              method,
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ ...payload, confirm_override: true })
+            });
+            const ovData = await ovRes.json();
+            if (ovRes.ok) {
+              closeModal("modal-edit-lecture");
+              showBanner("Lecture saved via Admin Manual Override! Logged in audit history.", "warning");
+              await refreshAllData();
+            } else {
+              showBanner(ovData.error || "Override failed.", "danger");
+            }
+          } catch (e) {
+            console.error(e);
+            showBanner("Override failed.", "danger");
+          } finally {
+            overrideBtn.disabled = false;
+            overrideBtn.innerHTML = "⚠️ Force Save Schedule (Admin Manual Override)";
+          }
+        };
+      }
 
       if (data.suggestions && data.suggestions.length > 0) {
         sugContainer.classList.remove("hidden");
@@ -2803,7 +2849,11 @@ async function handleSaveLectureEdit(e) {
 
     // Success!
     closeModal("modal-edit-lecture");
-    showBanner(isNew ? "Lecture added successfully!" : "Lecture updated successfully!", "success");
+    if (data.warnings && data.warnings.length > 0) {
+      showBanner(`Saved with workload note: ${data.warnings.join("; ")}`, "warning");
+    } else {
+      showBanner(isNew ? "Lecture added successfully!" : "Lecture updated successfully!", "success");
+    }
     await refreshAllData();
   } catch (err) {
     console.error("Save lecture error:", err);
@@ -3958,7 +4008,7 @@ function setupEventListeners() {
     }, 4000);
   }
 
-  // Generate Timetable (Core Orchestrator Execution)
+  // Generate Timetable (Live SSE streaming with real agent progress & safe draft commit)
   async function executeGenerateTimetable(triggerBtn) {
     const btn = triggerBtn || document.getElementById("btn-generate-timetable");
     const origText = btn ? btn.textContent : "⚡ Generate Timetable";
@@ -3991,22 +4041,115 @@ function setupEventListeners() {
       pBadge.textContent = "5%";
       pBadge.className = "badge badge-primary";
     }
-    if (statusTitle) statusTitle.textContent = "Orchestrator Evaluating Feasibility & Priorities...";
-    if (tickerStep) tickerStep.textContent = "Calculating MRV and spatial placement candidates...";
+    if (statusTitle) statusTitle.textContent = "Connecting to Multi-Agent Scheduling Engine...";
+    if (tickerStep) tickerStep.textContent = "Initializing Agents, checking hard constraints & lab batches...";
 
-    // Show live progress bar directly above timetable
-    showTimetableLoadingBar("⚡ Orchestrator Evaluating Constraints & Solving Multi-Year Schedule...", 12);
-    let genTickerVal = 12;
-    const genInterval = setInterval(() => {
-      if (genTickerVal < 88) {
-        genTickerVal += Math.random() * 5 + 1;
-        updateTimetableLoadingProgress(genTickerVal, "⚡ Orchestrator Evaluating Candidate Placements & Backtracking...");
-      }
-    }, 180);
+    showTimetableLoadingBar("⚡ Orchestrator Evaluating Constraints & Scheduling...", 5);
 
+    // If SSE is available, use real backend event stream
+    if (window.EventSource) {
+      const evtSource = new EventSource("/api/timetable/generate-stream");
+      let streamFinished = false;
+
+      const resetBtns = () => {
+        if (btn) {
+          btn.disabled = false;
+          btn.textContent = origText;
+        }
+        if (asgnBtn && asgnBtn !== btn) {
+          asgnBtn.disabled = false;
+          asgnBtn.textContent = "⚡ Generate Timetable";
+        }
+      };
+
+      evtSource.addEventListener("progress", (e) => {
+        try {
+          const payload = JSON.parse(e.data);
+          const pct = Math.min(Math.max(payload.progress || 10, 5), 98);
+          updateTimetableLoadingProgress(pct, payload.message || payload.step);
+
+          if (pBar) pBar.style.width = `${pct}%`;
+          if (pBadge) pBadge.textContent = `${pct}%`;
+          if (statusTitle) statusTitle.textContent = payload.message || payload.step;
+          if (tickerStep) {
+            tickerStep.textContent = `Scheduled: ${payload.current_entries_count || 0} entries | Backtracks: ${payload.backtracking_attempts || 0}`;
+          }
+
+          // Live partial entry preview
+          if (payload.partial_entries && payload.partial_entries.length > 0 && typeof renderTimetableGrid === "function") {
+            try {
+              renderTimetableGrid({ entries: payload.partial_entries });
+            } catch (err) {}
+          }
+        } catch (err) {
+          console.error("SSE progress parse error:", err);
+        }
+      });
+
+      evtSource.addEventListener("complete", async (e) => {
+        streamFinished = true;
+        evtSource.close();
+        resetBtns();
+        hideTimetableLoadingBar();
+        if (livePanel) livePanel.classList.add("hidden");
+
+        try {
+          const resData = JSON.parse(e.data);
+          const finalEntries = resData.timetable_entries || (resData.timetable && resData.timetable.entries) || [];
+          const execLogs = (resData.log && resData.log.execution_logs) || resData.execution_logs || [];
+
+          await playProgressiveAllocation(finalEntries, execLogs, resData.backtracking_attempts);
+
+          let statusMsg = `Timetable Generated! Scheduled ${resData.scheduled_count} lectures with ${resData.backtracking_attempts || 0} backtracks.`;
+          if (resData.self_repair_applied) {
+            statusMsg += " Auto-clash self-repair verified hard constraints.";
+          }
+          if (resData.cooling_factor_applied) {
+            statusMsg += " Normalization cooling balanced weekly subjects.";
+          }
+
+          showBanner(statusMsg, resData.success ? "success" : "warning");
+          await refreshAllData();
+          if (typeof loadTimetableInsights === "function") {
+            loadTimetableInsights();
+          }
+        } catch (err) {
+          console.error("SSE complete handler error:", err);
+          await refreshAllData();
+        }
+      });
+
+      evtSource.addEventListener("intervention_required", (e) => {
+        streamFinished = true;
+        evtSource.close();
+        resetBtns();
+        hideTimetableLoadingBar();
+        if (livePanel) livePanel.classList.add("hidden");
+        try {
+          const resData = JSON.parse(e.data);
+          showBanner("LangGraph Paused: Admin intervention required for resource contention.", "warning");
+          openAdminInterventionModal(resData);
+        } catch (err) {
+          console.error(err);
+        }
+      });
+
+      evtSource.addEventListener("error", async (e) => {
+        if (streamFinished) return;
+        evtSource.close();
+        resetBtns();
+        hideTimetableLoadingBar();
+        if (livePanel) livePanel.classList.add("hidden");
+        console.warn("SSE connection error or closed, refreshing data...");
+        await refreshAllData();
+      });
+
+      return;
+    }
+
+    // Fallback if EventSource not supported
     try {
       const res = await fetch("/api/timetable/generate", { method: "POST" });
-      clearInterval(genInterval);
       const data = await res.json();
       if (btn) {
         btn.disabled = false;
@@ -4016,23 +4159,14 @@ function setupEventListeners() {
         asgnBtn.disabled = false;
         asgnBtn.textContent = "⚡ Generate Timetable";
       }
+      hideTimetableLoadingBar();
+      if (livePanel) livePanel.classList.add("hidden");
 
       if (!res.ok) {
-        hideTimetableLoadingBar();
-        if (livePanel) livePanel.classList.add("hidden");
         showBanner(data.error || "Timetable generation failed.", "danger");
         return;
       }
 
-      if (data.status === "intervention_required") {
-        hideTimetableLoadingBar();
-        if (livePanel) livePanel.classList.add("hidden");
-        showBanner("LangGraph Paused: Admin intervention required for resource contention.", "warning");
-        openAdminInterventionModal(data);
-        return;
-      }
-
-      // Progressive visual animation in timetable grid
       const finalEntries = data.timetable_entries || (data.timetable && data.timetable.entries) || [];
       const execLogs = (data.log && data.log.execution_logs) || data.execution_logs || [];
       await playProgressiveAllocation(finalEntries, execLogs, data.backtracking_attempts);
@@ -4042,8 +4176,10 @@ function setupEventListeners() {
         data.success ? "success" : "warning"
       );
       await refreshAllData();
+      if (typeof loadTimetableInsights === "function") {
+        loadTimetableInsights();
+      }
     } catch (e) {
-      if (typeof genInterval !== "undefined") clearInterval(genInterval);
       hideTimetableLoadingBar();
       if (btn) {
         btn.disabled = false;
@@ -6953,4 +7089,301 @@ function exitHelpTour() {
     el.classList.remove("help-tour-current-target");
   });
 }
+
+// =============================================================================
+// Timetable Insights & Analytics Slide-out Panel
+// =============================================================================
+function initTimetableInsightsPanel() {
+  const panel = document.getElementById("timetable-insights-panel");
+  const toggleBtn1 = document.getElementById("btn-toggle-insights");
+  const toggleBtn2 = document.getElementById("btn-toggle-insights-hdr");
+  const closeBtn = document.getElementById("btn-close-insights");
+  const refreshBtn = document.getElementById("btn-refresh-insights");
+
+  function openPanel() {
+    if (panel) {
+      panel.classList.remove("hidden");
+      panel.setAttribute("aria-hidden", "false");
+      loadTimetableInsights();
+    }
+  }
+
+  function closePanel() {
+    if (panel) {
+      panel.classList.add("hidden");
+      panel.setAttribute("aria-hidden", "true");
+    }
+  }
+
+  if (toggleBtn1) {
+    toggleBtn1.addEventListener("click", () => {
+      if (panel && panel.classList.contains("hidden")) {
+        openPanel();
+      } else {
+        closePanel();
+      }
+    });
+  }
+
+  if (toggleBtn2) {
+    toggleBtn2.addEventListener("click", () => {
+      if (panel && panel.classList.contains("hidden")) {
+        openPanel();
+      } else {
+        closePanel();
+      }
+    });
+  }
+
+  if (closeBtn) {
+    closeBtn.addEventListener("click", closePanel);
+  }
+
+  if (refreshBtn) {
+    refreshBtn.addEventListener("click", () => {
+      loadTimetableInsights();
+      showBanner("Analytics & Insights refreshed.", "info");
+    });
+  }
+
+  // Keyboard shortcut: Esc closes panel if open
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && panel && !panel.classList.contains("hidden")) {
+      closePanel();
+    }
+  });
+
+  // Tab switching inside panel
+  const tabBtns = document.querySelectorAll(".insights-tab-btn");
+  tabBtns.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const targetTab = btn.getAttribute("data-insight-tab");
+      tabBtns.forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+
+      document.querySelectorAll(".insights-tab-content").forEach((c) => {
+        c.classList.remove("active");
+      });
+      const activeContent = document.getElementById(`insights-tab-${targetTab}`);
+      if (activeContent) activeContent.classList.add("active");
+    });
+  });
+}
+
+async function loadTimetableInsights() {
+  try {
+    const res = await fetch("/api/timetable/analytics");
+    if (!res.ok) return;
+    const analytics = await res.json();
+
+    // 1. Clashes Tab
+    renderInsightsClashes(analytics.clash_reports || []);
+
+    // 2. Workload Tab
+    renderInsightsWorkload(analytics.faculty_workload || []);
+
+    // 3. Subjects Tab
+    renderInsightsSubjects(analytics.subject_completion || []);
+
+    // 4. Rooms Tab
+    renderInsightsRooms(analytics.room_utilization || []);
+
+    // 5. Logs Tab
+    renderInsightsLogs(analytics.generation_logs || []);
+  } catch (err) {
+    console.error("Error loading timetable insights:", err);
+  }
+}
+
+function renderInsightsClashes(reports) {
+  const container = document.getElementById("insights-clashes-container");
+  const countBadge = document.getElementById("insights-clash-count-badge");
+  if (!container) return;
+
+  if (countBadge) {
+    if (reports.length > 0) {
+      countBadge.textContent = reports.length;
+      countBadge.style.display = "inline-block";
+    } else {
+      countBadge.style.display = "none";
+    }
+  }
+
+  if (!reports || reports.length === 0) {
+    container.innerHTML = `
+      <div style="text-align:center; padding:32px 16px; color:#10b981; background:#ecfdf5; border-radius:8px; border:1px solid #a7f3d0;">
+        <div style="font-size:24px; margin-bottom:6px;">✅</div>
+        <div style="font-weight:700; font-size:14px;">100% Conflict Free!</div>
+        <div style="font-size:12px; color:#047857; margin-top:4px;">No hard clashes or timing overlaps detected across all years, faculty, or rooms.</div>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = reports.map((r) => {
+    const isWarning = r.severity === "warning";
+    const entryId = r.entry_id || (r.affected_entry_ids && r.affected_entry_ids[0]) || "";
+    return `
+      <div class="insight-clash-card ${isWarning ? 'warning-type' : ''}" data-entry-id="${entryId}" onclick="focusTimetableEntry('${entryId}')">
+        <div class="insight-card-header">
+          <span class="insight-card-title">${r.type || 'Clash Detected'}</span>
+          <span class="insight-card-time">${r.day || ''} ${r.slot || ''}</span>
+        </div>
+        <div class="insight-card-desc">${r.message}</div>
+        <div class="insight-card-hint">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 16 16 12 12 8"></polyline><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+          <span>Click to navigate & highlight slot</span>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+function renderInsightsWorkload(facultyList) {
+  const container = document.getElementById("insights-workload-container");
+  if (!container) return;
+
+  if (!facultyList || facultyList.length === 0) {
+    container.innerHTML = `<div style="text-align:center; color:#64748b; padding:20px;">No faculty workload data available.</div>`;
+    return;
+  }
+
+  container.innerHTML = facultyList.map((f) => {
+    const maxH = f.max_weekly_hours || 16;
+    const actualH = f.total_weekly_hours || 0;
+    const pct = Math.min(Math.round((actualH / (maxH || 1)) * 100), 150);
+    const isOverload = f.is_overloaded || actualH > maxH;
+    const badgeClass = isOverload ? 'badge-overload' : (pct >= 70 ? 'badge-optimal' : 'badge-underload');
+    const badgeText = isOverload ? `⚠️ Overloaded (+${actualH - maxH}h)` : `${actualH}/${maxH} hrs`;
+    const barColor = isOverload ? '#ef4444' : (pct >= 85 ? '#f59e0b' : '#10b981');
+
+    return `
+      <div class="insight-metric-card">
+        <div class="insight-metric-header">
+          <span class="insight-metric-name">${f.faculty_name}</span>
+          <span class="insight-metric-badge ${badgeClass}">${badgeText}</span>
+        </div>
+        <div class="insight-bar-track">
+          <div class="insight-bar-fill" style="width: ${Math.min(pct, 100)}%; background: ${barColor};"></div>
+        </div>
+        <div class="insight-metric-details">
+          <span>Weekly: ${actualH}h / ${maxH}h</span>
+          <span>Max Daily: ${f.max_daily_hours || 4}h (Avg: ${f.daily_average || 0}h)</span>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+function renderInsightsSubjects(subjectList) {
+  const container = document.getElementById("insights-subjects-container");
+  if (!container) return;
+
+  if (!subjectList || subjectList.length === 0) {
+    container.innerHTML = `<div style="text-align:center; color:#64748b; padding:20px;">No subject completion data available.</div>`;
+    return;
+  }
+
+  container.innerHTML = subjectList.map((s) => {
+    const pct = s.completion_percentage || 0;
+    const isComplete = pct >= 100;
+    const isExtra = s.extra_lectures > 0;
+    const badgeClass = isComplete ? 'badge-optimal' : 'badge-underload';
+    const badgeText = isExtra ? `+${s.extra_lectures} Extra (${s.scheduled}/${s.required})` : `${pct}% (${s.scheduled}/${s.required})`;
+    const barColor = isComplete ? '#10b981' : (pct >= 50 ? '#3b82f6' : '#f59e0b');
+
+    return `
+      <div class="insight-metric-card">
+        <div class="insight-metric-header">
+          <span class="insight-metric-name">${s.subject_name} <small style="color:#64748b; font-weight:normal;">(${s.division_name} ${s.type || ''})</small></span>
+          <span class="insight-metric-badge ${badgeClass}">${badgeText}</span>
+        </div>
+        <div class="insight-bar-track">
+          <div class="insight-bar-fill" style="width: ${Math.min(pct, 100)}%; background: ${barColor};"></div>
+        </div>
+        <div class="insight-metric-details">
+          <span>Scheduled: ${s.scheduled} ${s.type === 'Practical' ? 'labs' : 'lectures'}</span>
+          <span>Target: ${s.required} weekly</span>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+function renderInsightsRooms(roomList) {
+  const container = document.getElementById("insights-rooms-container");
+  if (!container) return;
+
+  if (!roomList || roomList.length === 0) {
+    container.innerHTML = `<div style="text-align:center; color:#64748b; padding:20px;">No room utilization data available.</div>`;
+    return;
+  }
+
+  container.innerHTML = roomList.map((r) => {
+    const pct = r.utilization_percentage || 0;
+    const isLab = r.room_type === "Lab";
+    const barColor = pct > 80 ? '#f59e0b' : '#3b82f6';
+
+    return `
+      <div class="insight-metric-card">
+        <div class="insight-metric-header">
+          <span class="insight-metric-name">${r.room_name} <span class="badge ${isLab ? 'badge-info' : 'badge-secondary'}" style="font-size:10px;">${r.room_type}</span></span>
+          <span class="insight-metric-badge badge-optimal">${pct}% used</span>
+        </div>
+        <div class="insight-bar-track">
+          <div class="insight-bar-fill" style="width: ${pct}%; background: ${barColor};"></div>
+        </div>
+        <div class="insight-metric-details">
+          <span>Occupied: ${r.scheduled_hours || 0} hrs/week</span>
+          <span>Floor: ${r.floor || 1} &bull; Capacity: ${r.capacity || 60}</span>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+function renderInsightsLogs(logs) {
+  const container = document.getElementById("insights-logs-container");
+  if (!container) return;
+
+  if (!logs || logs.length === 0) {
+    container.innerHTML = `<div style="color:#64748b; padding:12px;">No execution logs recorded yet.</div>`;
+    return;
+  }
+
+  container.innerHTML = logs.map((l) => {
+    const timeStr = l.timestamp ? new Date(l.timestamp).toLocaleTimeString() : "";
+    return `
+      <div class="insight-log-line">
+        <span class="insight-log-time">[${timeStr}]</span>
+        <span class="insight-log-step">${l.step || l.action || 'STEP'}</span>
+        <span>${l.message || l.details || JSON.stringify(l)}</span>
+      </div>
+    `;
+  }).join("");
+}
+
+// Function to focus, scroll, and highlight any timetable cell
+window.focusTimetableEntry = function (entryId) {
+  if (!entryId) return;
+
+  // Make sure Timetable tab is selected
+  const tabTimetableNav = document.querySelector('[data-tab="tab-timetable"]');
+  if (tabTimetableNav) tabTimetableNav.click();
+
+  // Look for elements with data-entry-id
+  const targetEl = document.querySelector(`[data-entry-id="${entryId}"]`);
+  if (targetEl) {
+    targetEl.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
+    targetEl.classList.remove("tt-entry-highlight-pulse");
+    void targetEl.offsetWidth; // trigger reflow
+    targetEl.classList.add("tt-entry-highlight-pulse");
+    setTimeout(() => {
+      targetEl.classList.remove("tt-entry-highlight-pulse");
+    }, 2800);
+  } else {
+    showBanner(`Entry ${entryId} is not visible under current year filters. Switch to "All Years" to view it.`, "info");
+  }
+};
+
 
