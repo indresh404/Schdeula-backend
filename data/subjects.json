@@ -305,6 +305,7 @@
     "type": "Theory",
     "is_elective": true,
     "required_room_type": "Classroom",
+    "lab_batch_required": false,
     "elective_groups": [
       {
         "id": "egrp_ds_1",
@@ -339,7 +340,6 @@
         "duration_minutes": 60,
         "required_room_type": "Classroom"
       }
-    ],
-    "lab_batch_required": false
+    ]
   }
 ]

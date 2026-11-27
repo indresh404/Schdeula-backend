@@ -3638,6 +3638,106 @@ body.help-tour-active .help-tour-current-target {
   }
 }
 
+/* ==========================================================================
+   Live Timetable Generation Progressive Slot-by-Slot Animations
+   ========================================================================== */
+
+@keyframes lectureEntryAdded {
+  0% {
+    opacity: 0;
+    transform: scale(0.68) translateY(12px);
+    box-shadow: 0 0 0 6px rgba(16, 185, 129, 0.65), 0 10px 22px rgba(16, 185, 129, 0.38);
+    background-color: #ecfdf5 !important;
+  }
+  45% {
+    opacity: 0.96;
+    transform: scale(1.08) translateY(-3px);
+    box-shadow: 0 0 0 8px rgba(16, 185, 129, 0.42), 0 6px 14px rgba(16, 185, 129, 0.28);
+  }
+  75% {
+    transform: scale(0.97) translateY(1px);
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    box-shadow: none;
+  }
+}
+
+@keyframes lectureEntryUpdated {
+  0% {
+    transform: scale(0.9);
+    box-shadow: 0 0 0 5px rgba(245, 158, 11, 0.75), 0 6px 16px rgba(245, 158, 11, 0.35);
+    background-color: #fffbeb !important;
+  }
+  50% {
+    transform: scale(1.07);
+    box-shadow: 0 0 0 8px rgba(245, 158, 11, 0.45), 0 8px 18px rgba(245, 158, 11, 0.25);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: none;
+  }
+}
+
+@keyframes lectureEntryRemoved {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+    box-shadow: 0 0 0 5px rgba(239, 68, 68, 0.75);
+    background-color: #fee2e2 !important;
+  }
+  45% {
+    opacity: 0.85;
+    transform: scale(1.06);
+    box-shadow: 0 0 0 9px rgba(239, 68, 68, 0.45);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.5) translateY(12px);
+    box-shadow: none;
+  }
+}
+
+@keyframes slotPulseAnim {
+  0% {
+    background-color: rgba(59, 130, 246, 0.45) !important;
+    outline: 2px solid #3b82f6 !important;
+  }
+  50% {
+    background-color: rgba(99, 102, 241, 0.25) !important;
+    outline: 2px solid #6366f1 !important;
+  }
+  100% {
+    background-color: transparent;
+    outline: none;
+  }
+}
+
+.lecture-entry-added {
+  animation: lectureEntryAdded 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards !important;
+  position: relative;
+  z-index: 10 !important;
+}
+
+.lecture-entry-updated {
+  animation: lectureEntryUpdated 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) forwards !important;
+  position: relative;
+  z-index: 10 !important;
+}
+
+.lecture-entry-removed {
+  animation: lectureEntryRemoved 0.35s cubic-bezier(0.4, 0, 1, 1) forwards !important;
+  position: relative;
+  z-index: 10 !important;
+}
+
+.slot-highlight-pulse {
+  animation: slotPulseAnim 0.65s cubic-bezier(0.2, 0.8, 0.2, 1) forwards !important;
+}
+
+
 
 
 

@@ -1604,7 +1604,7 @@ def generate_timetable_stream():
                 user=get_current_user(),
             )
 
-            yield f"event: complete\ndata: {json.dumps({'event': 'COMPLETE', 'success': True, 'message': f'Timetable generated successfully! {len(draft_entries)} lectures scheduled, 0 clashes.', 'scheduled_count': len(draft_entries), 'timetable_entries': draft_entries, 'entries': draft_entries, 'backtracking_attempts': backtrack_cnt, 'self_repair_applied': True, 'cooling_factor_applied': True, 'validation_report': final_val, 'progress': 100})}\n\n"
+            yield f"event: complete\ndata: {json.dumps({'event': 'COMPLETE', 'success': True, 'message': f'Timetable generated successfully! {len(draft_entries)} lectures scheduled, 0 clashes.', 'scheduled_count': len(draft_entries), 'timetable_entries': draft_entries, 'entries': draft_entries, 'execution_logs': coord_res.get('log', {}).get('execution_logs', []), 'backtracking_attempts': backtrack_cnt, 'self_repair_applied': True, 'cooling_factor_applied': True, 'validation_report': final_val, 'progress': 100})}\n\n"
         else:
             # Safe Draft: preserve existing published timetable!
             store.write("draft_timetable.json", {

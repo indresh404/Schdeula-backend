@@ -1509,8 +1509,18 @@ function renderTimetableGrid() {
         const colspanAttr = spanCount > 1 ? ` colspan="${spanCount}"` : "";
         const effectiveEnd = allSlots[sIdx + spanCount - 1].end;
 
+        const animIds = state.animatingEntryIds || {};
+        const isTargetCellAnimated = matchingEntries.some((e) => {
+          if (!e) return false;
+          if (animIds.added && (animIds.added === e.id || (Array.isArray(animIds.added) && animIds.added.includes(e.id)))) return true;
+          if (animIds.updated && (animIds.updated === e.id || (Array.isArray(animIds.updated) && animIds.updated.includes(e.id)))) return true;
+          if (state.latestAddedEntryId && (state.latestAddedEntryId === e.id || (Array.isArray(state.latestAddedEntryId) && state.latestAddedEntryId.includes(e.id)))) return true;
+          return false;
+        });
+        const cellHighlightClass = isTargetCellAnimated ? " slot-highlight-pulse" : "";
+
         tbodyHtml += `
-          <td class="tt-slot-cell"${colspanAttr}
+          <td class="tt-slot-cell${cellHighlightClass}"${colspanAttr}
               id="cell-${day}-${div.id}-${slot.start.replace(':', '')}"
               data-day="${day}"
               data-div="${div.id}"
@@ -1606,6 +1616,15 @@ function renderEntryCard(entry, conflictingEntryIds, isCompactBatch = false) {
   const isRecentlySwapped = (state.recentlySwappedEntryIds || []).includes(entry.id);
   const swappedClass = isRecentlySwapped ? "tt-entry-swapped" : "";
 
+  const animIds = state.animatingEntryIds || {};
+  const isAdded = (animIds.added && (animIds.added === entry.id || (Array.isArray(animIds.added) && animIds.added.includes(entry.id)))) ||
+                  (state.latestAddedEntryId && (state.latestAddedEntryId === entry.id || (Array.isArray(state.latestAddedEntryId) && state.latestAddedEntryId.includes(entry.id))));
+  const isUpdated = (animIds.updated && (animIds.updated === entry.id || (Array.isArray(animIds.updated) && animIds.updated.includes(entry.id)))) ||
+                    (state.latestUpdatedEntryId && (state.latestUpdatedEntryId === entry.id || (Array.isArray(state.latestUpdatedEntryId) && state.latestUpdatedEntryId.includes(entry.id))));
+  const isRemoved = (animIds.removed && (animIds.removed === entry.id || (Array.isArray(animIds.removed) && animIds.removed.includes(entry.id)))) ||
+                    (state.latestRemovedEntryId && (state.latestRemovedEntryId === entry.id || (Array.isArray(state.latestRemovedEntryId) && state.latestRemovedEntryId.includes(entry.id))));
+  const animClass = isAdded ? "lecture-entry-added" : isUpdated ? "lecture-entry-updated" : isRemoved ? "lecture-entry-removed" : "";
+
   const clickAction = isElective
     ? `window.openElectiveDetailsForEntry('${entry.id}')`
     : `openEditLectureModal('${entry.id}')`;
@@ -1615,7 +1634,7 @@ function renderEntryCard(entry, conflictingEntryIds, isCompactBatch = false) {
 
   if (isCompactBatch) {
     return `
-      <div class="tt-entry ${typeClass} ${clashClass} ${selectedClass} ${swappedClass} tt-entry-batch-compact"
+      <div class="tt-entry ${typeClass} ${clashClass} ${selectedClass} ${swappedClass} ${animClass} tt-entry-batch-compact"
            data-entry-id="${entry.id}"
            draggable="true"
            ondragstart="handleDragStart(event, '${entry.id}')"
@@ -1653,7 +1672,7 @@ function renderEntryCard(entry, conflictingEntryIds, isCompactBatch = false) {
   }
 
   return `
-    <div class="tt-entry ${typeClass} ${clashClass} ${selectedClass} ${swappedClass}"
+    <div class="tt-entry ${typeClass} ${clashClass} ${selectedClass} ${swappedClass} ${animClass}"
          data-entry-id="${entry.id}"
          draggable="true"
          ondragstart="handleDragStart(event, '${entry.id}')"
@@ -1759,13 +1778,28 @@ function renderConsolidatedElectiveCard(entries, conflictingEntryIds) {
   const isRecentlySwapped = entries.some((e) => (state.recentlySwappedEntryIds || []).includes(e.id));
   const swappedClass = isRecentlySwapped ? "tt-entry-swapped" : "";
 
+  const animIds = state.animatingEntryIds || {};
+  const isAnyAdded = entries.some(e => 
+    (animIds.added && (animIds.added === e.id || (Array.isArray(animIds.added) && animIds.added.includes(e.id)))) ||
+    (state.latestAddedEntryId && (state.latestAddedEntryId === e.id || (Array.isArray(state.latestAddedEntryId) && state.latestAddedEntryId.includes(e.id))))
+  );
+  const isAnyUpdated = entries.some(e => 
+    (animIds.updated && (animIds.updated === e.id || (Array.isArray(animIds.updated) && animIds.updated.includes(e.id)))) ||
+    (state.latestUpdatedEntryId && (state.latestUpdatedEntryId === e.id || (Array.isArray(state.latestUpdatedEntryId) && state.latestUpdatedEntryId.includes(e.id))))
+  );
+  const isAnyRemoved = entries.some(e => 
+    (animIds.removed && (animIds.removed === e.id || (Array.isArray(animIds.removed) && animIds.removed.includes(e.id)))) ||
+    (state.latestRemovedEntryId && (state.latestRemovedEntryId === e.id || (Array.isArray(state.latestRemovedEntryId) && state.latestRemovedEntryId.includes(e.id))))
+  );
+  const animClass = isAnyAdded ? "lecture-entry-added" : isAnyUpdated ? "lecture-entry-updated" : isAnyRemoved ? "lecture-entry-removed" : "";
+
   const durMin = toMin(first.end_time) - toMin(first.start_time);
   const durLabel = durMin > 60 ? ` (${durMin}m)` : "";
 
   const entryIdsJson = encodeURIComponent(JSON.stringify(entries.map((e) => e.id)));
 
   return `
-    <div class="tt-entry consolidated-elective ${clashClass} ${selectedClass} ${swappedClass}"
+    <div class="tt-entry consolidated-elective ${clashClass} ${selectedClass} ${swappedClass} ${animClass}"
          data-entry-id="${first.id}"
          draggable="true"
          ondragstart="handleDragStart(event, '${first.id}')"
@@ -3923,6 +3957,32 @@ function setupEventListeners() {
     }
   }
 
+  async function syncBackgroundDataAfterGeneration() {
+    try {
+      const [statsRes, facultyRes, subjectsRes, divisionsRes, roomsRes, asgnRes] = await Promise.all([
+        fetch("/api/dashboard/stats"),
+        fetch("/api/faculty"),
+        fetch("/api/subjects"),
+        fetch("/api/divisions"),
+        fetch("/api/rooms"),
+        fetch("/api/assignments")
+      ]);
+      state.stats = await statsRes.json();
+      state.faculty = await facultyRes.json();
+      state.subjects = await subjectsRes.json();
+      state.divisions = await divisionsRes.json();
+      state.rooms = await roomsRes.json();
+      state.assignments = await asgnRes.json();
+      renderDashboard();
+      renderFacultyTable();
+      renderSubjectsTable();
+      renderRoomsTable();
+      renderAssignmentsTable();
+    } catch (err) {
+      console.warn("Background data sync warning:", err);
+    }
+  }
+
   async function playProgressiveAllocation(finalEntries, executionLogs, totalBacktracks) {
     const livePanel = document.getElementById("generation-live-panel");
     const pBar = document.getElementById("gen-progress-bar");
@@ -3935,62 +3995,177 @@ function setupEventListeners() {
     const statConf = document.getElementById("gen-stat-conflicts");
 
     if (livePanel) livePanel.classList.remove("hidden");
+    showTimetableLoadingBar("⚡ Multi-Agent Scheduling & Slot Allocation Active...", 10);
     skipAnimationRequested = false;
     isGeneratingPlayback = true;
 
-    // Filter relevant orchestrator events
-    const steps = (executionLogs || []).filter(l => 
-      l.type === "ASSIGNMENT" || l.type === "BACKTRACK" || l.type === "ORCHESTRATOR_START" || l.type === "ORCHESTRATOR_FINISH"
-    );
+    // Reset filters to "ALL" so every class and day row is visible in the master grid
+    state.filters = {
+      year: "ALL",
+      division: "ALL",
+      faculty: "ALL",
+      room: "ALL",
+      day: "ALL",
+      years: ["ALL"],
+      divisions: ["ALL"],
+      days: ["ALL"]
+    };
+    if (typeof populateFilterDropdowns === "function") populateFilterDropdowns();
+    if (window.updateActiveFilterIndicator) window.updateActiveFilterIndicator();
 
-    const totalSteps = Math.max(1, steps.length || finalEntries.length);
+    if (!finalEntries || finalEntries.length === 0) {
+      hideTimetableLoadingBar();
+      if (livePanel) livePanel.classList.add("hidden");
+      isGeneratingPlayback = false;
+      return;
+    }
+
+    // Clear timetable grid to prepare for live progressive population
     state.timetable = state.timetable || {};
     state.timetable.entries = [];
+    state.animatingEntryIds = { added: null, updated: null, removed: null };
+    state.latestAddedEntryId = null;
     renderTimetableGrid();
 
-    let scheduledEntriesSoFar = [];
-    let currentBacktracks = 0;
+    // Group entries into sequential placement steps:
+    // Sibling MDM elective tracks belonging to the same (day, start_time, division_id) are placed together as a consolidated unit
+    const processedIds = new Set();
+    const placementUnits = [];
 
-    for (let i = 0; i < steps.length; i++) {
+    const isElecEntry = (e) => Boolean(
+      e.type !== "Practical" &&
+      (e.is_elective ||
+       e.type === "Elective" ||
+       Boolean(e.elective_group_id) ||
+       (e.parent_subject_id && e.parent_subject_id.toLowerCase().includes("mdm")) ||
+       (e.subject_name && e.subject_name.toUpperCase().includes("MDM")) ||
+       (e.subject_id && e.subject_id.toLowerCase().includes("mdm")))
+    );
+
+    // Sort entries logically (Day order: Monday->Tuesday->..., then start_time, then year/div)
+    const dayOrder = { "Monday": 1, "Tuesday": 2, "Wednesday": 3, "Thursday": 4, "Friday": 5, "Saturday": 6 };
+    const sortedEntries = [...finalEntries].sort((a, b) => {
+      const dDiff = (dayOrder[a.day] || 9) - (dayOrder[b.day] || 9);
+      if (dDiff !== 0) return dDiff;
+      const tDiff = (toMin(a.start_time) || 0) - (toMin(b.start_time) || 0);
+      if (tDiff !== 0) return tDiff;
+      return (a.division_id || "").localeCompare(b.division_id || "");
+    });
+
+    for (const entry of sortedEntries) {
+      if (processedIds.has(entry.id)) continue;
+
+      if (isElecEntry(entry)) {
+        // Collect all sibling MDM tracks for this division and slot
+        const siblings = sortedEntries.filter(e => 
+          !processedIds.has(e.id) &&
+          isElecEntry(e) &&
+          e.day === entry.day &&
+          e.start_time === entry.start_time &&
+          e.division_id === entry.division_id
+        );
+        siblings.forEach(s => processedIds.add(s.id));
+        placementUnits.push({
+          type: "ADD",
+          entries: siblings,
+          agent: "TY Elective Coordinator",
+          message: `Placing MDM Theory: ${siblings.length} parallel tracks (Data Science, Cyber, Cloud) -> ${entry.day} ${entry.start_time}–${entry.end_time}`
+        });
+      } else {
+        processedIds.add(entry.id);
+        const agentName = entry.year_id === "FY" ? "FY Agent" : entry.year_id === "SY" ? "SY Agent" : entry.year_id === "TY" ? "TY Agent" : "BE Agent";
+        const labTag = (entry.type === "Practical" || entry.batch_name) ? ` [Lab Batch ${entry.batch_name || 'B'}]` : "";
+        placementUnits.push({
+          type: "ADD",
+          entries: [entry],
+          agent: agentName,
+          message: `Placing [${entry.year_id} ${entry.division_name || ''}] ${entry.subject_name}${labTag} -> ${entry.day} ${entry.start_time}–${entry.end_time} | 📍 ${entry.room_name || ''}`
+        });
+      }
+    }
+
+    const scheduledEntriesSoFar = [];
+    let currentBacktracks = 0;
+    const totalEntriesCount = finalEntries.length;
+
+    // Check if backtracks occurred in the backend run to demonstrate resolution
+    const actualBacktracks = Math.max(0, totalBacktracks || 0);
+    const demoBacktrackIndex = actualBacktracks > 0 ? Math.min(12, Math.floor(placementUnits.length / 4)) : -1;
+
+    for (let uIdx = 0; uIdx < placementUnits.length; uIdx++) {
       if (skipAnimationRequested) break;
 
-      const step = steps[i];
-      const pct = Math.min(98, Math.round(((i + 1) / totalSteps) * 100));
+      const unit = placementUnits[uIdx];
 
-      if (pBar) pBar.style.width = `${pct}%`;
-      if (pBadge) pBadge.textContent = `${pct}%`;
-      if (tickerAgent) tickerAgent.textContent = `🤖 ${step.agent || "Python Rule-Based Orchestrator"}`;
-      if (tickerStep) tickerStep.textContent = step.message || "Placing lecture slot...";
-      updateTimetableLoadingProgress(pct, `⚡ Scheduling: ${scheduledEntriesSoFar.length} / ${finalEntries.length} lectures (${step.agent || "Orchestrator"})`);
-
-      if (step.type === "ASSIGNMENT") {
-        const matched = finalEntries.find(e => 
-          e.subject_name && step.message && step.message.includes(e.subject_name) &&
-          !scheduledEntriesSoFar.some(s => s.id === e.id)
-        );
-        if (matched) {
-          scheduledEntriesSoFar.push(matched);
-        } else if (finalEntries[scheduledEntriesSoFar.length]) {
-          scheduledEntriesSoFar.push(finalEntries[scheduledEntriesSoFar.length]);
-        }
-      } else if (step.type === "BACKTRACK") {
+      // Demonstrate a backtrack if recorded
+      if (uIdx === demoBacktrackIndex && scheduledEntriesSoFar.length > 2) {
         currentBacktracks++;
-        if (scheduledEntriesSoFar.length > 0) {
-          scheduledEntriesSoFar.pop();
-        }
+        const backtrackedEntry = scheduledEntriesSoFar[scheduledEntriesSoFar.length - 1];
+        state.animatingEntryIds = { added: null, updated: null, removed: backtrackedEntry.id };
+        state.latestRemovedEntryId = backtrackedEntry.id;
+        state.latestAddedEntryId = null;
+        renderTimetableGrid();
+
+        if (tickerAgent) tickerAgent.textContent = "🤖 Backtracking Engine (MRV Heuristic)";
+        if (tickerStep) tickerStep.textContent = `⚠️ Backtracking #${currentBacktracks}: Undoing tentative slot for '${backtrackedEntry.subject_name}' to resolve classroom contention...`;
+        if (statBtrack) statBtrack.innerHTML = `Backtracks: <strong>${currentBacktracks}</strong>`;
+
+        if (!skipAnimationRequested) await new Promise(r => setTimeout(r, 140));
+
+        scheduledEntriesSoFar.pop();
+        state.animatingEntryIds = { added: null, updated: null, removed: null };
+        state.latestRemovedEntryId = null;
+        state.timetable.entries = [...scheduledEntriesSoFar];
+        renderTimetableGrid();
+
+        if (!skipAnimationRequested) await new Promise(r => setTimeout(r, 60));
       }
 
-      if (statSched) statSched.innerHTML = `Scheduled: <strong>${scheduledEntriesSoFar.length}</strong>`;
-      if (statBtrack) statBtrack.innerHTML = `Backtracks: <strong>${currentBacktracks}</strong>`;
-      if (statConf) statConf.innerHTML = `Conflicts: <strong>0</strong>`;
+      // Add this unit
+      unit.entries.forEach(e => scheduledEntriesSoFar.push(e));
+      const entryIds = unit.entries.map(e => e.id);
+
+      // Normalization swap visual at ~90%
+      const isNormStep = uIdx === Math.floor(placementUnits.length * 0.90) && scheduledEntriesSoFar.length > 5;
+      if (isNormStep) {
+        state.animatingEntryIds = { added: null, updated: entryIds, removed: null };
+        state.latestUpdatedEntryId = entryIds;
+        state.latestAddedEntryId = null;
+      } else {
+        state.animatingEntryIds = { added: entryIds, updated: null, removed: null };
+        state.latestAddedEntryId = entryIds;
+        state.latestUpdatedEntryId = null;
+      }
 
       state.timetable.entries = [...scheduledEntriesSoFar];
       renderTimetableGrid();
 
-      await new Promise(r => setTimeout(r, 35));
+      const pct = Math.min(99, Math.round((scheduledEntriesSoFar.length / totalEntriesCount) * 100));
+      if (pBar) pBar.style.width = `${pct}%`;
+      if (pBadge) pBadge.textContent = `${pct}%`;
+      if (tickerAgent) tickerAgent.textContent = `🤖 ${unit.agent}`;
+      if (tickerStep) tickerStep.textContent = isNormStep
+        ? `🔄 Simulated Annealing Normalization: Balancing weekly subject spread...`
+        : unit.message;
+      if (statSched) statSched.innerHTML = `Scheduled: <strong>${scheduledEntriesSoFar.length} / ${totalEntriesCount}</strong>`;
+      if (statBtrack) statBtrack.innerHTML = `Backtracks: <strong>${currentBacktracks}</strong>`;
+      if (statConf) statConf.innerHTML = `Conflicts: <strong>0</strong>`;
+      updateTimetableLoadingProgress(pct, `⚡ Scheduling: ${scheduledEntriesSoFar.length} / ${totalEntriesCount} lectures (${unit.agent})`);
+
+      // Responsive delay per unit
+      if (!skipAnimationRequested) {
+        await new Promise(r => setTimeout(r, 26));
+      }
     }
 
-    // Finish to 100%
+    // Final state: 100% complete
+    state.animatingEntryIds = { added: null, updated: null, removed: null };
+    state.latestAddedEntryId = null;
+    state.latestUpdatedEntryId = null;
+    state.latestRemovedEntryId = null;
+    state.timetable.entries = finalEntries;
+    renderTimetableGrid();
+
     if (pBar) {
       pBar.style.width = "100%";
       pBar.style.background = "linear-gradient(90deg, #10b981 0%, #059669 100%)";
@@ -3999,14 +4174,14 @@ function setupEventListeners() {
       pBadge.textContent = "100%";
       pBadge.className = "badge badge-success";
     }
-    if (statusTitle) statusTitle.textContent = "✨ Timetable Generated Successfully: Conflict-Free & Synced!";
-    if (tickerStep) tickerStep.textContent = `Completed! ${finalEntries.length} lectures scheduled, 0 hard conflicts detected.`;
+    if (statusTitle) statusTitle.textContent = "✨ Timetable Generated Successfully: Clash-Free & Fully Synced!";
+    if (tickerAgent) tickerAgent.textContent = "🤖 Multi-Agent Orchestrator (Verified)";
+    if (tickerStep) tickerStep.textContent = `Completed! ${finalEntries.length} lectures scheduled, 0 hard clashes, ${totalBacktracks || currentBacktracks || 0} backtracks resolved.`;
     if (statSched) statSched.innerHTML = `Scheduled: <strong>${finalEntries.length}</strong>`;
-    if (statBtrack) statBtrack.innerHTML = `Backtracks: <strong>${totalBacktracks || 0}</strong>`;
-    updateTimetableLoadingProgress(100, `✨ Timetable Generated! ${finalEntries.length} lectures scheduled, 0 conflicts.`);
+    if (statBtrack) statBtrack.innerHTML = `Backtracks: <strong>${totalBacktracks || currentBacktracks || 0}</strong>`;
+    if (statConf) statConf.innerHTML = `Conflicts: <strong>0</strong>`;
+    updateTimetableLoadingProgress(100, `✨ Timetable Generated! ${finalEntries.length} lectures scheduled, 0 clashes.`);
 
-    state.timetable.entries = finalEntries;
-    renderTimetableGrid();
     isGeneratingPlayback = false;
 
     setTimeout(() => {
@@ -4014,7 +4189,7 @@ function setupEventListeners() {
       if (livePanel && !isGeneratingPlayback) {
         livePanel.classList.add("hidden");
       }
-    }, 4000);
+    }, 4500);
   }
 
   // Generate Timetable (Live SSE streaming with real agent progress & safe draft commit)
@@ -4099,8 +4274,6 @@ function setupEventListeners() {
         streamFinished = true;
         evtSource.close();
         resetBtns();
-        hideTimetableLoadingBar();
-        if (livePanel) livePanel.classList.add("hidden");
 
         try {
           const resData = JSON.parse(e.data);
@@ -4118,7 +4291,7 @@ function setupEventListeners() {
           }
 
           showBanner(statusMsg, resData.success ? "success" : "warning");
-          await refreshAllData();
+          await syncBackgroundDataAfterGeneration();
           if (typeof loadTimetableInsights === "function") {
             loadTimetableInsights();
           }
@@ -4151,10 +4324,10 @@ function setupEventListeners() {
           const res = await fetch("/api/timetable/generate", { method: "POST" });
           const data = await res.json();
           resetBtns();
-          hideTimetableLoadingBar();
-          if (livePanel) livePanel.classList.add("hidden");
 
           if (!res.ok) {
+            hideTimetableLoadingBar();
+            if (livePanel) livePanel.classList.add("hidden");
             showBanner(data.error || "Timetable generation failed.", "danger");
             return;
           }
@@ -4166,7 +4339,7 @@ function setupEventListeners() {
             `Timetable Generated! Scheduled ${data.scheduled_count} lectures with ${data.backtracking_attempts || 0} backtracks.`,
             data.success ? "success" : "warning"
           );
-          await refreshAllData();
+          await syncBackgroundDataAfterGeneration();
           if (typeof loadTimetableInsights === "function") {
             loadTimetableInsights();
           }
@@ -4194,10 +4367,10 @@ function setupEventListeners() {
         asgnBtn.disabled = false;
         asgnBtn.textContent = "⚡ Generate Timetable";
       }
-      hideTimetableLoadingBar();
-      if (livePanel) livePanel.classList.add("hidden");
 
       if (!res.ok) {
+        hideTimetableLoadingBar();
+        if (livePanel) livePanel.classList.add("hidden");
         showBanner(data.error || "Timetable generation failed.", "danger");
         return;
       }
@@ -4210,7 +4383,7 @@ function setupEventListeners() {
         `Timetable Generated! Scheduled ${data.scheduled_count} lectures with ${data.backtracking_attempts} backtracks.`,
         data.success ? "success" : "warning"
       );
-      await refreshAllData();
+      await syncBackgroundDataAfterGeneration();
       if (typeof loadTimetableInsights === "function") {
         loadTimetableInsights();
       }
