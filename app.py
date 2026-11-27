@@ -3549,4 +3549,4 @@ if __name__ == "__main__":
     print(f"Local Server Starting at http://{host}:{port}")
     print("Admin:  username: admin   password: admin123")
     print("=" * 65)
-    app.run(host=host, port=port, debug=debug)
+    app.run(host=host, port=port, debug=debug, threaded=True)

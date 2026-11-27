@@ -468,5 +468,152 @@
       "manual_override": true,
       "confirmed_clash_override": true
     }
+  },
+  {
+    "id": "audit_ca49c604",
+    "timestamp": "2026-11-27T20:32:10.286955",
+    "action": "TIMETABLE_AUTO_GENERATION",
+    "username": "admin",
+    "details": "Generated and published clash-free timetable with 0 lectures.",
+    "metadata": {}
+  },
+  {
+    "id": "audit_1e132caf",
+    "timestamp": "2026-11-27T20:33:50.525024",
+    "action": "TIMETABLE_AUTO_GENERATION",
+    "username": "admin",
+    "details": "Generated and published clash-free timetable with 0 lectures.",
+    "metadata": {}
+  },
+  {
+    "id": "audit_03713418",
+    "timestamp": "2026-11-27T20:36:04.448713",
+    "action": "TIMETABLE_AUTO_GENERATION",
+    "username": "admin",
+    "details": "Generated and published clash-free timetable with 132 lectures.",
+    "metadata": {}
+  },
+  {
+    "id": "audit_38a3e469",
+    "timestamp": "2026-11-27T20:36:33.264085",
+    "action": "TIMETABLE_AUTO_GENERATION",
+    "username": "admin",
+    "details": "Generated and published clash-free timetable with 0 lectures.",
+    "metadata": {}
+  },
+  {
+    "id": "audit_dd300284",
+    "timestamp": "2026-11-27T20:37:41.578061",
+    "action": "TIMETABLE_AUTO_GENERATION",
+    "username": "admin",
+    "details": "Generated and published clash-free timetable with 132 lectures.",
+    "metadata": {}
+  },
+  {
+    "id": "audit_5614fe75",
+    "timestamp": "2026-11-27T20:38:03.690162",
+    "action": "MANUAL_ENTRY_ADDED",
+    "username": "admin",
+    "details": "Admin added lecture 'Data Structures & Analysis' (Monday 15:45).",
+    "metadata": {
+      "id": "manual_830ea390",
+      "lecture_request_id": "manual_44aef4",
+      "subject_id": "sub_sy_dsa",
+      "subject_name": "Data Structures & Analysis",
+      "year_id": "SY",
+      "division_id": "div_sy_b",
+      "division_name": "Division B",
+      "batch_id": null,
+      "batch_name": null,
+      "faculty_id": "fac_03",
+      "faculty_name": "Prof. Sneha Mehta",
+      "room_id": "room_202",
+      "room_name": "Classroom 202 (SY-B)",
+      "day": "Monday",
+      "start_time": "15:45",
+      "end_time": "16:45",
+      "type": "Theory",
+      "duration_minutes": 60,
+      "student_capacity": 65,
+      "is_manual": true
+    }
+  },
+  {
+    "id": "audit_24f03123",
+    "timestamp": "2026-11-27T20:38:31.458974",
+    "action": "TIMETABLE_AUTO_GENERATION",
+    "username": "admin",
+    "details": "Generated and published clash-free timetable with 132 lectures.",
+    "metadata": {}
+  },
+  {
+    "id": "audit_650c8b83",
+    "timestamp": "2026-11-27T20:38:34.057396",
+    "action": "EXPLICIT_CLASH_OVERRIDE",
+    "username": "admin",
+    "details": "Admin explicitly authorized clash override for 'None' (Monday 09:15).",
+    "metadata": {
+      "id": "manual_bd175c43",
+      "lecture_request_id": "manual_22acad",
+      "subject_id": "sub_sy_dsa_lab",
+      "subject_name": null,
+      "year_id": null,
+      "division_id": "div_ty_b",
+      "division_name": null,
+      "batch_id": null,
+      "batch_name": null,
+      "faculty_id": "fac_03",
+      "faculty_name": null,
+      "room_id": "lab_204",
+      "room_name": null,
+      "day": "Monday",
+      "start_time": "09:15",
+      "end_time": "11:15",
+      "type": "Theory",
+      "duration_minutes": 60,
+      "student_capacity": 65,
+      "is_manual": true,
+      "manual_override": true,
+      "confirmed_clash_override": true
+    }
+  },
+  {
+    "id": "audit_5df7262b",
+    "timestamp": "2026-11-27T20:38:34.128858",
+    "action": "MANUAL_ENTRY_DELETED",
+    "username": "admin",
+    "details": "Admin deleted timetable lecture 'None'.",
+    "metadata": {
+      "id": "manual_bd175c43",
+      "lecture_request_id": "manual_22acad",
+      "subject_id": "sub_sy_dsa_lab",
+      "subject_name": null,
+      "year_id": null,
+      "division_id": "div_ty_b",
+      "division_name": null,
+      "batch_id": null,
+      "batch_name": null,
+      "faculty_id": "fac_03",
+      "faculty_name": null,
+      "room_id": "lab_204",
+      "room_name": null,
+      "day": "Monday",
+      "start_time": "09:15",
+      "end_time": "11:15",
+      "type": "Theory",
+      "duration_minutes": 60,
+      "student_capacity": 65,
+      "is_manual": true,
+      "manual_override": true,
+      "confirmed_clash_override": true
+    }
+  },
+  {
+    "id": "audit_5fab00fa",
+    "timestamp": "2026-11-27T20:38:34.589371",
+    "action": "TIMETABLE_AUTO_GENERATION",
+    "username": "admin",
+    "details": "Generated and published clash-free timetable with 132 lectures.",
+    "metadata": {}
   }
 ]
