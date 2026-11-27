@@ -1,0 +1,14 @@
+[
+  {
+    "id": "floor_2",
+    "name": "2nd Floor",
+    "floor_number": 2,
+    "sequence_order": 1
+  },
+  {
+    "id": "floor_3",
+    "name": "3rd Floor",
+    "floor_number": 3,
+    "sequence_order": 2
+  }
+]

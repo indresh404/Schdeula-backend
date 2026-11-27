@@ -1,0 +1,2133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CMPN Intelligent Timetable Scheduling Prototype</title>
+  <link rel="stylesheet" href="/style.css?v=2.4">
+</head>
+<body>
+  <!-- Header / Navigation Bar -->
+  <header class="navbar">
+    <div class="nav-brand">
+      <button id="btn-toggle-sidebar" class="btn-toggle-sidebar" title="Toggle Sidebar (Open / Close)" aria-label="Toggle Sidebar">
+        <span class="sidebar-toggle-icon">☰</span>
+      </button>
+      <span class="logo-icon" aria-hidden="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="16" y1="2" x2="16" y2="6"></line>
+          <line x1="8" y1="2" x2="8" y2="6"></line>
+          <line x1="3" y1="10" x2="21" y2="10"></line>
+        </svg>
+      </span>
+      <div style="display:flex; align-items:baseline; gap:8px;">
+        <h1 class="brand-title">Schedula CMPN</h1>
+        <span class="brand-subtitle">(FY · SY · TY · BE)</span>
+      </div>
+    </div>
+    <div class="nav-auth" style="display: flex; align-items: center; gap: 8px;">
+      <button id="btn-navbar-help" class="btn btn-sm btn-outline" style="font-weight: 600; display: inline-flex; align-items: center; gap: 6px;" title="Interactive Help Guide & Feature Walkthrough">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+        <span>Help Guide</span>
+      </button>
+      <button id="btn-load-demo-top" class="btn btn-sm btn-outline-primary" style="font-weight: 600; display: inline-flex; align-items: center; gap: 6px;" title="Load complete CMPN demo data (All 4 years, subjects, rooms, faculty)">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        Load Demo Data
+      </button>
+      <div id="auth-status" class="auth-status">
+        <span id="user-badge" class="badge">Checking auth...</span>
+        <button id="btn-login-modal" class="btn btn-sm btn-outline">Switch / Login</button>
+        <button id="btn-logout" class="btn btn-sm btn-danger" style="display:none;">Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <div class="app-layout">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar" id="app-sidebar">
+      <div class="sidebar-header">
+        <span class="sidebar-header-label">Navigation</span>
+        <button id="btn-sidebar-collapse" class="btn-sidebar-close" title="Close Sidebar" aria-label="Close Sidebar" type="button">
+          ✕
+        </button>
+      </div>
+      <nav class="nav-menu">
+        <button class="nav-item active" data-tab="tab-dashboard">
+          <span class="icon" aria-hidden="true">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="7" height="9"></rect>
+              <rect x="14" y="3" width="7" height="5"></rect>
+              <rect x="14" y="12" width="7" height="9"></rect>
+              <rect x="3" y="16" width="7" height="5"></rect>
+            </svg>
+          </span>
+          <span>Dashboard</span>
+        </button>
+        <button class="nav-item" data-tab="tab-timetable">
+          <span class="icon" aria-hidden="true">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="16" y1="2" x2="16" y2="6"></line>
+              <line x1="8" y1="2" x2="8" y2="6"></line>
+              <line x1="3" y1="10" x2="21" y2="10"></line>
+            </svg>
+          </span>
+          <span>Timetable</span>
+        </button>
+        <button class="nav-item" data-tab="tab-faculty">
+          <span class="icon" aria-hidden="true">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+          </span>
+          <span>Faculty</span>
+        </button>
+        <button class="nav-item" data-tab="tab-subjects">
+          <span class="icon" aria-hidden="true">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+            </svg>
+          </span>
+          <span>Subjects & Teaching</span>
+        </button>
+        <button class="nav-item" data-tab="tab-divisions">
+          <span class="icon" aria-hidden="true">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+              <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+          </span>
+          <span>Divisions & Batches</span>
+        </button>
+        <button class="nav-item" data-tab="tab-settings">
+          <span class="icon" aria-hidden="true">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+          </span>
+          <span>Rooms & Settings</span>
+        </button>
+      </nav>
+      <div class="sidebar-footer">
+        <button id="btn-sidebar-collapse-bottom" class="btn-sidebar-collapse-bottom" title="Collapse Sidebar" type="button">
+          <span>«</span> Collapse Sidebar
+        </button>
+        <div class="academic-pool-badge">
+          <strong>Shared Resource Pool:</strong>
+          <small>FY, SY, TY, BE synchronized</small>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Content Workspace -->
+    <main class="content-area">
+      <!-- Floating Toast Overlay Container (Floats above screen at bottom without snapping UI) -->
+      <div id="toast-container" class="toast-overlay-container" aria-live="polite"></div>
+      <div id="notification-banner" class="hidden" style="display:none !important;"></div>
+
+      <!-- ==================== TAB 1: DASHBOARD ==================== -->
+      <section id="tab-dashboard" class="tab-pane active">
+        <div class="pane-header">
+          <div style="display:flex; align-items:baseline; gap:8px; flex-wrap:wrap;">
+            <h2>CMPN Scheduling Overview</h2>
+            <span class="text-muted" style="font-size:11px;">• Multi-year synchronized scheduling metrics</span>
+          </div>
+          <div class="header-actions">
+            <button type="button" class="btn btn-outline btn-page-help" data-tab-help="tab-dashboard" title="Interactive feature tour for Dashboard" style="display:inline-flex; align-items:center; gap:6px;">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+              <span>Help Guide</span>
+            </button>
+            <button id="btn-goto-timetable-gen" class="btn btn-primary" title="Go to Timetable section to run generator and view schedule">
+              📅 Open Timetable & Generate
+            </button>
+            <button id="btn-load-demo-dashboard" class="btn btn-outline" title="Populate department with complete demonstration data">
+              ✨ Load Demo Data
+            </button>
+            <button id="btn-clear-timetable" class="btn btn-outline-danger">
+              🗓️ Reset Timetable
+            </button>
+            <button id="btn-reset-all-data" class="btn btn-danger" title="Wipe all faculty, subjects, rooms, divisions & start fresh">
+              🗑️ Reset All Data
+            </button>
+          </div>
+        </div>
+
+        <!-- Metric Stat Cards -->
+        <div class="stat-grid">
+          <div class="card stat-card">
+            <div class="stat-icon">👨‍🏫</div>
+            <div class="stat-body">
+              <span class="stat-label">Total Faculty</span>
+              <strong id="stat-faculty" class="stat-value">0</strong>
+            </div>
+          </div>
+          <div class="card stat-card">
+            <div class="stat-icon">📚</div>
+            <div class="stat-body">
+              <span class="stat-label">Total Subjects</span>
+              <strong id="stat-subjects" class="stat-value">0</strong>
+            </div>
+          </div>
+          <div class="card stat-card">
+            <div class="stat-icon">🏛️</div>
+            <div class="stat-body">
+              <span class="stat-label">Total Divisions</span>
+              <strong id="stat-divisions" class="stat-value">0</strong>
+            </div>
+          </div>
+          <div class="card stat-card">
+            <div class="stat-icon">📋</div>
+            <div class="stat-body">
+              <span class="stat-label">Required Lectures</span>
+              <strong id="stat-required" class="stat-value">0</strong>
+            </div>
+          </div>
+          <div class="card stat-card">
+            <div class="stat-icon">✅</div>
+            <div class="stat-body">
+              <span class="stat-label">Scheduled</span>
+              <strong id="stat-scheduled" class="stat-value">0</strong>
+            </div>
+          </div>
+          <div class="card stat-card">
+            <div class="stat-icon">⚠️</div>
+            <div class="stat-body">
+              <span class="stat-label">Unscheduled</span>
+              <strong id="stat-unscheduled" class="stat-value">0</strong>
+            </div>
+          </div>
+          <div class="card stat-card">
+            <div class="stat-icon">🛡️</div>
+            <div class="stat-body">
+              <span class="stat-label">Scheduling Status</span>
+              <span id="stat-status-badge" class="badge badge-success">Up to Date</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Multi-Agent Orchestration Status Grid -->
+        <div class="agent-grid">
+          <div class="agent-card agent-orchestrator" data-agent="Orchestrator" title="Click to view global progress and workload analytics">
+            <div class="agent-header">
+              <span class="agent-title">⚡ Orchestrator</span>
+              <span id="agent-stat-orch-badge" class="badge">Idle</span>
+            </div>
+            <div class="agent-role">Python Rule-Based Orchestrator (MRV + Flexibility)</div>
+            <div class="agent-stats">
+              <span>Backtracks: <strong id="agent-stat-orch-backtracks">0</strong></span>
+              <span>Time: <strong id="agent-stat-orch-time">0.0s</strong></span>
+            </div>
+            <div style="font-size:10px; color:#475569; margin-top:2px; font-weight:600;">📊 View Analytics ➔</div>
+          </div>
+
+          <div class="agent-card agent-fy" data-agent="FY" title="Click to view FY subject progress & faculty workload">
+            <div class="agent-header">
+              <span class="agent-title">🟢 FY Agent</span>
+              <span id="agent-stat-fy-badge" class="badge">Idle</span>
+            </div>
+            <div class="agent-role">First Year Divisions & Lab Batches</div>
+            <div class="agent-stats">
+              <span>Divisions: <strong id="agent-stat-fy-divs">0</strong></span>
+              <span>Progress: <strong id="agent-stat-fy-prog">0/0</strong></span>
+            </div>
+            <div style="font-size:10px; color:#15803d; margin-top:2px; font-weight:600;">📊 View Analytics ➔</div>
+          </div>
+
+          <div class="agent-card agent-sy" data-agent="SY" title="Click to view SY subject progress & faculty workload">
+            <div class="agent-header">
+              <span class="agent-title">🔵 SY Agent</span>
+              <span id="agent-stat-sy-badge" class="badge">Idle</span>
+            </div>
+            <div class="agent-role">Second Year Divisions & Lab Batches</div>
+            <div class="agent-stats">
+              <span>Divisions: <strong id="agent-stat-sy-divs">0</strong></span>
+              <span>Progress: <strong id="agent-stat-sy-prog">0/0</strong></span>
+            </div>
+            <div style="font-size:10px; color:#1d4ed8; margin-top:2px; font-weight:600;">📊 View Analytics ➔</div>
+          </div>
+
+          <div class="agent-card agent-ty" data-agent="TY" title="Click to view TY subject progress & faculty workload">
+            <div class="agent-header">
+              <span class="agent-title">🟣 TY Agent</span>
+              <span id="agent-stat-ty-badge" class="badge">Idle</span>
+            </div>
+            <div class="agent-role">Third Year Divisions & Lab Batches</div>
+            <div class="agent-stats">
+              <span>Divisions: <strong id="agent-stat-ty-divs">0</strong></span>
+              <span>Progress: <strong id="agent-stat-ty-prog">0/0</strong></span>
+            </div>
+            <div style="font-size:10px; color:#7e22ce; margin-top:2px; font-weight:600;">📊 View Analytics ➔</div>
+          </div>
+
+          <div class="agent-card agent-be" data-agent="BE" title="Click to view BE subject progress & faculty workload">
+            <div class="agent-header">
+              <span class="agent-title">🟠 BE Agent</span>
+              <span id="agent-stat-be-badge" class="badge">Idle</span>
+            </div>
+            <div class="agent-role">Final Year Divisions & Lab Batches</div>
+            <div class="agent-stats">
+              <span>Divisions: <strong id="agent-stat-be-divs">0</strong></span>
+              <span>Progress: <strong id="agent-stat-be-prog">0/0</strong></span>
+            </div>
+            <div style="font-size:10px; color:#c2410c; margin-top:2px; font-weight:600;">📊 View Analytics ➔</div>
+          </div>
+        </div>
+
+        <!-- Latest Generation & Multi-Agent Reasoning Panel -->
+        <div class="card mt-3">
+          <div class="card-header">
+            <div>
+              <h3>🤖 Python Rule-Based Orchestrator & Agent Activity Panel</h3>
+              <p class="text-muted" style="margin:0; font-size:12px;">Real-time transparency into how each agent analyzes subjects, calculates MRV, and resolves shared conflicts</p>
+            </div>
+            <span id="log-timestamp" class="text-muted">Not generated yet</span>
+          </div>
+          <div class="card-body">
+            <!-- Orchestrator Summary Stats Bar -->
+            <div id="log-summary-box" class="log-summary-box mb-3">
+              <p>Click <strong>⚡ Generate Timetable</strong> to run the multi-year Python Rule-Based Orchestrator.</p>
+            </div>
+
+            <!-- Agent Subtabs -->
+            <div class="agent-subtabs">
+              <button id="subtab-btn-logs" class="agent-subtab-btn active" type="button">
+                🧠 Live Agent Thinking & Decision Stream (Latest on Top)
+              </button>
+              <button id="subtab-btn-divisions" class="agent-subtab-btn" type="button">
+                🏫 Division-by-Division Reasoning & Schedules
+              </button>
+            </div>
+
+            <!-- SUBVIEW 1: Agent Thinking & Logs -->
+            <div id="agent-subview-logs">
+              <div class="agent-filter-toolbar">
+                <div class="filter-group" style="margin:0;">
+                  <label style="font-size:12px;">Filter Agent:</label>
+                  <select id="agent-filter-select" class="form-control" style="padding:4px 8px; font-size:12px;">
+                    <option value="ALL">All Agents</option>
+                    <option value="Python Rule-Based Orchestrator">Python Rule-Based Orchestrator</option>
+                    <option value="FY Agent">FY Agent</option>
+                    <option value="SY Agent">SY Agent</option>
+                    <option value="TY Agent">TY Agent</option>
+                    <option value="BE Agent">BE Agent</option>
+                  </select>
+                </div>
+                <div class="filter-group" style="margin:0;">
+                  <label style="font-size:12px;">Log Type:</label>
+                  <select id="agent-filter-type" class="form-control" style="padding:4px 8px; font-size:12px;">
+                    <option value="ALL">All Event Types</option>
+                    <option value="ASSIGNMENT">⚡ Assignments</option>
+                    <option value="THINKING">🧠 Thinking & Init</option>
+                    <option value="REASONING">💡 Division Reasoning</option>
+                    <option value="BACKTRACK">🔄 Backtracks & Contention</option>
+                    <option value="WARNING">⚠️ Failures & Warnings</option>
+                  </select>
+                </div>
+                <div class="filter-group" style="margin:0; flex:1;">
+                  <label style="font-size:12px;">Search Logs:</label>
+                  <input type="text" id="agent-filter-search" class="form-control" placeholder="Search division, subject, faculty..." style="padding:4px 8px; font-size:12px;">
+                </div>
+              </div>
+
+              <div id="agent-logs-stream" class="log-stream-console">
+                <div style="color:#94a3b8; text-align:center; padding:20px;">
+                  No logs recorded yet. Click <strong>⚡ Generate Timetable</strong> to watch the rule-based agents and orchestrator execute.
+                </div>
+              </div>
+            </div>
+
+            <!-- SUBVIEW 2: Division-by-Division Breakdown -->
+            <div id="agent-subview-divisions" class="hidden">
+              <div class="agent-filter-toolbar">
+                <div class="filter-group" style="margin:0;">
+                  <label style="font-size:12px;">Filter by Academic Year:</label>
+                  <select id="div-filter-year" class="form-control" style="padding:4px 8px; font-size:12px;">
+                    <option value="ALL">All Academic Years</option>
+                    <option value="FY">First Year (FY)</option>
+                    <option value="SY">Second Year (SY)</option>
+                    <option value="TY">Third Year (TY)</option>
+                    <option value="BE">Bachelor of Engineering (BE)</option>
+                  </select>
+                </div>
+              </div>
+
+              <div id="division-cards-container" class="division-breakdown-grid">
+                <p class="text-muted" style="padding:20px; text-align:center; grid-column:1/-1;">
+                  No division schedules generated yet. Generate the timetable to view division-specific schedules and agent notes.
+                </p>
+              </div>
+            </div>
+
+            <!-- Unscheduled Failures Diagnosis Container -->
+            <div id="unscheduled-reasons-container" class="mt-4 hidden">
+              <h4 class="text-danger">⚠️ Unscheduled Lectures Bottleneck Analysis:</h4>
+              <div class="table-responsive">
+                <table class="data-table" id="table-unscheduled">
+                  <thead>
+                    <tr>
+                      <th>Year</th>
+                      <th>Division / Batch</th>
+                      <th>Subject</th>
+                      <th>Duration</th>
+                      <th>Reason for Scheduling Failure</th>
+                    </tr>
+                  </thead>
+                  <tbody></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== TAB 2: TIMETABLE ==================== -->
+      <section id="tab-timetable" class="tab-pane">
+        <div class="pane-header">
+          <div>
+            <h2>Academic Timetable Viewer & Editor</h2>
+            <p class="text-muted">Unified schedule view across Divisions, Faculty, and Classrooms/Labs</p>
+          </div>
+          <div class="header-actions">
+            <button type="button" class="btn btn-outline btn-page-help" data-tab-help="tab-timetable" title="Interactive feature tour for Timetable" style="display:inline-flex; align-items:center; gap:6px;">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+              <span>Help Guide</span>
+            </button>
+            <button id="btn-generate-timetable" class="btn btn-primary" title="Generate full timetable with progressive live visual allocation">
+              ⚡ Generate Timetable
+            </button>
+            <button id="btn-auto-fix-clashes" class="btn btn-warning" title="Automatically detect and resolve timetable clashes with change preview">
+              🔧 Auto-Fix Clashes
+            </button>
+            <button id="btn-undo-timetable" class="btn btn-outline" title="Undo the latest timetable generation or change">
+              ↩️ Undo
+            </button>
+            <button id="btn-redo-timetable" class="btn btn-outline" title="Redo previously undone change">
+              ↪️ Redo
+            </button>
+            <button id="btn-open-smart-add-lecture" class="btn btn-outline" title="Automatically find suitable conflict-free slots and schedule lectures">
+              ✨ Smart Add
+            </button>
+            <button id="btn-manual-add-lecture" class="btn btn-outline" title="Manually place or schedule a lecture into a specific slot">
+              ➕ Add Schedule
+            </button>
+            <div class="export-dropdown-wrapper" style="position:relative; display:inline-block;">
+              <button id="btn-export-dropdown" class="btn btn-outline" type="button" title="Export this timetable as high-resolution PNG or PDF">
+                📥 Export ▾
+              </button>
+              <div id="export-dropdown-menu" class="export-dropdown-menu hidden">
+                <button id="btn-export-png" class="export-dropdown-item" type="button">
+                  <span class="icon">🖼️</span> Export as PNG Image
+                </button>
+                <button id="btn-export-pdf" class="export-dropdown-item" type="button">
+                  <span class="icon">📄</span> Export as PDF (Landscape)
+                </button>
+              </div>
+            </div>
+            <button id="btn-toggle-timetable-fullview" class="btn btn-outline" type="button" title="Toggle Full Screen Mode" style="display:inline-flex; align-items:center; gap:6px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+              <span>Full Screen</span>
+            </button>
+            <button id="btn-refresh-timetable" class="btn btn-outline" style="display:inline-flex; align-items:center; gap:6px;">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+              <span>Refresh</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Live Generation Visualizer & Allocation Progress Bar -->
+        <div id="generation-live-panel" class="card mb-3 generation-live-panel hidden">
+          <div class="gen-header">
+            <div class="gen-title-box">
+              <span class="gen-live-indicator"></span>
+              <strong id="gen-status-title">Orchestrator Allocating Timetable Slots...</strong>
+            </div>
+            <div class="gen-actions">
+              <span id="gen-percentage-badge" class="badge badge-primary">0%</span>
+              <button id="btn-skip-gen-animation" class="btn btn-sm btn-outline">⚡ Fast Forward</button>
+            </div>
+          </div>
+          <div class="gen-progress-track">
+            <div id="gen-progress-bar" class="gen-progress-fill" style="width: 0%;"></div>
+          </div>
+          <div class="gen-ticker-box">
+            <div id="gen-ticker-agent" class="gen-ticker-agent">🤖 Python Rule-Based Orchestrator (LangGraph)</div>
+            <div id="gen-ticker-step" class="gen-ticker-step">Evaluating placement candidates...</div>
+          </div>
+          <div class="gen-stats-row">
+            <span id="gen-stat-scheduled">Scheduled: <strong>0</strong></span>
+            <span id="gen-stat-backtracks">Backtracks: <strong>0</strong></span>
+            <span id="gen-stat-conflicts">Conflicts: <strong>0</strong></span>
+          </div>
+        </div>
+
+        <!-- Timetable Filter Bar (Modern Segmented Box Buttons Selector UI) -->
+        <div class="card mb-3 filter-card" id="timetable-filter-bar">
+          <!-- Year Selector (Segmented Box Buttons) -->
+          <div class="filter-box-row">
+            <div class="filter-box-label">
+              <span class="filter-icon">🎓</span> <strong>Year:</strong>
+            </div>
+            <div class="filter-box-buttons" id="box-filter-year">
+              <button type="button" class="btn-filter-box" data-val="ALL">🌐 ALL YEARS</button>
+              <button type="button" class="btn-filter-box" data-val="FY">FY</button>
+              <button type="button" class="btn-filter-box" data-val="SY">SY</button>
+              <button type="button" class="btn-filter-box active" data-val="TY">TY</button>
+              <button type="button" class="btn-filter-box" data-val="BE">BE</button>
+            </div>
+          </div>
+
+          <!-- Division Selector (Segmented Box Buttons A, B, C) -->
+          <div class="filter-box-row">
+            <div class="filter-box-label">
+              <span class="filter-icon">👥</span> <strong>Division:</strong>
+            </div>
+            <div class="filter-box-buttons" id="box-filter-division">
+              <button type="button" class="btn-filter-box active" data-val="ALL">All</button>
+              <button type="button" class="btn-filter-box" data-val="A">A</button>
+              <button type="button" class="btn-filter-box" data-val="B">B</button>
+              <button type="button" class="btn-filter-box" data-val="C">C</button>
+            </div>
+          </div>
+
+          <!-- Day Selector (Segmented Box Buttons Mon, Tue, Wed, Thu, Fri, Sat) -->
+          <div class="filter-box-row">
+            <div class="filter-box-label">
+              <span class="filter-icon">📅</span> <strong>Day:</strong>
+            </div>
+            <div class="filter-box-buttons" id="box-filter-day">
+              <button type="button" class="btn-filter-box active" data-val="ALL">All Days</button>
+              <button type="button" class="btn-filter-box" data-val="Monday">Mon</button>
+              <button type="button" class="btn-filter-box" data-val="Tuesday">Tue</button>
+              <button type="button" class="btn-filter-box" data-val="Wednesday">Wed</button>
+              <button type="button" class="btn-filter-box" data-val="Thursday">Thu</button>
+              <button type="button" class="btn-filter-box" data-val="Friday">Fri</button>
+              <button type="button" class="btn-filter-box" data-val="Saturday">Sat</button>
+            </div>
+          </div>
+
+          <!-- Secondary Row: Faculty, Room & Reset -->
+          <div class="filter-selects-row">
+            <div class="filter-group">
+              <label for="tt-faculty-select"><span class="filter-icon">👨‍🏫</span> Faculty:</label>
+              <select id="tt-faculty-select" class="form-control form-control-sm">
+                <option value="ALL">All Faculty</option>
+              </select>
+            </div>
+
+            <div class="filter-group">
+              <label for="tt-room-select"><span class="filter-icon">📍</span> Room / Lab:</label>
+              <select id="tt-room-select" class="form-control form-control-sm">
+                <option value="ALL">All Rooms</option>
+              </select>
+            </div>
+
+            <div class="filter-actions-group">
+              <button id="btn-reset-filters" class="btn btn-sm btn-outline" type="button" title="Reset all filters to default">
+                🔄 Reset Filters
+              </button>
+            </div>
+          </div>
+
+          <!-- Compatibility element for any legacy references -->
+          <div style="display:none;">
+            <select id="tt-year-select">
+              <option value="ALL">ALL YEARS – Complete Department</option>
+              <option value="FY">FY</option>
+              <option value="SY">SY</option>
+              <option value="TY" selected>TY</option>
+              <option value="BE">BE</option>
+            </select>
+            <select id="tt-division-select"><option value="ALL">All Divisions</option></select>
+            <select id="tt-day-select"><option value="ALL">All Days</option></select>
+            <select id="tt-view-mode"><option value="division" selected>Division</option></select>
+            <div id="filter-division-controls"></div>
+            <div id="filter-faculty-controls"></div>
+            <div id="filter-room-controls"></div>
+          </div>
+        </div>
+
+        <!-- Clash Highlight Banner (if any conflicts exist) -->
+        <div id="timetable-clash-alert" class="alert alert-danger hidden">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <strong>⚠️ Constraint Violations Detected:</strong>
+              <span id="timetable-clash-count">0 clashes</span>
+            </div>
+            <button id="btn-banner-auto-fix" class="btn btn-sm btn-warning" style="margin-left:auto;">
+              🔧 Auto-Fix All Clashes
+            </button>
+          </div>
+          <ul id="timetable-clash-list" class="clash-list"></ul>
+        </div>
+
+        <!-- Master Academic Timetable (Horizontally Time-Oriented, Vertically Day-Grouped) -->
+        <div class="card timetable-card" id="timetable-master-card">
+          <!-- Timetable Canvas & Viewport Controls Bar -->
+          <div class="tt-canvas-toolbar" id="tt-canvas-toolbar">
+            <div id="tt-fullview-bar" style="display:none;"></div>
+            <div class="tt-toolbar-left">
+              <span class="tt-toolbar-title">Master Academic Timetable</span>
+              <span class="tt-interaction-hint" title="Drag and drop any lecture into another slot to swap or reschedule">Drag & Drop to Swap</span>
+            </div>
+
+            <div class="tt-toolbar-center">
+              <div class="tt-zoom-controls">
+                <button type="button" id="btn-tt-zoom-out" class="btn btn-xs btn-outline" title="Zoom Out (or Ctrl + Wheel Down)">−</button>
+                <span id="tt-zoom-badge" class="tt-zoom-badge" title="Current Zoom Scale">100%</span>
+                <button type="button" id="btn-tt-zoom-in" class="btn btn-xs btn-outline" title="Zoom In (or Ctrl + Wheel Up)">+</button>
+                <button type="button" id="btn-tt-zoom-reset" class="btn btn-xs btn-outline" title="Reset to 100% Zoom">100%</button>
+                <button type="button" id="btn-tt-zoom-fit" class="btn btn-xs btn-outline" title="Fit Entire Timetable to Screen Width">Fit to Screen</button>
+              </div>
+            </div>
+
+            <div class="tt-toolbar-right">
+              <span id="tt-active-filter-indicator" class="badge badge-info" style="font-size:11px;">View: All Years</span>
+              <button type="button" id="btn-canvas-fullscreen" class="btn btn-xs btn-outline" style="font-weight:600; display:inline-flex; align-items:center; gap:4px;" title="Toggle Full Screen Mode (Press Esc to Exit)">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+                <span class="btn-text">Full Screen</span>
+              </button>
+              <button id="btn-exit-fullview" class="btn btn-xs btn-danger" style="display:none;" type="button" title="Exit Full Screen Mode (Press Esc)">
+                ✕ Exit Full Screen
+              </button>
+            </div>
+          </div>
+
+          <!-- Compatibility element -->
+          <div id="tt-selected-slot-bar" style="display:none;">
+            <span id="tt-selected-slot-title"></span>
+            <button id="btn-selected-edit"></button>
+            <button id="btn-selected-del"></button>
+            <button id="btn-selected-cancel"></button>
+          </div>
+
+          <div class="timetable-scroll-container" id="timetable-scroll-container">
+            <div class="timetable-canvas-wrapper" id="timetable-canvas-wrapper">
+              <table class="tt-master-table" id="timetable-master-table">
+                <thead id="tt-master-thead">
+                  <!-- Dynamically generated time slot columns & headers -->
+                </thead>
+                <tbody id="tt-master-tbody">
+                  <!-- Dynamically generated Day groups and Class rows -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <!-- Hidden fallback elements for compatibility -->
+          <div id="timetable-grid-board" style="display:none;"></div>
+          <table class="hidden" style="display:none;" id="timetable-grid"><thead id="tt-header-row"></thead><tbody id="tt-body"></tbody></table>
+        </div>
+      </section>
+
+      <!-- ==================== TAB 3: FACULTY ==================== -->
+      <section id="tab-faculty" class="tab-pane">
+        <div class="pane-header">
+          <div>
+            <h2>Faculty Management</h2>
+            <p class="text-muted">CMPN teaching faculty directory. Faculty are shared across all 4 years.</p>
+          </div>
+          <div class="header-actions">
+            <button type="button" class="btn btn-outline btn-page-help" data-tab-help="tab-faculty" title="Interactive feature tour for Faculty" style="display:inline-flex; align-items:center; gap:6px;">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+              <span>Help Guide</span>
+            </button>
+            <button id="btn-open-add-faculty" class="btn btn-primary">
+              + Add Faculty
+            </button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="table-responsive">
+            <table class="data-table" id="table-faculty">
+              <thead>
+                <tr>
+                  <th>Faculty ID</th>
+                  <th>Faculty Name</th>
+                  <th>Staff Room Floor</th>
+                  <th>Status (Attendance)</th>
+                  <th>Eligible Subjects</th>
+                  <th>Weekly Teaching Workload</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== TAB 4: SUBJECTS & TEACHING ==================== -->
+      <section id="tab-subjects" class="tab-pane">
+        <div class="pane-header">
+          <div>
+            <h2>Subject & Teaching Assignment Management</h2>
+            <p class="text-muted">Configure theory and practical requirements per academic year and division</p>
+          </div>
+          <div class="header-actions">
+            <button type="button" class="btn btn-outline btn-page-help" data-tab-help="tab-subjects" title="Interactive feature tour for Subjects & Teaching" style="display:inline-flex; align-items:center; gap:6px;">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+              <span>Help Guide</span>
+            </button>
+            <button id="btn-open-add-subject" class="btn btn-primary">
+              + Add Subject
+            </button>
+            <button id="btn-open-assign-faculty" class="btn btn-secondary">
+              🔗 Assign Faculty to Subject
+            </button>
+          </div>
+        </div>
+
+        <div class="card mb-4">
+          <div class="card-header">
+            <h3>Subject Catalog</h3>
+            <div class="filter-group">
+              <label>Year Filter:</label>
+              <select id="subject-filter-year" class="form-control form-control-sm">
+                <option value="ALL">All Years</option>
+                <option value="FY">FY</option>
+                <option value="SY">SY</option>
+                <option value="TY">TY</option>
+                <option value="BE">BE</option>
+              </select>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table" id="table-subjects">
+              <thead>
+                <tr>
+                  <th>Year</th>
+                  <th>Subject Name</th>
+                  <th>Type</th>
+                  <th>Weekly Lec</th>
+                  <th>Duration</th>
+                  <th>Eligible Faculty</th>
+                  <th>Required Room</th>
+                  <th>Scope</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+            <div>
+              <h3>Explicit Faculty Teaching Assignments</h3>
+              <p class="text-muted" style="margin: 0; font-size: 12px;">Map faculty to subjects, divisions, and batches across all academic years</p>
+            </div>
+            <div class="card-actions" style="display: flex; gap: 8px; align-items: center;">
+              <button id="btn-open-assign-faculty-alt" class="btn btn-secondary" type="button">🔗 Assign Faculty</button>
+              <button id="btn-generate-from-assignments" class="btn btn-primary" type="button">⚡ Generate Timetable</button>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table" id="table-assignments">
+              <thead>
+                <tr>
+                  <th>Faculty</th>
+                  <th>Subject</th>
+                  <th>Year</th>
+                  <th>Division</th>
+                  <th>Batch</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================== TAB 5: DIVISIONS & BATCHES ==================== -->
+      <section id="tab-divisions" class="tab-pane">
+        <div class="pane-header">
+          <div>
+            <h2>Academic Years, Divisions & Batches</h2>
+            <p class="text-muted">All 4 academic years are scheduled together with shared resources</p>
+          </div>
+          <div class="header-actions">
+            <button type="button" class="btn btn-outline btn-page-help" data-tab-help="tab-divisions" title="Interactive feature tour for Divisions & Batches" style="display:inline-flex; align-items:center; gap:6px;">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+              <span>Help Guide</span>
+            </button>
+            <button id="btn-open-add-division" class="btn btn-primary">
+              + Add Division
+            </button>
+            <button id="btn-open-auto-split" class="btn btn-outline" title="Auto-split a division into 2, 3, or 4 batches">
+              ⚡ Auto-Split Batches
+            </button>
+            <button id="btn-open-add-batch" class="btn btn-secondary">
+              + Add Single Batch
+            </button>
+          </div>
+        </div>
+
+        <div class="year-grid" id="year-grid-container">
+          <!-- FY, SY, TY, BE cards rendered dynamically -->
+        </div>
+      </section>
+
+      <!-- ==================== TAB 6: SETTINGS ==================== -->
+      <section id="tab-settings" class="tab-pane">
+        <div class="pane-header">
+          <div>
+            <h2>Timetable Rules, Working Hours & Rooms</h2>
+            <p class="text-muted">Global scheduling constraints and facility infrastructure</p>
+          </div>
+          <div class="header-actions">
+            <button type="button" class="btn btn-outline btn-page-help" data-tab-help="tab-settings" title="Interactive feature tour for Settings & Rooms" style="display:inline-flex; align-items:center; gap:6px;">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+              <span>Help Guide</span>
+            </button>
+            <button type="button" id="btn-jump-backup-import" class="btn btn-outline" title="Data Backup, Export & Restore section" style="display:inline-flex; align-items:center; gap:6px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              <span>Backup & Import Data</span>
+            </button>
+            <button id="btn-save-settings" class="btn btn-primary" style="display:inline-flex; align-items:center; gap:6px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+              <span>Save Settings</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="settings-grid">
+          <!-- Global Constraints -->
+          <div class="card">
+            <div class="card-header">
+              <h3>Working Days & Timings</h3>
+            </div>
+            <div class="card-body">
+              <div class="form-group">
+                <label>Active Working Days:</label>
+                <div class="checkbox-group" id="settings-working-days">
+                  <label><input type="checkbox" value="Monday"> Mon</label>
+                  <label><input type="checkbox" value="Tuesday"> Tue</label>
+                  <label><input type="checkbox" value="Wednesday"> Wed</label>
+                  <label><input type="checkbox" value="Thursday"> Thu</label>
+                  <label><input type="checkbox" value="Friday"> Fri</label>
+                  <label><input type="checkbox" value="Saturday"> Sat</label>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group col">
+                  <label>First Lecture Start:</label>
+                  <input type="time" id="set-day-start" class="form-control" value="09:00">
+                </div>
+                <div class="form-group col">
+                  <label>Last Lecture End:</label>
+                  <input type="time" id="set-day-end" class="form-control" value="17:00">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group col">
+                  <label>Default Theory Duration (min):</label>
+                  <input type="number" id="set-default-duration" class="form-control" value="60" min="15" step="15">
+                </div>
+                <div class="form-group col">
+                  <label>Default Lab / Practical Duration (min):</label>
+                  <input type="number" id="set-default-lab-duration" class="form-control" value="120" min="30" step="15">
+                </div>
+              </div>
+              <h4 class="mt-3">Configured Break (Interval Clashes Prevented)</h4>
+              <p class="text-muted" style="font-size: 12px; margin-top: -4px; margin-bottom: 12px;">
+                Single institutional break/lunch interval applied across all academic years and divisions (zero lectures permitted during this window).
+              </p>
+              <div class="form-row">
+                <div class="form-group col" style="flex: 2;">
+                  <label>Break Name:</label>
+                  <input type="text" id="set-break-name" class="form-control" value="Lunch Break" placeholder="e.g. Lunch Break or Recess">
+                </div>
+                <div class="form-group col" style="flex: 1;">
+                  <label>Break Start Time:</label>
+                  <input type="time" id="set-break-start" class="form-control" value="13:00">
+                </div>
+                <div class="form-group col" style="flex: 1;">
+                  <label>Break End Time:</label>
+                  <input type="time" id="set-break-end" class="form-control" value="14:00">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Workload & Consecutive Limits -->
+          <div class="card">
+            <div class="card-header">
+              <h3>Workload & Consecutive Limits</h3>
+            </div>
+            <div class="card-body">
+              <!-- Master Toggle -->
+              <div class="form-group mb-3 pb-2" style="border-bottom: 1px solid var(--border);">
+                <label class="ui-switch" style="font-size: 13px; font-weight: 700;">
+                  <input type="checkbox" id="set-enforce-workload-limits" checked>
+                  <span class="switch-slider"></span>
+                  <span>Enforce Workload & Consecutive Rules</span>
+                </label>
+                <small class="text-muted" style="display:block; margin-left:48px; margin-top: 4px;">
+                  Toggle OFF to disable ALL workload rules (unlimited / no constraint mode).
+                </small>
+              </div>
+
+              <div id="workload-controls-container">
+                <div class="form-group">
+                  <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <label class="ui-switch">
+                      <input type="checkbox" id="check-max-fac-day" checked>
+                      <span class="switch-slider"></span>
+                      <span>Limit Daily Lectures per Faculty:</span>
+                    </label>
+                    <span id="badge-fac-day-status" class="badge badge-primary">Active</span>
+                  </div>
+                  <input type="number" id="set-max-fac-day" class="form-control mt-1" value="4" min="1">
+                </div>
+
+                <div class="form-group">
+                  <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <label class="ui-switch">
+                      <input type="checkbox" id="check-max-fac-daily-hours" checked>
+                      <span class="switch-slider"></span>
+                      <span>Limit Daily Faculty Hours:</span>
+                    </label>
+                    <span id="badge-fac-hours-status" class="badge badge-primary">Active</span>
+                  </div>
+                  <input type="number" id="set-max-fac-daily-hours" class="form-control mt-1" value="5" min="1" step="0.5">
+                </div>
+
+                <div class="form-group">
+                  <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <label class="ui-switch">
+                      <input type="checkbox" id="check-max-fac-weekly-hours" checked>
+                      <span class="switch-slider"></span>
+                      <span>Limit Weekly Faculty Hours:</span>
+                    </label>
+                    <span id="badge-fac-weekly-status" class="badge badge-primary">Active</span>
+                  </div>
+                  <input type="number" id="set-max-fac-weekly-hours" class="form-control mt-1" value="18" min="1" step="0.5">
+                </div>
+
+                <div class="form-group">
+                  <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <label class="ui-switch">
+                      <input type="checkbox" id="check-max-fac-consecutive" checked>
+                      <span class="switch-slider"></span>
+                      <span>Limit Consecutive Faculty Lectures:</span>
+                    </label>
+                    <span id="badge-fac-consec-status" class="badge badge-primary">Active</span>
+                  </div>
+                  <input type="number" id="set-max-fac-consecutive" class="form-control mt-1" value="2" min="1">
+                </div>
+
+                <div class="form-group">
+                  <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <label class="ui-switch">
+                      <input type="checkbox" id="check-max-div-day" checked>
+                      <span class="switch-slider"></span>
+                      <span>Limit Daily Lectures per Division:</span>
+                    </label>
+                    <span id="badge-div-day-status" class="badge badge-primary">Active</span>
+                  </div>
+                  <input type="number" id="set-max-div-day" class="form-control mt-1" value="6" min="1">
+                </div>
+
+                <div class="form-group">
+                  <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <label class="ui-switch">
+                      <input type="checkbox" id="check-min-div-day" checked>
+                      <span class="switch-slider"></span>
+                      <span>Min Daily Lectures per Division:</span>
+                    </label>
+                    <span id="badge-div-min-status" class="badge badge-primary">Active</span>
+                  </div>
+                  <input type="number" id="set-min-div-day" class="form-control mt-1" value="3" min="1" max="8">
+                  <small class="text-muted" style="display:block; font-size:11px; margin-top:3px;">
+                    Ensures every division gets scheduled for at least 3 lectures each working day.
+                  </small>
+                </div>
+
+                <div class="form-group">
+                  <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <label class="ui-switch">
+                      <input type="checkbox" id="check-max-div-consecutive" checked>
+                      <span class="switch-slider"></span>
+                      <span>Limit Consecutive Division Lectures:</span>
+                    </label>
+                    <span id="badge-div-consec-status" class="badge badge-primary">Active</span>
+                  </div>
+                  <input type="number" id="set-max-div-consecutive" class="form-control mt-1" value="3" min="1">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Floor Management -->
+        <div class="card mt-4">
+          <div class="card-header">
+            <div>
+              <h3>Floor & Level Management</h3>
+              <p class="text-muted" style="margin:0; font-size:12px;">Configure building floors and sequence to minimize transit between consecutive lectures</p>
+            </div>
+            <div class="header-actions">
+              <button id="btn-open-add-floor" class="btn btn-sm btn-primary">
+                + Add Floor
+              </button>
+              <button id="btn-open-distances" class="btn btn-sm btn-outline">
+                📐 Building Graph & Distances
+              </button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div id="floors-container" class="d-flex flex-wrap gap-2">
+              <!-- Dynamically populated floor badges/cards -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Classrooms and Labs Grouped by Floor -->
+        <div class="card mt-4">
+          <div class="card-header">
+            <div>
+              <h3>Rooms & Laboratories (Grouped by Floor & Sequence)</h3>
+              <p class="text-muted" style="margin:0; font-size:12px;">Rooms on the same floor in close sequence are clustered to optimize scheduling proximity</p>
+            </div>
+            <button id="btn-open-add-room" class="btn btn-sm btn-primary">
+              + Add Room / Lab
+            </button>
+          </div>
+          <div class="card-body" id="rooms-by-floor-container">
+            <!-- Grouped by floor with sequence ordering controls -->
+            <div class="table-responsive">
+              <table class="data-table" id="table-rooms">
+                <thead>
+                  <tr>
+                    <th>Floor</th>
+                    <th>Seq #</th>
+                    <th>Room Name / No</th>
+                    <th>Cluster</th>
+                    <th>Type</th>
+                    <th>Capacity</th>
+                    <th>Available Days</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Data Management: Export & Import (Backup & Disaster Recovery) -->
+        <div class="card mt-4" id="card-data-management">
+          <div class="card-header" style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);">
+            <div>
+              <h3 style="display:flex; align-items:center; gap:8px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                <span>Data Backup, Export & Disaster Recovery</span>
+              </h3>
+              <p class="text-muted" style="margin:0; font-size:12px;">
+                Export complete system backups or selective datasets. Import or restore at any time from your backup JSON file.
+              </p>
+            </div>
+            <div class="header-actions">
+              <button type="button" id="btn-export-all-data" class="btn btn-sm btn-primary" title="Export complete system state as a single JSON file" style="display:inline-flex; align-items:center; gap:6px;">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                <span>Export Everything (Full Backup)</span>
+              </button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px;">
+              <!-- Left Column: Export Datasets -->
+              <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 18px; display: flex; flex-direction: column;">
+                <h4 style="font-size: 14px; font-weight: 700; color: #1e293b; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                  <span>Export Datasets</span>
+                </h4>
+                <p class="text-muted" style="font-size: 12px; margin-bottom: 12px;">
+                  Choose which data entities to include in the exported JSON file:
+                </p>
+                <div style="display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap;">
+                  <button type="button" id="btn-select-all-export" class="btn btn-xs btn-outline" style="font-size: 11px; padding: 2px 8px;">Select All</button>
+                  <button type="button" id="btn-clear-all-export" class="btn btn-xs btn-outline" style="font-size: 11px; padding: 2px 8px;">Deselect All</button>
+                  <button type="button" id="btn-academic-export" class="btn btn-xs btn-outline" style="font-size: 11px; padding: 2px 8px;">Academic Setup Only</button>
+                </div>
+                <div class="checkbox-group" id="export-entities-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 12px; margin-bottom: 16px;">
+                  <label><input type="checkbox" value="faculty" checked> Faculty</label>
+                  <label><input type="checkbox" value="rooms" checked> Rooms & Labs</label>
+                  <label><input type="checkbox" value="subjects" checked> Subjects & Electives</label>
+                  <label><input type="checkbox" value="divisions" checked> Divisions</label>
+                  <label><input type="checkbox" value="batches" checked> Practical Batches</label>
+                  <label><input type="checkbox" value="assignments" checked> Assignments</label>
+                  <label><input type="checkbox" value="settings" checked> Settings & Rules</label>
+                  <label><input type="checkbox" value="floors" checked> Floors & Levels</label>
+                  <label><input type="checkbox" value="building_graph" checked> Proximity Graph</label>
+                  <label><input type="checkbox" value="timetable" checked> Timetable</label>
+                </div>
+                <div style="margin-top: auto; border-top: 1px solid #f1f5f9; padding-top: 14px; display: flex; justify-content: flex-end;">
+                  <button type="button" id="btn-export-selected-data" class="btn btn-sm btn-outline">
+                    Export Selected Data
+                  </button>
+                </div>
+              </div>
+
+              <!-- Right Column: Import & Restore Datasets -->
+              <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 18px; display: flex; flex-direction: column;">
+                <h4 style="font-size: 14px; font-weight: 700; color: #1e293b; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                  <span>Import & Restore Backup</span>
+                </h4>
+                <p class="text-muted" style="font-size: 12px; margin-bottom: 12px;">
+                  Upload a previously exported Schedula JSON file to restore your department data:
+                </p>
+
+                <!-- Dropzone / File Selector -->
+                <div id="import-dropzone" style="border: 2px dashed #cbd5e1; border-radius: 8px; padding: 18px; text-align: center; cursor: pointer; background: #f8fafc; transition: all 0.2s ease;">
+                  <div style="margin-bottom: 6px; color: #3b82f6;">
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"></path><path d="M12 12v9"></path><path d="m8 17 4 4 4-4"></path></svg>
+                  </div>
+                  <div style="font-size: 13px; font-weight: 600; color: #334155;">Click to choose or drag & drop backup file (.json)</div>
+                  <small class="text-muted" id="import-file-name" style="display: block; margin-top: 4px;">Supports full backups and selective exports</small>
+                  <input type="file" id="input-import-file" accept=".json,application/json" style="display: none;">
+                </div>
+
+                <!-- Detected Entities & Import Controls -->
+                <div id="import-preview-container" class="hidden mt-3" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 12px;">
+                  <div style="font-size: 12px; font-weight: 700; color: #1e293b; margin-bottom: 6px;">
+                    Detected in file: <span id="import-entities-detected" class="text-primary font-weight-bold"></span>
+                  </div>
+                  <div style="font-size: 11px; color: #64748b; margin-bottom: 8px;">Select which datasets from the file to import:</div>
+                  <div id="import-entities-checkboxes" style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; font-size: 11px; margin-bottom: 10px;">
+                    <!-- Dynamically populated checkboxes based on file content -->
+                  </div>
+                  <div class="form-group mb-2">
+                    <label style="font-size: 11px; font-weight: 600;">Import Mode:</label>
+                    <select id="select-import-mode" class="form-control form-control-sm" style="font-size: 12px;">
+                      <option value="replace">Clean Replace / Overwrite (Recommended)</option>
+                      <option value="merge">Merge / Update Existing Records</option>
+                    </select>
+                  </div>
+                  <div style="display: flex; gap: 8px; justify-content: flex-end; margin-top: 10px;">
+                    <button type="button" id="btn-cancel-import" class="btn btn-xs btn-outline">Cancel</button>
+                    <button type="button" id="btn-execute-import" class="btn btn-xs btn-success" style="font-weight: 700;">
+                      Start Import & Restore
+                    </button>
+                  </div>
+                </div>
+
+                <div class="alert alert-info mt-3" style="font-size: 11px; padding: 8px 12px; margin-top: auto; margin-bottom: 0;">
+                  <strong>Safe Recovery:</strong> An automatic system snapshot (backup) is always created before importing.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- ==================== MODALS ==================== -->
+
+  <!-- Modal: Add Faculty (Section 5: Popup containing ONLY Faculty Name) -->
+  <div id="modal-add-faculty" class="modal-overlay hidden">
+    <div class="modal-box modal-sm">
+      <div class="modal-header">
+        <h3>+ Add Faculty</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <form id="form-add-faculty">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="fac-input-name">Faculty Name:</label>
+            <input type="text" id="fac-input-name" class="form-control" placeholder="e.g. Professor A" required autofocus>
+          </div>
+          <div class="form-group mt-3">
+            <label for="fac-input-floor">Staff Room Floor (Optional):</label>
+            <select id="fac-input-floor" class="form-control">
+              <option value="">None</option>
+            </select>
+            <small class="text-muted">Starting location for first lecture of the day to minimize movement.</small>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline modal-close">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Faculty</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Rename Faculty -->
+  <div id="modal-rename-faculty" class="modal-overlay hidden">
+    <div class="modal-box modal-sm">
+      <div class="modal-header">
+        <h3>Rename Faculty</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <form id="form-rename-faculty">
+        <input type="hidden" id="fac-rename-id">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="fac-rename-name">Faculty Name:</label>
+            <input type="text" id="fac-rename-name" class="form-control" required>
+          </div>
+          <div class="form-group mt-3">
+            <label for="fac-rename-floor">Staff Room Floor (Optional):</label>
+            <select id="fac-rename-floor" class="form-control">
+              <option value="">None</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline modal-close">Cancel</button>
+          <button type="submit" class="btn btn-primary">Update</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Add / Edit Subject -->
+  <div id="modal-subject" class="modal-overlay hidden">
+    <div class="modal-box modal-md">
+      <div class="modal-header">
+        <h3 id="modal-subject-title">Add Subject</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <form id="form-subject">
+        <input type="hidden" id="sub-id">
+        <div class="modal-body">
+          <div class="form-row">
+            <div class="form-group col">
+              <label>Academic Year:</label>
+              <select id="sub-year" class="form-control" required>
+                <option value="FY">FY (First Year)</option>
+                <option value="SY">SY (Second Year)</option>
+                <option value="TY">TY (Third Year)</option>
+                <option value="BE">BE (Final Year)</option>
+              </select>
+            </div>
+            <div class="form-group col">
+              <label>Subject Type:</label>
+              <select id="sub-type" class="form-control">
+                <option value="Theory">Theory</option>
+                <option value="Practical">Practical</option>
+                <option value="Elective">Elective (MDM / Minor)</option>
+                <option value="Other">Other</option>
+              </select>
+              <small id="sub-type-hint" class="text-muted">Entire division in Classroom</small>
+            </div>
+          </div>
+          <div class="form-group">
+            <label style="cursor:pointer; display:flex; align-items:center; gap:8px;">
+              <input type="checkbox" id="sub-is-elective">
+              <span><strong>Mark as Elective Subject (MDM - Multidisciplinary Minor)</strong></span>
+            </label>
+          </div>
+          <div id="elective-groups-container" class="card p-3 mb-3 hidden" style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:6px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <h4 style="margin:0; font-size:13px; font-weight:700;">📚 MDM Elective Groups (Fixed Room per Group)</h4>
+              <button type="button" id="btn-add-elective-group" class="btn btn-xs btn-primary">+ Add Elective Group</button>
+            </div>
+            <p class="text-muted" style="font-size:11px; margin-bottom:8px;">
+              Each elective group (e.g. Data Engineering, Cyber Security) is manually assigned its fixed room and faculty. The scheduler strictly reserves this room across FY, SY, TY, and BE.
+            </p>
+            <div id="elective-groups-list" style="display:flex; flex-direction:column; gap:8px;">
+              <!-- Dynamically populated elective group rows -->
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col" style="flex: 2;">
+              <label>Subject Name:</label>
+              <input type="text" id="sub-name" class="form-control" placeholder="e.g. Database Management Systems" required>
+            </div>
+            <div class="form-group col" style="flex: 1;">
+              <label>Subject Code (Optional):</label>
+              <input type="text" id="sub-code" class="form-control" placeholder="e.g. CSC501">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col">
+              <label>Weekly Lectures:</label>
+              <input type="number" id="sub-weekly-lec" class="form-control" value="3" min="1" max="10" required>
+            </div>
+            <div class="form-group col">
+              <label>Duration (Minutes):</label>
+              <select id="sub-duration" class="form-control">
+                <option value="60">60 mins (1 hour)</option>
+                <option value="120">120 mins (2 hours - Lab)</option>
+              </select>
+            </div>
+            <div class="form-group col">
+              <label>Required Room:</label>
+              <select id="sub-room-type" class="form-control">
+                <option value="Classroom">Classroom</option>
+                <option value="Laboratory">Laboratory</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Applicable Divisions (Leave empty for all in year):</label>
+            <div id="sub-divisions-checkboxes" class="checkbox-group"></div>
+          </div>
+          <!-- Informational Notice for Normal Subjects (Faculty assigned via Explicit Faculty Teaching Assignments) -->
+          <div class="form-group" id="sub-faculty-notice" style="margin-top: 10px;">
+            <div style="background:#f1f5f9; border:1px solid #cbd5e1; border-radius:6px; padding:10px 14px; font-size:12px; color:#475569;">
+              👨‍🏫 <strong>Faculty Assignment:</strong> Normal subject details are configured here. Faculty teaching assignments are selected under <strong>Explicit Faculty Teaching Assignments</strong> via <em>🔗 Assign Faculty to Subject</em>.
+            </div>
+          </div>
+          <!-- Faculty Multi-Select Pool (Hidden by default for Add Subject) -->
+          <div class="form-group hidden" id="sub-faculty-group">
+            <div class="multi-select-header">
+              <label style="margin-bottom: 0; font-weight: 600;">Eligible Faculty Pool (Optional):</label>
+              <div class="multi-select-actions">
+                <span id="sub-faculty-count-badge" class="badge badge-info" style="font-size: 11px;">0 selected</span>
+                <button type="button" id="btn-sub-fac-select-all" class="btn btn-xs btn-outline">Select All</button>
+                <button type="button" id="btn-sub-fac-clear-all" class="btn btn-xs btn-outline">Clear All</button>
+              </div>
+            </div>
+            <div class="faculty-search-box" style="margin-top: 6px; margin-bottom: 6px;">
+              <input type="text" id="sub-faculty-search" class="form-control form-control-sm" placeholder="🔍 Search faculty by name or department...">
+            </div>
+            <div id="sub-faculty-container" class="faculty-multi-select-container">
+              <!-- Dynamically populated faculty cards -->
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline modal-close">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Subject</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Assign Faculty to Subject -->
+  <div id="modal-assign-faculty" class="modal-overlay hidden">
+    <div class="modal-box modal-md">
+      <div class="modal-header">
+        <h3>Assign Faculty to Subject</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <form id="form-assign-faculty">
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Faculty:</label>
+            <select id="asgn-faculty" class="form-control" required></select>
+          </div>
+          <div class="form-group">
+            <label>Subject:</label>
+            <select id="asgn-subject" class="form-control" required></select>
+          </div>
+          <div class="form-row">
+            <div class="form-group col">
+              <label>Division (Optional):</label>
+              <select id="asgn-division" class="form-control">
+                <option value="">All Applicable Divisions</option>
+              </select>
+            </div>
+            <div class="form-group col">
+              <label>Batch (Optional for Labs):</label>
+              <select id="asgn-batch" class="form-control">
+                <option value="">All Batches / Full Division</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline modal-close">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Assignment</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Add Division -->
+  <div id="modal-add-division" class="modal-overlay hidden">
+    <div class="modal-box modal-sm">
+      <div class="modal-header">
+        <h3>+ Add Division</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <form id="form-add-division">
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Academic Year:</label>
+            <select id="div-input-year" class="form-control" required>
+              <option value="FY">FY</option>
+              <option value="SY">SY</option>
+              <option value="TY">TY</option>
+              <option value="BE">BE</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Division Name:</label>
+            <input type="text" id="div-input-name" class="form-control" placeholder="e.g. Division A" required>
+          </div>
+          <div class="form-group">
+            <label>Student Capacity (Strength):</label>
+            <input type="number" id="div-input-capacity" class="form-control" value="70" min="5" max="300" required>
+          </div>
+          <div class="form-group">
+            <label>Assigned Floor (Optional):</label>
+            <select id="div-input-floor" class="form-control">
+              <option value="">None (Flexible / Any Floor)</option>
+            </select>
+            <small class="text-muted" style="display:block; margin-top:2px;">
+              Assign this specific division to a floor (e.g. SY Div A on 2nd Floor, SY Div C on 3rd Floor). Scheduler will prefer rooms on this floor.
+            </small>
+          </div>
+          <div class="form-group mt-2">
+            <label>
+              <input type="checkbox" id="div-auto-split" checked>
+              Auto-create practical batches (e.g. A1, A2, A3)
+            </label>
+          </div>
+          <div class="form-group" id="div-auto-split-options">
+            <label>Divide into how many batches?</label>
+            <select id="div-split-parts" class="form-control">
+              <option value="2">2 Batches (e.g. A1, A2)</option>
+              <option value="3" selected>3 Batches (e.g. A1, A2, A3)</option>
+              <option value="4">4 Batches (e.g. A1, A2, A3, A4)</option>
+            </select>
+            <small class="text-muted" id="div-split-preview" style="display:block; margin-top:4px;">
+              💡 Preview: Batch A1 (24), Batch A2 (23), Batch A3 (23)
+            </small>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline modal-close">Cancel</button>
+          <button type="submit" class="btn btn-primary">Add Division</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Edit Division -->
+  <div id="modal-edit-division" class="modal-overlay hidden">
+    <div class="modal-box modal-sm">
+      <div class="modal-header">
+        <h3>Edit Division</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <form id="form-edit-division">
+        <input type="hidden" id="edit-div-id">
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Division Name:</label>
+            <input type="text" id="edit-div-name" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label>Student Capacity (Strength):</label>
+            <input type="number" id="edit-div-capacity" class="form-control" min="5" max="300" required>
+          </div>
+          <div class="form-group">
+            <label>Assigned Floor:</label>
+            <select id="edit-div-floor" class="form-control">
+              <option value="">None (Flexible / Any Floor)</option>
+            </select>
+            <small class="text-muted" style="display:block; margin-top:2px;">
+              Assign this division to a particular floor (e.g. 1st, 2nd, 3rd Floor). Rooms on this floor will be preferred when scheduling.
+            </small>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline modal-close">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Add Batch -->
+  <div id="modal-add-batch" class="modal-overlay hidden">
+    <div class="modal-box modal-sm">
+      <div class="modal-header">
+        <h3>+ Add Single Practical Batch</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <form id="form-add-batch">
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Division:</label>
+            <select id="batch-input-division" class="form-control" required></select>
+          </div>
+          <div class="form-group">
+            <label>Batch Name:</label>
+            <input type="text" id="batch-input-name" class="form-control" placeholder="e.g. Batch A1" required>
+          </div>
+          <div class="form-group">
+            <label>Batch Capacity (Students):</label>
+            <input type="number" id="batch-input-capacity" class="form-control" value="25" min="5" max="150" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline modal-close">Cancel</button>
+          <button type="submit" class="btn btn-primary">Add Batch</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Auto-Split Division into Batches -->
+  <div id="modal-auto-split-batches" class="modal-overlay hidden">
+    <div class="modal-box modal-sm">
+      <div class="modal-header">
+        <h3>⚡ Auto-Split Division into Batches</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <form id="form-auto-split-batches">
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Select Division:</label>
+            <select id="split-input-division" class="form-control" required></select>
+          </div>
+          <div class="form-group">
+            <label>Divide into how many batches?</label>
+            <select id="split-input-parts" class="form-control">
+              <option value="2" selected>2 Batches &rarr; 35 + 35 Students (Total 70)</option>
+              <option value="3">3 Batches &rarr; A1, A2, A3</option>
+              <option value="4">4 Batches &rarr; A1, A2, A3, A4</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Batch Letter Prefix (Optional, auto-detected):</label>
+            <input type="text" id="split-input-prefix" class="form-control" placeholder="e.g. A, B, or C">
+          </div>
+          <div class="form-group alert alert-warning" id="split-modal-preview">
+            <strong>Preview:</strong>
+            <div id="split-preview-text" class="mt-1">Select a division to preview batches</div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline modal-close">Cancel</button>
+          <button type="submit" class="btn btn-primary">⚡ Generate Batches</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Add / Edit Room -->
+  <div id="modal-add-room" class="modal-overlay hidden">
+    <div class="modal-box modal-md">
+      <div class="modal-header">
+        <h3 id="modal-room-title">+ Add Room or Laboratory</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <form id="form-add-room">
+        <input type="hidden" id="room-input-id">
+        <div class="modal-body">
+          <div class="form-row">
+            <div class="form-group col">
+              <label>Room Name / No:</label>
+              <input type="text" id="room-input-name" class="form-control" placeholder="e.g. Room 101 or Lab 1" required>
+            </div>
+            <div class="form-group col">
+              <label>Room Type:</label>
+              <select id="room-input-type" class="form-control">
+                <option value="Classroom">Classroom</option>
+                <option value="Laboratory">Laboratory</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Seating Capacity:</label>
+            <input type="number" id="room-input-capacity" class="form-control" value="70" min="5" max="300" required>
+          </div>
+          <div class="form-row">
+            <div class="form-group col">
+              <label>Floor:</label>
+              <select id="room-input-floor" class="form-control">
+                <option value="">Unassigned Floor</option>
+              </select>
+            </div>
+            <div class="form-group col">
+              <label>Sequence Order on Floor:</label>
+              <input type="number" id="room-input-sequence" class="form-control" placeholder="e.g. 1, 2, 3" min="1">
+              <small class="text-muted">Defines proximity along floor</small>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Logical Cluster ID (Optional):</label>
+            <input type="text" id="room-input-cluster" class="form-control" placeholder="Leave blank for auto-clustering">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline modal-close">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="btn-save-room">Save Room</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Add / Edit Floor -->
+  <div id="modal-floor" class="modal-overlay hidden">
+    <div class="modal-box modal-sm">
+      <div class="modal-header">
+        <h3 id="modal-floor-title">+ Add Floor</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <form id="form-floor">
+        <input type="hidden" id="floor-input-id">
+        <div class="modal-body">
+          <div class="form-group">
+            <label>Floor Name:</label>
+            <input type="text" id="floor-input-name" class="form-control" placeholder="e.g. 1st Floor, 2nd Floor, Ground Floor" required autofocus>
+          </div>
+          <div class="form-group mt-2">
+            <label>Floor Level / Number:</label>
+            <input type="number" id="floor-input-number" class="form-control" placeholder="e.g. 1, 2, 3" required>
+            <small class="text-muted">Used for vertical staircase/lift transit calculations</small>
+          </div>
+          <div class="form-group mt-2">
+            <label>Sequence Order:</label>
+            <input type="number" id="floor-input-sequence" class="form-control" placeholder="e.g. 1, 2, 3">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline modal-close">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="btn-save-floor">Save Floor</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Building Distances & Graph Connectivity -->
+  <div id="modal-distances" class="modal-overlay hidden">
+    <div class="modal-box modal-lg">
+      <div class="modal-header">
+        <h3>📐 Building Graph & Custom Room Distances</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="text-muted" style="font-size:13px;">
+          Configure non-standard room distances or interconnecting bridges/staircases when actual building geometry differs from floor sequence.
+          The scheduling engine runs <strong>Dijkstra's shortest-path algorithm</strong> on this graph to minimize travel time.
+        </p>
+        
+        <form id="form-add-distance" class="card p-3 mb-3" style="background:#f8fafc; border:1px solid #e2e8f0;">
+          <h4 style="font-size:14px; margin-bottom:10px;">+ Connect Two Rooms (Direct Path / Bridge)</h4>
+          <div class="form-row" style="display:flex; gap:10px; align-items:flex-end;">
+            <div class="form-group col">
+              <label>From Room:</label>
+              <select id="dist-input-from" class="form-control" required></select>
+            </div>
+            <div class="form-group col">
+              <label>To Room:</label>
+              <select id="dist-input-to" class="form-control" required></select>
+            </div>
+            <div class="form-group col">
+              <label>Physical Distance (meters):</label>
+              <input type="number" id="dist-input-meters" class="form-control" value="15" min="1" step="0.5" required>
+            </div>
+            <div class="form-group">
+              <button type="submit" class="btn btn-primary">Add Edge</button>
+            </div>
+          </div>
+        </form>
+
+        <div class="table-responsive">
+          <table class="data-table" id="table-distances">
+            <thead>
+              <tr>
+                <th>From Room</th>
+                <th>To Room</th>
+                <th>Physical Distance</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary modal-close">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Manual Timetable Entry / Edit Lecture (with Clash Explanation & Smart Suggestions) -->
+  <div id="modal-edit-lecture" class="modal-overlay hidden">
+    <div class="modal-box modal-md">
+      <div class="modal-header">
+        <h3 id="modal-edit-lecture-title">Edit Lecture</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <form id="form-edit-lecture">
+        <input type="hidden" id="edit-entry-id">
+        <input type="hidden" id="edit-is-new">
+        <div class="modal-body">
+          <!-- Clash alert box inside modal -->
+          <div id="edit-clash-box" class="alert alert-danger hidden">
+            <strong id="edit-clash-title">⚠️ Clash Detected:</strong>
+            <ul id="edit-clash-messages"></ul>
+            <div id="edit-suggestions-container" class="mt-2 hidden">
+              <strong>💡 Suggested Clash-Free Alternatives:</strong>
+              <div id="edit-suggestions-list" class="suggestions-list mt-1"></div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col">
+              <label>Academic Year:</label>
+              <select id="edit-year" class="form-control" required>
+                <option value="FY">FY</option>
+                <option value="SY">SY</option>
+                <option value="TY">TY</option>
+                <option value="BE">BE</option>
+              </select>
+            </div>
+            <div class="form-group col">
+              <label>Division:</label>
+              <select id="edit-division" class="form-control" required></select>
+            </div>
+            <div class="form-group col">
+              <label>Batch (Optional):</label>
+              <select id="edit-batch" class="form-control">
+                <option value="">None (Full Division)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Subject:</label>
+            <select id="edit-subject" class="form-control" required></select>
+          </div>
+
+          <div id="edit-new-subject-box" class="card mt-2 hidden" style="border: 1px dashed #475569; padding: 10px 14px; background: #f8fafc; border-radius: 6px; margin-bottom: 14px;">
+            <div style="font-weight: 600; font-size: 12px; margin-bottom: 6px; color: #0f172a;">➕ Create New Subject for This Division:</div>
+            <div class="form-row">
+              <div class="form-group col">
+                <label style="font-size:11px; margin-bottom:2px;">Subject Name:</label>
+                <input type="text" id="edit-new-sub-name" class="form-control form-control-sm" placeholder="e.g. Cloud Computing">
+              </div>
+              <div class="form-group col">
+                <label style="font-size:11px; margin-bottom:2px;">Code (Optional):</label>
+                <input type="text" id="edit-new-sub-code" class="form-control form-control-sm" placeholder="e.g. CC501">
+              </div>
+              <div class="form-group col">
+                <label style="font-size:11px; margin-bottom:2px;">Type:</label>
+                <select id="edit-new-sub-type" class="form-control form-control-sm">
+                  <option value="Theory">Theory (60m)</option>
+                  <option value="Practical">Practical (120m Lab)</option>
+                  <option value="Elective">Elective / MDM</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col">
+              <label>Faculty:</label>
+              <select id="edit-faculty" class="form-control" required></select>
+            </div>
+            <div class="form-group col">
+              <label>Room / Lab:</label>
+              <select id="edit-room" class="form-control" required></select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col">
+              <label>Day:</label>
+              <select id="edit-day" class="form-control" required>
+                <option value="Monday">Monday</option>
+                <option value="Tuesday">Tuesday</option>
+                <option value="Wednesday">Wednesday</option>
+                <option value="Thursday">Thursday</option>
+                <option value="Friday">Friday</option>
+                <option value="Saturday">Saturday</option>
+              </select>
+            </div>
+            <div class="form-group col">
+              <label>Start Time:</label>
+              <input type="time" id="edit-start-time" class="form-control" required>
+            </div>
+            <div class="form-group col">
+              <label>End Time:</label>
+              <input type="time" id="edit-end-time" class="form-control" required>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" id="btn-delete-entry" class="btn btn-danger" style="margin-right:auto;">
+            🗑️ Delete Lecture
+          </button>
+          <button type="button" class="btn btn-outline modal-close">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- Modal: Smart Add Lecture (Auto-Slot Finder) -->
+  <div id="modal-smart-add-lecture" class="modal-overlay hidden">
+    <div class="modal-box modal-md">
+      <div class="modal-header">
+        <h3 id="modal-smart-add-title">✨ Add Lecture (Auto-Slot Scheduler)</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <form id="form-smart-add-lecture">
+        <div class="modal-body">
+          <p class="text-muted" style="font-size: 13px; margin-bottom: 14px;">
+            Select a subject, division, and number of lectures (e.g. Computer Networks for Div A, count 3). The system will automatically search for suitable conflict-free slots across all working days without clashes.
+          </p>
+
+          <div class="form-row">
+            <div class="form-group col">
+              <label>Academic Year:</label>
+              <select id="smart-add-year" class="form-control" required>
+                <option value="FY">FY</option>
+                <option value="SY">SY</option>
+                <option value="TY" selected>TY</option>
+                <option value="BE">BE</option>
+              </select>
+            </div>
+            <div class="form-group col">
+              <label>Division:</label>
+              <select id="smart-add-division" class="form-control" required></select>
+            </div>
+            <div class="form-group col">
+              <label>Batch (Optional):</label>
+              <select id="smart-add-batch" class="form-control">
+                <option value="">None (Full Division)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Subject:</label>
+            <select id="smart-add-subject" class="form-control" required></select>
+          </div>
+
+          <div id="smart-add-new-subject-box" class="card mt-2 hidden" style="border: 1px dashed #475569; padding: 10px 14px; background: #f8fafc; border-radius: 6px; margin-bottom: 14px;">
+            <div style="font-weight: 600; font-size: 12px; margin-bottom: 6px; color: #0f172a;">➕ Create New Subject for This Division:</div>
+            <div class="form-row">
+              <div class="form-group col">
+                <label style="font-size:11px; margin-bottom:2px;">Subject Name:</label>
+                <input type="text" id="smart-add-new-sub-name" class="form-control form-control-sm" placeholder="e.g. Cloud Computing">
+              </div>
+              <div class="form-group col">
+                <label style="font-size:11px; margin-bottom:2px;">Code (Optional):</label>
+                <input type="text" id="smart-add-new-sub-code" class="form-control form-control-sm" placeholder="e.g. CC501">
+              </div>
+              <div class="form-group col">
+                <label style="font-size:11px; margin-bottom:2px;">Type:</label>
+                <select id="smart-add-new-sub-type" class="form-control form-control-sm">
+                  <option value="Theory">Theory (60m)</option>
+                  <option value="Practical">Practical (120m Lab)</option>
+                  <option value="Elective">Elective / MDM</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col">
+              <label>Lecture Count:</label>
+              <input type="number" id="smart-add-count" class="form-control" min="1" max="15" value="3" required>
+            </div>
+            <div class="form-group col">
+              <label>Faculty:</label>
+              <select id="smart-add-faculty" class="form-control">
+                <option value="AUTO">🤖 Auto (Assigned / Eligible Faculty)</option>
+              </select>
+            </div>
+            <div class="form-group col">
+              <label>Room / Lab:</label>
+              <select id="smart-add-room" class="form-control">
+                <option value="AUTO">🤖 Auto (Available Required Room)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Preview & Result Section -->
+          <div id="smart-add-preview-box" class="card mt-3 hidden" style="border: 1px solid var(--border); padding: 12px; background: #f8fafc;">
+            <div id="smart-add-preview-status" style="font-weight: 600; font-size: 13px; margin-bottom: 6px;"></div>
+            <div id="smart-add-preview-msg" style="font-size: 12px; margin-bottom: 8px;"></div>
+            <div id="smart-add-slots-list" style="display: flex; flex-direction: column; gap: 6px; max-height: 200px; overflow-y: auto;"></div>
+          </div>
+        </div>
+        <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center;">
+          <button type="button" class="btn btn-outline modal-close">Cancel</button>
+          <div style="display: flex; gap: 8px;">
+            <button type="button" id="btn-smart-add-find" class="btn btn-secondary">🔍 Find Suitable Slots</button>
+            <button type="submit" id="btn-smart-add-confirm" class="btn btn-primary hidden">✅ Accept & Add Slots</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Login / Role Selection -->
+  <div id="modal-login" class="modal-overlay hidden">
+    <div class="modal-box modal-sm">
+      <div class="modal-header">
+        <h3>Admin Authentication</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <form id="form-login">
+        <div class="modal-body">
+          <div class="quick-credentials-box">
+            <strong>Administrator Credentials:</strong>
+            <p>Username: <code>admin</code> &nbsp;|&nbsp; Password: <code>admin123</code></p>
+          </div>
+          <div class="form-group">
+            <label for="login-username">Username:</label>
+            <input type="text" id="login-username" class="form-control" value="admin" required>
+          </div>
+          <div class="form-group">
+            <label for="login-password">Password:</label>
+            <input type="password" id="login-password" class="form-control" value="admin123" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline modal-close">Cancel</button>
+          <button type="submit" class="btn btn-primary">Log In</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Admin Intervention / Human-in-the-Loop Resume (LangGraph) -->
+  <div id="modal-admin-intervention" class="modal-overlay hidden">
+    <div class="modal-box modal-md">
+      <div class="modal-header" style="background: #fff8e6; border-bottom: 1px solid #ffeeba;">
+        <h3 style="color: #b7791f; display: flex; align-items: center; gap: 8px;">
+          <span>⚠️</span> LangGraph Orchestrator: Admin Review Required
+        </h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <input type="hidden" id="intervention-thread-id">
+        <div class="alert alert-warning mb-3">
+          <strong id="intervention-title">Bottleneck / Resource Contention Detected</strong>
+          <p id="intervention-message" class="mt-1" style="font-size: 13px; margin: 4px 0 0 0;"></p>
+        </div>
+
+        <div class="stats-row mb-3" style="display: flex; gap: 12px;">
+          <div style="flex: 1; padding: 10px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; text-align: center;">
+            <div style="font-size: 11px; text-transform: uppercase; color: var(--text-muted);">Scheduled Placed</div>
+            <div id="intervention-scheduled-count" style="font-size: 20px; font-weight: 700; color: #38a169;">0</div>
+          </div>
+          <div style="flex: 1; padding: 10px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; text-align: center;">
+            <div style="font-size: 11px; text-transform: uppercase; color: var(--text-muted);">Contended / Unscheduled</div>
+            <div id="intervention-unscheduled-count" style="font-size: 20px; font-weight: 700; color: #e53e3e;">0</div>
+          </div>
+        </div>
+
+        <div class="form-group mb-3">
+          <label style="font-weight: 600; font-size: 13px;">Contended Lectures & Constraints:</label>
+          <div id="intervention-lectures-list" style="max-height: 140px; overflow-y: auto; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 8px; font-size: 12px;"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="intervention-decision" style="font-weight: 600; font-size: 13px;">Admin Approval / Override Directive:</label>
+          <input type="text" id="intervention-decision" class="form-control" value="Admin approved: finalize timetable and accommodate bottlenecks as manual adjustments." placeholder="Enter administrative decision...">
+          <small class="text-muted">This decision will be passed via LangGraph <code>Command(resume=...)</code> to resume the state graph and complete timetable generation.</small>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline modal-close">Cancel / Abort</button>
+        <button type="button" id="btn-resume-orchestration" class="btn btn-primary" style="background: #d97706; border-color: #d97706;">
+          ⚡ Approve & Resume Generation
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Auto-Fix Clashes Preview -->
+  <div id="modal-auto-fix-preview" class="modal-overlay hidden">
+    <div class="modal-box modal-lg">
+      <div class="modal-header" style="background: #fffbeb; border-bottom: 1px solid #fef3c7;">
+        <h3 style="color: #b45309; display: flex; align-items: center; gap: 8px;">
+          <span>🔧</span> Auto-Fix Timetable Clashes & Conflicts
+        </h3>
+        <button class="modal-close" id="btn-close-autofix-modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="autofix-modal-loading" class="text-center py-4 hidden">
+          <div class="spinner"></div>
+          <p class="text-muted mt-2">Analyzing timetable clashes and generating optimal resolutions...</p>
+        </div>
+        <div id="autofix-modal-content">
+          <div class="alert alert-info mb-3" id="autofix-summary-alert">
+            <strong>Conflict Resolution Preview:</strong>
+            <span id="autofix-summary-text">Found conflicts. Here are the proposed automatic adjustments:</span>
+          </div>
+          <div class="table-responsive" style="max-height: 380px; overflow-y: auto;">
+            <table class="data-table" id="table-autofix-preview">
+              <thead>
+                <tr>
+                  <th>Subject & Division</th>
+                  <th>Day & Time</th>
+                  <th>Conflict Type</th>
+                  <th>Current State</th>
+                  <th>Proposed Resolution</th>
+                </tr>
+              </thead>
+              <tbody id="autofix-preview-tbody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline modal-close" id="btn-cancel-autofix">Cancel</button>
+        <button type="button" class="btn btn-success" id="btn-confirm-autofix" style="background: #16a34a; border-color: #16a34a; color: #fff;">
+          ✅ Apply Proposed Fixes
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Elective Tracks Breakdown Details -->
+  <div id="modal-elective-details" class="modal-overlay hidden">
+    <div class="modal-box modal-md">
+      <div class="modal-header" style="background: #f5f3ff; border-bottom: 1px solid #ede9fe;">
+        <h3 style="color: #6d28d9; display: flex; align-items: center; gap: 8px;">
+          <span>🎓</span> <span id="elec-detail-title">Elective Subject Details</span>
+        </h3>
+        <button class="modal-close" id="btn-close-elec-modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-info mb-3">
+          <strong id="elec-detail-division">Division Schedule:</strong>
+          <div id="elec-detail-timing" style="font-size: 13px; margin-top: 2px;"></div>
+          <small class="text-muted">Whole division is attending their respective elective tracks simultaneously across assigned rooms.</small>
+        </div>
+
+        <h4 style="font-size: 14px; font-weight: 700; color: #1e293b; margin-bottom: 10px;">Elective Tracks & Room Allocation:</h4>
+        <div id="elec-detail-tracks-list" style="display: flex; flex-direction: column; gap: 10px;">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary modal-close" id="btn-ok-elec-modal">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirmation Modal -->
+  <div id="modal-confirm" class="modal-overlay hidden">
+    <div class="modal-box modal-sm">
+      <div class="modal-header">
+        <h3 id="confirm-title">Confirmation</h3>
+        <button class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p id="confirm-message">Are you sure?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline modal-close">Cancel</button>
+        <button type="button" id="btn-confirm-yes" class="btn btn-danger">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Agent Details & Workload Analytics Modal -->
+  <div id="modal-agent-details" class="modal-overlay hidden">
+    <div class="modal-box modal-lg" style="max-width: 820px; width: 90vw;">
+      <div class="modal-header" style="background:#0f172a; color:#ffffff; padding:16px 20px; border-radius: 8px 8px 0 0;">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <span id="agent-modal-icon" style="font-size:26px;">🟣</span>
+          <div>
+            <h3 id="agent-modal-title" style="margin:0; font-size:18px; color:#ffffff; font-weight:700;">TY Agent Analytics</h3>
+            <p id="agent-modal-subtitle" style="margin:2px 0 0; font-size:12px; color:#cbd5e1;">Third Year Divisions, Subjects, & Faculty Workload</p>
+          </div>
+        </div>
+        <button type="button" class="modal-close" id="btn-close-agent-modal" style="color:#ffffff; font-size:22px; background:transparent; border:none; cursor:pointer;">&times;</button>
+      </div>
+      <div class="modal-body" style="padding:20px; max-height:calc(85vh - 130px); overflow-y:auto;">
+        <!-- Time Scope Toggle: Weekly / Daily / Monthly -->
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px; padding-bottom:14px; border-bottom:1px solid var(--border); flex-wrap:wrap; gap:10px;">
+          <div>
+            <strong style="font-size:13px; color:#0f172a;">Time Horizon:</strong>
+            <small class="text-muted" style="display:block; font-size:11px;">Select timeframe to view scheduled hours vs target limits</small>
+          </div>
+          <div class="filter-box-buttons" id="agent-scope-buttons">
+            <button type="button" class="btn-filter-box active" data-scope="weekly">📅 Weekly View</button>
+            <button type="button" class="btn-filter-box" data-scope="daily">☀️ Daily Average</button>
+            <button type="button" class="btn-filter-box" data-scope="monthly">🗓️ Monthly Projected</button>
+          </div>
+        </div>
+
+        <!-- Section 1: Subject Coverage Progress Bars -->
+        <div class="mb-4">
+          <h4 style="font-size:14px; font-weight:700; color:#0f172a; margin-bottom:12px; display:flex; align-items:center; gap:6px;">
+            <span>📚</span> Subject Curriculum Coverage
+          </h4>
+          <div id="agent-subjects-progress-list" style="display:flex; flex-direction:column; gap:12px;">
+            <!-- Dynamically populated subject progress bars -->
+          </div>
+        </div>
+
+        <!-- Section 2: Faculty Teaching Workload Progress Bars -->
+        <div class="mb-4">
+          <h4 style="font-size:14px; font-weight:700; color:#0f172a; margin-bottom:12px; display:flex; align-items:center; gap:6px;">
+            <span>👨‍🏫</span> Faculty Workload & Limits
+          </h4>
+          <div id="agent-faculty-progress-list" style="display:flex; flex-direction:column; gap:12px;">
+            <!-- Dynamically populated faculty workload bars -->
+          </div>
+        </div>
+
+        <!-- Section 3: Division & Batch Overview -->
+        <div>
+          <h4 style="font-size:14px; font-weight:700; color:#0f172a; margin-bottom:12px; display:flex; align-items:center; gap:6px;">
+            <span>🏛️</span> Division & Lab Batch Status
+          </h4>
+          <div id="agent-divisions-table-box">
+            <!-- Dynamically populated division breakdown -->
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer" style="padding:12px 20px; background:#f8fafc; border-top:1px solid var(--border); display:flex; justify-content:flex-end;">
+        <button type="button" class="btn btn-outline modal-close" id="btn-close-agent-modal-foot">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Interactive Feature Help Tour Spotlight & Guide Overlay -->
+  <div id="help-tour-overlay" class="help-tour-overlay hidden" aria-hidden="true">
+    <div id="help-tour-backdrop" class="help-tour-backdrop"></div>
+    <div id="help-tour-spotlight" class="help-tour-spotlight"></div>
+    <div id="help-tour-popover" class="help-tour-popover" role="dialog" aria-modal="true" aria-labelledby="help-tour-title">
+      <div id="help-tour-arrow" class="help-tour-arrow"></div>
+      <div class="help-tour-header">
+        <div class="help-tour-badge-row">
+          <span id="help-tour-step-badge" class="help-tour-badge">Step 1 of 8</span>
+          <span id="help-tour-tab-badge" class="help-tour-tab-badge">Timetable Guide</span>
+        </div>
+        <button type="button" id="help-tour-close-btn" class="help-tour-close" title="Close Tour (Esc)" aria-label="Close Tour">&times;</button>
+      </div>
+      <div class="help-tour-body">
+        <h4 id="help-tour-title" class="help-tour-title">Generate Timetable</h4>
+        <p id="help-tour-desc" class="help-tour-desc">Description of the feature.</p>
+        <div class="help-tour-tip">
+          <span class="help-tour-tip-icon">💡</span>
+          <span id="help-tour-tip-text">Click any highlighted button on screen to jump directly to its explanation.</span>
+        </div>
+      </div>
+      <div class="help-tour-footer">
+        <button type="button" id="help-tour-prev-btn" class="btn btn-sm btn-outline">← Back</button>
+        <div id="help-tour-dots" class="help-tour-dots"></div>
+        <button type="button" id="help-tour-next-btn" class="btn btn-sm btn-primary">Next →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Export Libraries: html2canvas & jsPDF for pristine PNG & Landscape PDF exports -->
+  <script src="/vendor/html2canvas.min.js"></script>
+  <script src="/vendor/jspdf.umd.min.js"></script>
+  <script src="/app.js?v=2.4"></script>
+</body>
+</html>

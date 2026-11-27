@@ -1,0 +1,14 @@
+[
+  {
+    "id": "SY",
+    "name": "Second Year",
+    "code": "SE",
+    "order": 2
+  },
+  {
+    "id": "TY",
+    "name": "Third Year",
+    "code": "TE",
+    "order": 3
+  }
+]

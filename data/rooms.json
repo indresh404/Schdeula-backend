@@ -1,0 +1,249 @@
+[
+  {
+    "id": "room_201",
+    "name": "Classroom 201 (SY-A)",
+    "type": "Classroom",
+    "capacity": 70,
+    "available_days": [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday"
+    ],
+    "tags": [
+      "Smartboard",
+      "AC"
+    ],
+    "floor_id": "floor_2",
+    "sequence_order": 1
+  },
+  {
+    "id": "room_202",
+    "name": "Classroom 202 (SY-B)",
+    "type": "Classroom",
+    "capacity": 70,
+    "available_days": [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday"
+    ],
+    "tags": [
+      "Projector"
+    ],
+    "floor_id": "floor_2",
+    "sequence_order": 2
+  },
+  {
+    "id": "room_203",
+    "name": "Classroom 203 (SY-C)",
+    "type": "Classroom",
+    "capacity": 70,
+    "available_days": [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday"
+    ],
+    "tags": [
+      "Projector",
+      "AC"
+    ],
+    "floor_id": "floor_2",
+    "sequence_order": 3
+  },
+  {
+    "id": "lab_204",
+    "name": "Software & Web Lab (Room 204)",
+    "type": "Laboratory",
+    "capacity": 35,
+    "available_days": [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday"
+    ],
+    "tags": [
+      "Linux",
+      "Python",
+      "LAN"
+    ],
+    "floor_id": "floor_2",
+    "sequence_order": 4
+  },
+  {
+    "id": "lab_205",
+    "name": "Database & Systems Lab (Room 205)",
+    "type": "Laboratory",
+    "capacity": 35,
+    "available_days": [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday"
+    ],
+    "tags": [
+      "MySQL",
+      "Oracle",
+      "LAN"
+    ],
+    "floor_id": "floor_2",
+    "sequence_order": 5
+  },
+  {
+    "id": "room_301",
+    "name": "Classroom 301 (TY-A)",
+    "type": "Classroom",
+    "capacity": 70,
+    "available_days": [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday"
+    ],
+    "tags": [
+      "AC",
+      "Projector"
+    ],
+    "floor_id": "floor_3",
+    "sequence_order": 1
+  },
+  {
+    "id": "room_302",
+    "name": "Classroom 302 (TY-B)",
+    "type": "Classroom",
+    "capacity": 70,
+    "available_days": [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday"
+    ],
+    "tags": [
+      "Projector"
+    ],
+    "floor_id": "floor_3",
+    "sequence_order": 2
+  },
+  {
+    "id": "room_303",
+    "name": "Classroom 303 (TY-C)",
+    "type": "Classroom",
+    "capacity": 70,
+    "available_days": [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday"
+    ],
+    "tags": [
+      "Smartboard",
+      "AC"
+    ],
+    "floor_id": "floor_3",
+    "sequence_order": 3
+  },
+  {
+    "id": "lab_304",
+    "name": "Network & Security Lab (Room 304)",
+    "type": "Laboratory",
+    "capacity": 35,
+    "available_days": [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday"
+    ],
+    "tags": [
+      "Cisco Packet Tracer",
+      "LAN"
+    ],
+    "floor_id": "floor_3",
+    "sequence_order": 4
+  },
+  {
+    "id": "lab_305",
+    "name": "AI & Cloud Lab (Room 305)",
+    "type": "Laboratory",
+    "capacity": 35,
+    "available_days": [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday"
+    ],
+    "tags": [
+      "GPU",
+      "Cloud",
+      "LAN"
+    ],
+    "floor_id": "floor_3",
+    "sequence_order": 5
+  },
+  {
+    "id": "room_306",
+    "name": "Elective Room 306",
+    "type": "Classroom",
+    "capacity": 45,
+    "available_days": [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday"
+    ],
+    "tags": [
+      "AC",
+      "Projector"
+    ],
+    "floor_id": "floor_3",
+    "sequence_order": 6
+  },
+  {
+    "id": "room_307",
+    "name": "Elective Room 307",
+    "type": "Classroom",
+    "capacity": 45,
+    "available_days": [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday"
+    ],
+    "tags": [
+      "AC",
+      "Smartboard"
+    ],
+    "floor_id": "floor_3",
+    "sequence_order": 7
+  },
+  {
+    "id": "room_308",
+    "name": "Elective Room 308",
+    "type": "Classroom",
+    "capacity": 45,
+    "available_days": [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday"
+    ],
+    "tags": [
+      "AC"
+    ],
+    "floor_id": "floor_3",
+    "sequence_order": 8
+  }
+]
