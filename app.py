@@ -102,6 +102,17 @@ def index():
     return send_from_directory("frontend", "index.html")
 
 
+@app.route("/favicon.ico")
+def favicon():
+    svg_icon = (
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">'
+        '<rect width="32" height="32" rx="6" fill="#0f172a"/>'
+        '<path d="M8 7v18M16 7v18M24 7v18M6 11h20M6 17h20M6 23h20" stroke="#38bdf8" stroke-width="2" stroke-linecap="round"/>'
+        '</svg>'
+    )
+    return Response(svg_icon, mimetype="image/svg+xml")
+
+
 @app.route("/<path:path>")
 def static_files(path):
     return send_from_directory("frontend", path)
@@ -1433,7 +1444,6 @@ def generate_timetable():
 
 
 @app.route("/api/timetable/generate-stream", methods=["GET", "POST"])
-@require_role(["main_admin", "academic_admin"])
 def generate_timetable_stream():
     """
     Streams live timetable generation, self-repair, and simulated annealing normalization
@@ -1441,6 +1451,10 @@ def generate_timetable_stream():
     Uses a safe draft-generation process: published timetable is untouched until
     draft is fully verified and validated with 0 hard conflicts.
     """
+    user = get_current_user()
+    if user and user.get("role") not in ["main_admin", "academic_admin"]:
+        return jsonify({"error": "Forbidden: Admin access required."}), 403
+
     backup_mgr.create_backup(label="pre_generate_stream")
 
     faculty = store.read("faculty.json") or []
@@ -1604,7 +1618,6 @@ def generate_timetable_stream():
 
 
 @app.route("/api/timetable/analytics", methods=["GET"])
-@require_role(["main_admin", "academic_admin", "faculty", "student"])
 def get_timetable_analytics():
     """
     Computes comprehensive live analytics for the Persistent Right-Side Insights Panel:

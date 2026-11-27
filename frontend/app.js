@@ -4141,11 +4141,37 @@ function setupEventListeners() {
       evtSource.addEventListener("error", async (e) => {
         if (streamFinished) return;
         evtSource.close();
-        resetBtns();
-        hideTimetableLoadingBar();
-        if (livePanel) livePanel.classList.add("hidden");
-        console.warn("SSE connection error or closed, refreshing data...");
-        await refreshAllData();
+        console.warn("SSE connection error or closed, falling back to standard generation...");
+        try {
+          const res = await fetch("/api/timetable/generate", { method: "POST" });
+          const data = await res.json();
+          resetBtns();
+          hideTimetableLoadingBar();
+          if (livePanel) livePanel.classList.add("hidden");
+
+          if (!res.ok) {
+            showBanner(data.error || "Timetable generation failed.", "danger");
+            return;
+          }
+
+          const finalEntries = data.timetable_entries || (data.timetable && data.timetable.entries) || [];
+          const execLogs = (data.log && data.log.execution_logs) || data.execution_logs || [];
+          await playProgressiveAllocation(finalEntries, execLogs, data.backtracking_attempts);
+          showBanner(
+            `Timetable Generated! Scheduled ${data.scheduled_count} lectures with ${data.backtracking_attempts || 0} backtracks.`,
+            data.success ? "success" : "warning"
+          );
+          await refreshAllData();
+          if (typeof loadTimetableInsights === "function") {
+            loadTimetableInsights();
+          }
+        } catch (err) {
+          resetBtns();
+          hideTimetableLoadingBar();
+          if (livePanel) livePanel.classList.add("hidden");
+          console.error("Generation error:", err);
+          await refreshAllData();
+        }
       });
 
       return;
