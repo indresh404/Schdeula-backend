@@ -3829,6 +3829,41 @@ function setupEventListeners() {
   let isGeneratingPlayback = false;
   let skipAnimationRequested = false;
 
+  // Live Timetable Progress Bar (Directly Above Timetable Master Card)
+  function showTimetableLoadingBar(label, initialPct = 5) {
+    const container = document.getElementById("timetable-loading-bar-container");
+    const labelEl = document.getElementById("timetable-loading-label");
+    const pctEl = document.getElementById("timetable-loading-percentage");
+    const fillEl = document.getElementById("timetable-progress-fill");
+    if (!container) return;
+    if (labelEl) labelEl.textContent = label || "⚡ Processing Timetable...";
+    const clamped = Math.max(0, Math.min(100, Math.round(initialPct)));
+    if (pctEl) pctEl.textContent = `${clamped}%`;
+    if (fillEl) fillEl.style.width = `${clamped}%`;
+    container.style.display = "block";
+  }
+
+  function updateTimetableLoadingProgress(pct, label) {
+    const labelEl = document.getElementById("timetable-loading-label");
+    const pctEl = document.getElementById("timetable-loading-percentage");
+    const fillEl = document.getElementById("timetable-progress-fill");
+    if (label && labelEl) labelEl.textContent = label;
+    const clamped = Math.max(0, Math.min(100, Math.round(pct)));
+    if (pctEl) pctEl.textContent = `${clamped}%`;
+    if (fillEl) fillEl.style.width = `${clamped}%`;
+  }
+
+  function hideTimetableLoadingBar() {
+    const container = document.getElementById("timetable-loading-bar-container");
+    if (container) {
+      updateTimetableLoadingProgress(100);
+      setTimeout(() => {
+        container.style.display = "none";
+        updateTimetableLoadingProgress(0);
+      }, 400);
+    }
+  }
+
   async function playProgressiveAllocation(finalEntries, executionLogs, totalBacktracks) {
     const livePanel = document.getElementById("generation-live-panel");
     const pBar = document.getElementById("gen-progress-bar");
@@ -3867,6 +3902,7 @@ function setupEventListeners() {
       if (pBadge) pBadge.textContent = `${pct}%`;
       if (tickerAgent) tickerAgent.textContent = `🤖 ${step.agent || "Python Rule-Based Orchestrator"}`;
       if (tickerStep) tickerStep.textContent = step.message || "Placing lecture slot...";
+      updateTimetableLoadingProgress(pct, `⚡ Scheduling: ${scheduledEntriesSoFar.length} / ${finalEntries.length} lectures (${step.agent || "Orchestrator"})`);
 
       if (step.type === "ASSIGNMENT") {
         const matched = finalEntries.find(e => 
@@ -3908,16 +3944,18 @@ function setupEventListeners() {
     if (tickerStep) tickerStep.textContent = `Completed! ${finalEntries.length} lectures scheduled, 0 hard conflicts detected.`;
     if (statSched) statSched.innerHTML = `Scheduled: <strong>${finalEntries.length}</strong>`;
     if (statBtrack) statBtrack.innerHTML = `Backtracks: <strong>${totalBacktracks || 0}</strong>`;
+    updateTimetableLoadingProgress(100, `✨ Timetable Generated! ${finalEntries.length} lectures scheduled, 0 conflicts.`);
 
     state.timetable.entries = finalEntries;
     renderTimetableGrid();
     isGeneratingPlayback = false;
 
     setTimeout(() => {
+      hideTimetableLoadingBar();
       if (livePanel && !isGeneratingPlayback) {
         livePanel.classList.add("hidden");
       }
-    }, 6000);
+    }, 4000);
   }
 
   // Generate Timetable (Core Orchestrator Execution)
@@ -3956,8 +3994,19 @@ function setupEventListeners() {
     if (statusTitle) statusTitle.textContent = "Orchestrator Evaluating Feasibility & Priorities...";
     if (tickerStep) tickerStep.textContent = "Calculating MRV and spatial placement candidates...";
 
+    // Show live progress bar directly above timetable
+    showTimetableLoadingBar("⚡ Orchestrator Evaluating Constraints & Solving Multi-Year Schedule...", 12);
+    let genTickerVal = 12;
+    const genInterval = setInterval(() => {
+      if (genTickerVal < 88) {
+        genTickerVal += Math.random() * 5 + 1;
+        updateTimetableLoadingProgress(genTickerVal, "⚡ Orchestrator Evaluating Candidate Placements & Backtracking...");
+      }
+    }, 180);
+
     try {
       const res = await fetch("/api/timetable/generate", { method: "POST" });
+      clearInterval(genInterval);
       const data = await res.json();
       if (btn) {
         btn.disabled = false;
@@ -3969,12 +4018,14 @@ function setupEventListeners() {
       }
 
       if (!res.ok) {
+        hideTimetableLoadingBar();
         if (livePanel) livePanel.classList.add("hidden");
         showBanner(data.error || "Timetable generation failed.", "danger");
         return;
       }
 
       if (data.status === "intervention_required") {
+        hideTimetableLoadingBar();
         if (livePanel) livePanel.classList.add("hidden");
         showBanner("LangGraph Paused: Admin intervention required for resource contention.", "warning");
         openAdminInterventionModal(data);
@@ -3992,6 +4043,8 @@ function setupEventListeners() {
       );
       await refreshAllData();
     } catch (e) {
+      if (typeof genInterval !== "undefined") clearInterval(genInterval);
+      hideTimetableLoadingBar();
       if (btn) {
         btn.disabled = false;
         btn.textContent = origText;
@@ -4146,6 +4199,7 @@ function setupEventListeners() {
       if (pendingAutoFixes.length === 0) return;
       btnConfirmAutoFix.disabled = true;
       btnConfirmAutoFix.textContent = "Applying Fixes...";
+      showTimetableLoadingBar("🔧 Auto-Fixing Timetable Clashes & Rebalancing...", 35);
       try {
         const res = await fetch("/api/timetable/auto-fix-apply", {
           method: "POST",
@@ -4158,12 +4212,16 @@ function setupEventListeners() {
         btnConfirmAutoFix.textContent = "✅ Apply Proposed Fixes";
 
         if (res.ok && data.success) {
+          updateTimetableLoadingProgress(100, "✅ Clash Resolutions Successfully Applied!");
+          setTimeout(() => hideTimetableLoadingBar(), 1500);
           showBanner(data.message || `Applied ${data.applied_count} fixes!`, "success");
           await refreshAllData();
         } else {
+          hideTimetableLoadingBar();
           showBanner(data.error || "Failed to apply auto-fixes.", "danger");
         }
       } catch (e) {
+        hideTimetableLoadingBar();
         btnConfirmAutoFix.disabled = false;
         btnConfirmAutoFix.textContent = "✅ Apply Proposed Fixes";
         console.error(e);
@@ -4276,16 +4334,21 @@ function setupEventListeners() {
       "Load Demonstration Data",
       "This will load complete CMPN department demonstration data across FY, SY, TY, and BE (including classrooms, labs, faculty with workloads, lab batches, theory & practical subjects, and explicit assignments). An automatic backup will be created beforehand. Proceed?",
       async () => {
+        showTimetableLoadingBar("📦 Loading Complete Demonstration Dataset...", 35);
         try {
           const res = await fetch("/api/data/load-demo", { method: "POST" });
           const data = await res.json();
           if (res.ok) {
+            updateTimetableLoadingProgress(100, "✅ Demo Data Successfully Loaded!");
+            setTimeout(() => hideTimetableLoadingBar(), 1500);
             showBanner(data.message || "Demo data loaded successfully!", "success");
             await refreshAllData();
           } else {
+            hideTimetableLoadingBar();
             showBanner(data.error || "Failed to load demo data.", "danger");
           }
         } catch (e) {
+          hideTimetableLoadingBar();
           console.error(e);
           showBanner("Failed to load demo data due to network error.", "danger");
         }

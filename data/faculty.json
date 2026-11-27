@@ -54,5 +54,19 @@
     "workload_limit": 22,
     "is_available": true,
     "staff_room_floor_id": "floor_3"
+  },
+  {
+    "id": "fac_09",
+    "name": "Prof. Aniket Kadam",
+    "workload_limit": 22,
+    "is_available": true,
+    "staff_room_floor_id": "floor_2"
+  },
+  {
+    "id": "fac_10",
+    "name": "Dr. Kavita Nair",
+    "workload_limit": 22,
+    "is_available": true,
+    "staff_room_floor_id": "floor_3"
   }
 ]

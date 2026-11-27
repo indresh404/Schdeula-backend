@@ -1,5 +1,6 @@
 from typing import Any, Dict, List, Optional, Tuple
 from resources.faculty_manager import intervals_overlap, time_to_minutes
+from scheduler.feasibility import get_canonical_slots_for_settings
 
 
 class ConstraintValidator:
@@ -457,22 +458,7 @@ class ConstraintValidator:
             eligible_faculty = [f for f in eligible_faculty if f in existing_div_facs]
 
         candidate_days = [candidate_entry.get("day")] + [d for d in self.working_days if d != candidate_entry.get("day")]
-        candidate_times = [
-            ("09:00", "10:00"),
-            ("10:00", "11:00"),
-            ("11:15", "12:15"),
-            ("12:15", "13:15"),
-            ("14:00", "15:00"),
-            ("15:00", "16:00"),
-            ("16:00", "17:00"),
-        ]
-        if c_dur >= 120:
-            candidate_times = [
-                ("09:00", "11:00"),
-                ("11:15", "13:15"),
-                ("14:00", "16:00"),
-                ("15:00", "17:00"),
-            ]
+        candidate_times = get_canonical_slots_for_settings(self.settings, c_dur)
 
         for d in candidate_days:
             for s_t, e_t in candidate_times:

@@ -12,6 +12,7 @@ from orchestration.graph import (
 )
 from scheduler.coordinator import SchedulingCoordinator
 from scheduler.constraint_validator import ConstraintValidator
+from scheduler.feasibility import get_canonical_slots_for_settings
 from scheduler.spatial_engine import SpatialEngine
 from storage.backup import BackupManager
 from storage.json_store import JSONStore
@@ -1700,27 +1701,9 @@ def find_smart_lecture_slots(
             periods.append((curr, period_end))
         curr = period_end
 
-    candidate_time_slots = []
-    if duration <= lecture_dur:
-        candidate_time_slots = [(minutes_to_time(s), minutes_to_time(e)) for s, e in periods if (e - s) >= duration]
-    else:
-        for i in range(len(periods)):
-            s_min = periods[i][0]
-            e_min = s_min + duration
-            if e_min > day_end:
-                continue
-            has_break = any(
-                intervals_overlap(minutes_to_time(s_min), minutes_to_time(e_min), minutes_to_time(b[0]), minutes_to_time(b[1]))
-                for b in breaks
-            )
-            if not has_break:
-                candidate_time_slots.append((minutes_to_time(s_min), minutes_to_time(e_min)))
-
+    candidate_time_slots = get_canonical_slots_for_settings(settings, duration)
     if not candidate_time_slots:
-        if duration >= 120:
-            candidate_time_slots = [("09:00", "11:00"), ("11:15", "13:15"), ("14:00", "16:00"), ("15:00", "17:00")]
-        else:
-            candidate_time_slots = [("09:00", "10:00"), ("10:00", "11:00"), ("11:15", "12:15"), ("12:15", "13:15"), ("14:00", "15:00"), ("15:00", "16:00"), ("16:00", "17:00")]
+        candidate_time_slots = get_canonical_slots_for_settings(settings, 60)
 
     # Sort days by how many lectures of this subject already exist for this division on that day (ascending)
     def day_lecture_count(d):
@@ -1938,15 +1921,7 @@ def find_conflict_free_slot_for_entry(
         search_days = [d for d in working_days if d not in avoid_days]
 
     dur = entry_to_move.get("duration_minutes", 60)
-    cand_slots = [
-        ("09:00", "10:00"), ("10:00", "11:00"), ("11:15", "12:15"),
-        ("12:15", "13:15"), ("14:00", "15:00"), ("15:00", "16:00"), ("16:00", "17:00")
-    ]
-    if dur >= 120:
-        cand_slots = [
-            ("09:00", "11:00"), ("11:15", "13:15"),
-            ("14:00", "16:00"), ("15:00", "17:00")
-        ]
+    cand_slots = get_canonical_slots_for_settings(settings_dict, dur)
 
     div_id = entry_to_move.get("division_id")
     batch_id = entry_to_move.get("batch_id")
@@ -2085,6 +2060,81 @@ def auto_fix_preview():
     hard_conflicts = val_report.get("hard_conflicts", [])
 
     proposed_fixes = []
+
+    # 0. Resolve Out of Hours, Break Overlaps, or Invalid Day Conflicts
+    timing_confs = [c for c in hard_conflicts if c.get("type") in ["OUT_OF_HOURS", "BREAK_OVERLAP", "INVALID_DAY"]]
+    for conf in timing_confs:
+        e_id = conf.get("entry_id")
+        move_entry = next((e for e in entries if e["id"] == e_id), None)
+        if not move_entry:
+            continue
+
+        is_elec = bool(move_entry.get("is_elective") or "MDM" in (move_entry.get("subject_name") or "").upper())
+        if is_elec:
+            cluster_entries = [
+                e for e in entries
+                if e.get("day") == move_entry["day"] and
+                   e.get("start_time") == move_entry["start_time"] and
+                   (e.get("is_elective") or "MDM" in (e.get("subject_name") or "").upper())
+            ]
+        else:
+            cluster_entries = [move_entry]
+
+        found_slot = find_conflict_free_slot_for_entry(
+            move_entry, entries, faculty, rooms, subjects, settings
+        )
+        if found_slot:
+            for ce in cluster_entries:
+                r_id = ce.get("fixed_room_id") or ce.get("room_id") or found_slot[3]
+                r_name = ce.get("fixed_room_name") or ce.get("room_name") or found_slot[4]
+                proposed_fixes.append({
+                    "fix_id": f"fix_{ce['id']}",
+                    "entry_id": ce["id"],
+                    "conflict_type": conf.get("type", "OUT_OF_HOURS"),
+                    "subject_name": ce.get("subject_name"),
+                    "division_name": ce.get("division_name"),
+                    "day": ce.get("day"),
+                    "time": f"{ce.get('start_time')}–{ce.get('end_time')}",
+                    "action": "Reschedule to Working Hours",
+                    "change_description": f"Move '{ce.get('subject_name')}' to valid working hours on {found_slot[0]} at {found_slot[1]}–{found_slot[2]} in '{r_name}'.",
+                    "old_value": f"{ce.get('day')} {ce.get('start_time')}–{ce.get('end_time')}",
+                    "new_value": f"{found_slot[0]} {found_slot[1]}–{found_slot[2]}",
+                    "patch": {
+                        "day": found_slot[0],
+                        "start_time": found_slot[1],
+                        "end_time": found_slot[2],
+                        "room_id": r_id,
+                        "room_name": r_name,
+                    }
+                })
+
+    # 0b. Resolve Elective Fixed Room Mismatch Conflicts
+    for conf in hard_conflicts:
+        if conf.get("type") == "ELECTIVE_FIXED_ROOM_MISMATCH":
+            e_id = conf.get("entry_id")
+            move_entry = next((e for e in entries if e["id"] == e_id), None)
+            if not move_entry:
+                continue
+            fixed_r_id = move_entry.get("fixed_room_id")
+            fixed_r_name = move_entry.get("fixed_room_name")
+            if fixed_r_id:
+                proposed_fixes.append({
+                    "fix_id": f"fix_{move_entry['id']}",
+                    "entry_id": move_entry["id"],
+                    "conflict_type": "ELECTIVE_FIXED_ROOM_MISMATCH",
+                    "subject_name": move_entry.get("subject_name"),
+                    "division_name": move_entry.get("division_name"),
+                    "day": move_entry.get("day"),
+                    "time": f"{move_entry.get('start_time')}–{move_entry.get('end_time')}",
+                    "action": "Restore Elective Room",
+                    "change_description": f"Assign elective '{move_entry.get('subject_name')}' back to its dedicated room '{fixed_r_name or fixed_r_id}'.",
+                    "old_value": move_entry.get("room_name"),
+                    "new_value": fixed_r_name or fixed_r_id,
+                    "patch": {
+                        "room_id": fixed_r_id,
+                        "room_name": fixed_r_name or fixed_r_id,
+                    }
+                })
 
     # 1. Resolve Workload Limit Conflicts (Faculty daily lecture/hour limit exceeded)
     workload_confs = [c for c in hard_conflicts if c.get("type") in ["WORKLOAD_LIMIT", "WORKLOAD_HOURS_LIMIT", "WEEKLY_HOURS_LIMIT"]]
@@ -2841,9 +2891,14 @@ def api_load_demo_data():
         sqlite_store.sync_from_json_store(store)
     except Exception as e:
         app.logger.warning(f"SQLite demo sync warning: {e}")
+    fac_cnt = len(store.read("faculty.json") or [])
+    rm_cnt = len(store.read("rooms.json") or [])
+    div_cnt = len(store.read("divisions.json") or [])
+    batch_cnt = len(store.read("batches.json") or [])
+    sub_cnt = len(store.read("subjects.json") or [])
     return jsonify({
         "success": True,
-        "message": "Demo data loaded successfully! 8 faculty, 13 rooms/labs, 6 divisions (SY & TY), 12 batches, and 11 subjects are ready for scheduling."
+        "message": f"Demo data loaded successfully! {fac_cnt} faculty, {rm_cnt} rooms/labs, {div_cnt} divisions (SY & TY), {batch_cnt} batches, and {sub_cnt} subjects are ready for scheduling."
     })
 
 

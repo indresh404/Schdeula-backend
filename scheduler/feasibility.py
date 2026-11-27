@@ -9,6 +9,59 @@ from resources.faculty_manager import (
 from resources.room_manager import RoomManager
 
 
+def get_canonical_slots_for_settings(settings: Dict[str, Any], duration_minutes: int = 60) -> List[Tuple[str, str]]:
+    """
+    Computes valid [start_time, end_time) slot intervals based strictly on
+    institution settings (day_start_time, day_end_time, breaks, default durations).
+    Guarantees no generated slot starts before day_start_time, ends after day_end_time,
+    or overlaps configured breaks.
+    """
+    day_start_min = time_to_minutes(settings.get("day_start_time", "09:00"))
+    day_end_min = time_to_minutes(settings.get("day_end_time", "17:00"))
+    if day_end_min <= day_start_min:
+        day_start_min = time_to_minutes("09:15")
+        day_end_min = time_to_minutes("17:15")
+
+    breaks = [
+        (time_to_minutes(b["start"]), time_to_minutes(b["end"]))
+        for b in settings.get("breaks", [])
+        if "start" in b and "end" in b
+    ]
+    breaks.sort(key=lambda x: x[0])
+
+    segments = []
+    curr = day_start_min
+    for b_start, b_end in breaks:
+        if b_start > curr:
+            segments.append((curr, min(b_start, day_end_min)))
+        curr = max(curr, b_end)
+    if curr < day_end_min:
+        segments.append((curr, day_end_min))
+
+    intervals: List[Tuple[str, str]] = []
+    step_min = int(settings.get("default_lecture_duration", 60))
+    if step_min <= 0:
+        step_min = 60
+
+    for seg_start, seg_end in segments:
+        t = seg_start
+        while t + duration_minutes <= seg_end:
+            s_str = minutes_to_time(t)
+            e_str = minutes_to_time(t + duration_minutes)
+            if (s_str, e_str) not in intervals:
+                intervals.append((s_str, e_str))
+            t += step_min
+
+        # If a backwards tail slot fits within seg_start..seg_end (e.g. 16:15 - 17:15)
+        if seg_end - duration_minutes >= seg_start:
+            tail_s = minutes_to_time(seg_end - duration_minutes)
+            tail_e = minutes_to_time(seg_end)
+            if (tail_s, tail_e) not in intervals:
+                intervals.append((tail_s, tail_e))
+
+    return intervals
+
+
 class FeasibilityEngine:
     """
     Evaluates feasible placements for a LectureRequest across:
@@ -89,42 +142,7 @@ class FeasibilityEngine:
         Generate candidate [start_time, end_time) intervals within working hours
         that do not intersect any configured break.
         """
-        day_start_min = time_to_minutes(self.day_start)
-        day_end_min = time_to_minutes(self.day_end)
-
-        break_intervals = [
-            (time_to_minutes(b["start"]), time_to_minutes(b["end"]))
-            for b in self.breaks
-        ]
-        break_intervals.sort(key=lambda x: x[0])
-
-        # Build contiguous open segments
-        segments = []
-        curr = day_start_min
-        for b_start, b_end in break_intervals:
-            if b_start > curr:
-                segments.append((curr, min(b_start, day_end_min)))
-            curr = max(curr, b_end)
-        if curr < day_end_min:
-            segments.append((curr, day_end_min))
-
-        intervals = []
-        step_min = int(self.settings.get("default_lecture_duration", 60))
-        for seg_start, seg_end in segments:
-            t = seg_start
-            while t + duration_minutes <= seg_end:
-                s_str = minutes_to_time(t)
-                e_str = minutes_to_time(t + duration_minutes)
-                intervals.append((s_str, e_str))
-                t += step_min
-            # If a trailing slot before break or day end is >= 30 mins and fits theory (duration <= 60)
-            if duration_minutes <= 60 and t < seg_end and (seg_end - t) >= 30:
-                s_str = minutes_to_time(t)
-                e_str = minutes_to_time(seg_end)
-                if (s_str, e_str) not in intervals:
-                    intervals.append((s_str, e_str))
-
-        return intervals
+        return get_canonical_slots_for_settings(self.settings, duration_minutes)
 
     def is_division_available(
         self,

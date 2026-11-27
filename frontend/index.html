@@ -567,6 +567,20 @@
           <ul id="timetable-clash-list" class="clash-list"></ul>
         </div>
 
+        <!-- Live Loading Progress Bar Container (Directly above Timetable Grid) -->
+        <div id="timetable-loading-bar-container" class="tt-loading-progress-container" style="display: none;">
+          <div class="tt-loading-header">
+            <div class="tt-loading-title-wrap">
+              <span class="tt-loading-spinner-ring"></span>
+              <strong id="timetable-loading-label">⚡ Generating Clash-Free Timetable...</strong>
+            </div>
+            <span id="timetable-loading-percentage" class="tt-loading-badge">0%</span>
+          </div>
+          <div class="tt-progress-track">
+            <div id="timetable-progress-fill" class="tt-progress-fill" style="width: 0%;"></div>
+          </div>
+        </div>
+
         <!-- Master Academic Timetable (Horizontally Time-Oriented, Vertically Day-Grouped) -->
         <div class="card timetable-card" id="timetable-master-card">
           <!-- Timetable Canvas & Viewport Controls Bar -->

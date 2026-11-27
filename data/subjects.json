@@ -9,13 +9,13 @@
       "div_sy_b",
       "div_sy_c"
     ],
-    "weekly_lectures": 4,
+    "weekly_lectures": 3,
     "duration_minutes": 60,
     "type": "Theory",
     "eligible_faculty_ids": [
-      "fac_01",
       "fac_03",
-      "fac_07"
+      "fac_09",
+      "fac_01"
     ],
     "required_room_type": "Classroom",
     "lab_batch_required": false
@@ -30,13 +30,13 @@
       "div_sy_b",
       "div_sy_c"
     ],
-    "weekly_lectures": 4,
+    "weekly_lectures": 3,
     "duration_minutes": 60,
     "type": "Theory",
     "eligible_faculty_ids": [
-      "fac_02",
       "fac_04",
-      "fac_08"
+      "fac_09",
+      "fac_02"
     ],
     "required_room_type": "Classroom",
     "lab_batch_required": false
@@ -55,7 +55,48 @@
     "duration_minutes": 60,
     "type": "Theory",
     "eligible_faculty_ids": [
-      "fac_05",
+      "fac_06",
+      "fac_05"
+    ],
+    "required_room_type": "Classroom",
+    "lab_batch_required": false
+  },
+  {
+    "id": "sub_sy_coa",
+    "name": "Computer Organization & Architecture",
+    "code": "COA",
+    "year_id": "SY",
+    "division_ids": [
+      "div_sy_a",
+      "div_sy_b",
+      "div_sy_c"
+    ],
+    "weekly_lectures": 3,
+    "duration_minutes": 60,
+    "type": "Theory",
+    "eligible_faculty_ids": [
+      "fac_07",
+      "fac_08"
+    ],
+    "required_room_type": "Classroom",
+    "lab_batch_required": false
+  },
+  {
+    "id": "sub_sy_oop",
+    "name": "Object Oriented Programming (Java)",
+    "code": "OOP",
+    "year_id": "SY",
+    "division_ids": [
+      "div_sy_a",
+      "div_sy_b",
+      "div_sy_c"
+    ],
+    "weekly_lectures": 3,
+    "duration_minutes": 60,
+    "type": "Theory",
+    "eligible_faculty_ids": [
+      "fac_09",
+      "fac_03",
       "fac_06"
     ],
     "required_room_type": "Classroom",
@@ -75,9 +116,8 @@
     "duration_minutes": 120,
     "type": "Practical",
     "eligible_faculty_ids": [
-      "fac_01",
       "fac_03",
-      "fac_07"
+      "fac_09"
     ],
     "required_room_type": "Laboratory",
     "fixed_room_id": "lab_204",
@@ -98,9 +138,8 @@
     "duration_minutes": 120,
     "type": "Practical",
     "eligible_faculty_ids": [
-      "fac_02",
       "fac_04",
-      "fac_08"
+      "fac_09"
     ],
     "required_room_type": "Laboratory",
     "fixed_room_id": "lab_205",
@@ -122,8 +161,7 @@
     "type": "Theory",
     "eligible_faculty_ids": [
       "fac_02",
-      "fac_05",
-      "fac_08"
+      "fac_05"
     ],
     "required_room_type": "Classroom",
     "lab_batch_required": false
@@ -142,10 +180,8 @@
     "duration_minutes": 60,
     "type": "Theory",
     "eligible_faculty_ids": [
-      "fac_04",
-      "fac_06",
-      "fac_07",
-      "fac_08"
+      "fac_08",
+      "fac_04"
     ],
     "required_room_type": "Classroom",
     "lab_batch_required": false
@@ -171,6 +207,46 @@
     "lab_batch_required": false
   },
   {
+    "id": "sub_ty_ai",
+    "name": "Artificial Intelligence",
+    "code": "AI",
+    "year_id": "TY",
+    "division_ids": [
+      "div_ty_a",
+      "div_ty_b",
+      "div_ty_c"
+    ],
+    "weekly_lectures": 3,
+    "duration_minutes": 60,
+    "type": "Theory",
+    "eligible_faculty_ids": [
+      "fac_10",
+      "fac_01"
+    ],
+    "required_room_type": "Classroom",
+    "lab_batch_required": false
+  },
+  {
+    "id": "sub_ty_toc",
+    "name": "Theory of Computation",
+    "code": "TOC",
+    "year_id": "TY",
+    "division_ids": [
+      "div_ty_a",
+      "div_ty_b",
+      "div_ty_c"
+    ],
+    "weekly_lectures": 3,
+    "duration_minutes": 60,
+    "type": "Theory",
+    "eligible_faculty_ids": [
+      "fac_05",
+      "fac_06"
+    ],
+    "required_room_type": "Classroom",
+    "lab_batch_required": false
+  },
+  {
     "id": "sub_ty_cn_lab",
     "name": "Computer Networks Lab",
     "code": "CNL",
@@ -185,8 +261,7 @@
     "type": "Practical",
     "eligible_faculty_ids": [
       "fac_02",
-      "fac_05",
-      "fac_08"
+      "fac_05"
     ],
     "required_room_type": "Laboratory",
     "fixed_room_id": "lab_304",
@@ -207,10 +282,8 @@
     "duration_minutes": 120,
     "type": "Practical",
     "eligible_faculty_ids": [
-      "fac_04",
-      "fac_06",
-      "fac_07",
-      "fac_08"
+      "fac_08",
+      "fac_04"
     ],
     "required_room_type": "Laboratory",
     "fixed_room_id": "lab_305",

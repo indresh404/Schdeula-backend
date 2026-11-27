@@ -26,6 +26,8 @@ DEMO_FACULTY = [
     {"id": "fac_06", "name": "Prof. Rohan Joshi", "workload_limit": 22, "is_available": True, "staff_room_floor_id": "floor_2"},
     {"id": "fac_07", "name": "Prof. Pooja Shah", "workload_limit": 22, "is_available": True, "staff_room_floor_id": "floor_2"},
     {"id": "fac_08", "name": "Dr. Vikram Deshmukh", "workload_limit": 22, "is_available": True, "staff_room_floor_id": "floor_3"},
+    {"id": "fac_09", "name": "Prof. Aniket Kadam", "workload_limit": 22, "is_available": True, "staff_room_floor_id": "floor_2"},
+    {"id": "fac_10", "name": "Dr. Kavita Nair", "workload_limit": 22, "is_available": True, "staff_room_floor_id": "floor_3"},
 ]
 
 DEMO_ROOMS = [
@@ -188,17 +190,17 @@ DEMO_BATCHES = [
 ]
 
 DEMO_SUBJECTS = [
-    # --- Second Year (SY) Subjects ---
+    # --- Second Year (SY) Subjects (5 Theory + 2 Labs) ---
     {
         "id": "sub_sy_dsa",
         "name": "Data Structures & Analysis",
         "code": "DSA",
         "year_id": "SY",
         "division_ids": ["div_sy_a", "div_sy_b", "div_sy_c"],
-        "weekly_lectures": 4,
+        "weekly_lectures": 3,
         "duration_minutes": 60,
         "type": "Theory",
-        "eligible_faculty_ids": ["fac_01", "fac_03", "fac_07"],
+        "eligible_faculty_ids": ["fac_03", "fac_09", "fac_01"],
         "required_room_type": "Classroom",
         "lab_batch_required": False,
     },
@@ -208,10 +210,10 @@ DEMO_SUBJECTS = [
         "code": "DBMS",
         "year_id": "SY",
         "division_ids": ["div_sy_a", "div_sy_b", "div_sy_c"],
-        "weekly_lectures": 4,
+        "weekly_lectures": 3,
         "duration_minutes": 60,
         "type": "Theory",
-        "eligible_faculty_ids": ["fac_02", "fac_04", "fac_08"],
+        "eligible_faculty_ids": ["fac_04", "fac_09", "fac_02"],
         "required_room_type": "Classroom",
         "lab_batch_required": False,
     },
@@ -224,7 +226,33 @@ DEMO_SUBJECTS = [
         "weekly_lectures": 3,
         "duration_minutes": 60,
         "type": "Theory",
-        "eligible_faculty_ids": ["fac_05", "fac_06"],
+        "eligible_faculty_ids": ["fac_06", "fac_05"],
+        "required_room_type": "Classroom",
+        "lab_batch_required": False,
+    },
+    {
+        "id": "sub_sy_coa",
+        "name": "Computer Organization & Architecture",
+        "code": "COA",
+        "year_id": "SY",
+        "division_ids": ["div_sy_a", "div_sy_b", "div_sy_c"],
+        "weekly_lectures": 3,
+        "duration_minutes": 60,
+        "type": "Theory",
+        "eligible_faculty_ids": ["fac_07", "fac_08"],
+        "required_room_type": "Classroom",
+        "lab_batch_required": False,
+    },
+    {
+        "id": "sub_sy_oop",
+        "name": "Object Oriented Programming (Java)",
+        "code": "OOP",
+        "year_id": "SY",
+        "division_ids": ["div_sy_a", "div_sy_b", "div_sy_c"],
+        "weekly_lectures": 3,
+        "duration_minutes": 60,
+        "type": "Theory",
+        "eligible_faculty_ids": ["fac_09", "fac_03", "fac_06"],
         "required_room_type": "Classroom",
         "lab_batch_required": False,
     },
@@ -237,7 +265,7 @@ DEMO_SUBJECTS = [
         "weekly_lectures": 1,
         "duration_minutes": 120,
         "type": "Practical",
-        "eligible_faculty_ids": ["fac_01", "fac_03", "fac_07"],
+        "eligible_faculty_ids": ["fac_03", "fac_09"],
         "required_room_type": "Laboratory",
         "fixed_room_id": "lab_204",
         "fixed_room_name": "Software & Web Lab (Room 204)",
@@ -252,13 +280,13 @@ DEMO_SUBJECTS = [
         "weekly_lectures": 1,
         "duration_minutes": 120,
         "type": "Practical",
-        "eligible_faculty_ids": ["fac_02", "fac_04", "fac_08"],
+        "eligible_faculty_ids": ["fac_04", "fac_09"],
         "required_room_type": "Laboratory",
         "fixed_room_id": "lab_205",
         "fixed_room_name": "Database & Systems Lab (Room 205)",
         "lab_batch_required": True,
     },
-    # --- Third Year (TY) Subjects ---
+    # --- Third Year (TY) Subjects (5 Theory + 1 Elective + 2 Labs) ---
     {
         "id": "sub_ty_cn",
         "name": "Computer Networks",
@@ -268,7 +296,7 @@ DEMO_SUBJECTS = [
         "weekly_lectures": 3,
         "duration_minutes": 60,
         "type": "Theory",
-        "eligible_faculty_ids": ["fac_02", "fac_05", "fac_08"],
+        "eligible_faculty_ids": ["fac_02", "fac_05"],
         "required_room_type": "Classroom",
         "lab_batch_required": False,
     },
@@ -281,7 +309,7 @@ DEMO_SUBJECTS = [
         "weekly_lectures": 3,
         "duration_minutes": 60,
         "type": "Theory",
-        "eligible_faculty_ids": ["fac_04", "fac_06", "fac_07", "fac_08"],
+        "eligible_faculty_ids": ["fac_08", "fac_04"],
         "required_room_type": "Classroom",
         "lab_batch_required": False,
     },
@@ -299,6 +327,32 @@ DEMO_SUBJECTS = [
         "lab_batch_required": False,
     },
     {
+        "id": "sub_ty_ai",
+        "name": "Artificial Intelligence",
+        "code": "AI",
+        "year_id": "TY",
+        "division_ids": ["div_ty_a", "div_ty_b", "div_ty_c"],
+        "weekly_lectures": 3,
+        "duration_minutes": 60,
+        "type": "Theory",
+        "eligible_faculty_ids": ["fac_10", "fac_01"],
+        "required_room_type": "Classroom",
+        "lab_batch_required": False,
+    },
+    {
+        "id": "sub_ty_toc",
+        "name": "Theory of Computation",
+        "code": "TOC",
+        "year_id": "TY",
+        "division_ids": ["div_ty_a", "div_ty_b", "div_ty_c"],
+        "weekly_lectures": 3,
+        "duration_minutes": 60,
+        "type": "Theory",
+        "eligible_faculty_ids": ["fac_05", "fac_06"],
+        "required_room_type": "Classroom",
+        "lab_batch_required": False,
+    },
+    {
         "id": "sub_ty_cn_lab",
         "name": "Computer Networks Lab",
         "code": "CNL",
@@ -307,7 +361,7 @@ DEMO_SUBJECTS = [
         "weekly_lectures": 1,
         "duration_minutes": 120,
         "type": "Practical",
-        "eligible_faculty_ids": ["fac_02", "fac_05", "fac_08"],
+        "eligible_faculty_ids": ["fac_02", "fac_05"],
         "required_room_type": "Laboratory",
         "fixed_room_id": "lab_304",
         "fixed_room_name": "Network & Security Lab (Room 304)",
@@ -322,7 +376,7 @@ DEMO_SUBJECTS = [
         "weekly_lectures": 1,
         "duration_minutes": 120,
         "type": "Practical",
-        "eligible_faculty_ids": ["fac_04", "fac_06", "fac_07", "fac_08"],
+        "eligible_faculty_ids": ["fac_08", "fac_04"],
         "required_room_type": "Laboratory",
         "fixed_room_id": "lab_305",
         "fixed_room_name": "AI & Cloud Lab (Room 305)",
@@ -369,40 +423,57 @@ DEMO_SUBJECTS = [
 ]
 
 DEMO_ASSIGNMENTS = [
-    # SY A Assignments
+    # --- SY A Assignments ---
     {"id": "asgn_sy_a_dsa", "faculty_id": "fac_03", "subject_id": "sub_sy_dsa", "year_id": "SY", "division_id": "div_sy_a"},
     {"id": "asgn_sy_a_dbms", "faculty_id": "fac_04", "subject_id": "sub_sy_dbms", "year_id": "SY", "division_id": "div_sy_a"},
     {"id": "asgn_sy_a_dsgt", "faculty_id": "fac_06", "subject_id": "sub_sy_dsgt", "year_id": "SY", "division_id": "div_sy_a"},
+    {"id": "asgn_sy_a_coa", "faculty_id": "fac_07", "subject_id": "sub_sy_coa", "year_id": "SY", "division_id": "div_sy_a"},
+    {"id": "asgn_sy_a_oop", "faculty_id": "fac_09", "subject_id": "sub_sy_oop", "year_id": "SY", "division_id": "div_sy_a"},
     {"id": "asgn_sy_a_dsal", "faculty_id": "fac_03", "subject_id": "sub_sy_dsa_lab", "year_id": "SY", "division_id": "div_sy_a"},
     {"id": "asgn_sy_a_dbmsl", "faculty_id": "fac_04", "subject_id": "sub_sy_dbms_lab", "year_id": "SY", "division_id": "div_sy_a"},
-    # SY B Assignments
+
+    # --- SY B Assignments ---
     {"id": "asgn_sy_b_dsa", "faculty_id": "fac_03", "subject_id": "sub_sy_dsa", "year_id": "SY", "division_id": "div_sy_b"},
     {"id": "asgn_sy_b_dbms", "faculty_id": "fac_04", "subject_id": "sub_sy_dbms", "year_id": "SY", "division_id": "div_sy_b"},
     {"id": "asgn_sy_b_dsgt", "faculty_id": "fac_06", "subject_id": "sub_sy_dsgt", "year_id": "SY", "division_id": "div_sy_b"},
+    {"id": "asgn_sy_b_coa", "faculty_id": "fac_07", "subject_id": "sub_sy_coa", "year_id": "SY", "division_id": "div_sy_b"},
+    {"id": "asgn_sy_b_oop", "faculty_id": "fac_09", "subject_id": "sub_sy_oop", "year_id": "SY", "division_id": "div_sy_b"},
     {"id": "asgn_sy_b_dsal", "faculty_id": "fac_03", "subject_id": "sub_sy_dsa_lab", "year_id": "SY", "division_id": "div_sy_b"},
     {"id": "asgn_sy_b_dbmsl", "faculty_id": "fac_04", "subject_id": "sub_sy_dbms_lab", "year_id": "SY", "division_id": "div_sy_b"},
-    # SY C Assignments
-    {"id": "asgn_sy_c_dsa", "faculty_id": "fac_03", "subject_id": "sub_sy_dsa", "year_id": "SY", "division_id": "div_sy_c"},
-    {"id": "asgn_sy_c_dbms", "faculty_id": "fac_04", "subject_id": "sub_sy_dbms", "year_id": "SY", "division_id": "div_sy_c"},
+
+    # --- SY C Assignments ---
+    {"id": "asgn_sy_c_dsa", "faculty_id": "fac_09", "subject_id": "sub_sy_dsa", "year_id": "SY", "division_id": "div_sy_c"},
+    {"id": "asgn_sy_c_dbms", "faculty_id": "fac_09", "subject_id": "sub_sy_dbms", "year_id": "SY", "division_id": "div_sy_c"},
     {"id": "asgn_sy_c_dsgt", "faculty_id": "fac_06", "subject_id": "sub_sy_dsgt", "year_id": "SY", "division_id": "div_sy_c"},
-    {"id": "asgn_sy_c_dsal", "faculty_id": "fac_03", "subject_id": "sub_sy_dsa_lab", "year_id": "SY", "division_id": "div_sy_c"},
-    {"id": "asgn_sy_c_dbmsl", "faculty_id": "fac_04", "subject_id": "sub_sy_dbms_lab", "year_id": "SY", "division_id": "div_sy_c"},
-    # TY A Assignments
+    {"id": "asgn_sy_c_coa", "faculty_id": "fac_07", "subject_id": "sub_sy_coa", "year_id": "SY", "division_id": "div_sy_c"},
+    {"id": "asgn_sy_c_oop", "faculty_id": "fac_03", "subject_id": "sub_sy_oop", "year_id": "SY", "division_id": "div_sy_c"},
+    {"id": "asgn_sy_c_dsal", "faculty_id": "fac_09", "subject_id": "sub_sy_dsa_lab", "year_id": "SY", "division_id": "div_sy_c"},
+    {"id": "asgn_sy_c_dbmsl", "faculty_id": "fac_09", "subject_id": "sub_sy_dbms_lab", "year_id": "SY", "division_id": "div_sy_c"},
+
+    # --- TY A Assignments ---
     {"id": "asgn_ty_a_cn", "faculty_id": "fac_02", "subject_id": "sub_ty_cn", "year_id": "TY", "division_id": "div_ty_a"},
     {"id": "asgn_ty_a_os", "faculty_id": "fac_08", "subject_id": "sub_ty_os", "year_id": "TY", "division_id": "div_ty_a"},
     {"id": "asgn_ty_a_se", "faculty_id": "fac_01", "subject_id": "sub_ty_se", "year_id": "TY", "division_id": "div_ty_a"},
+    {"id": "asgn_ty_a_ai", "faculty_id": "fac_10", "subject_id": "sub_ty_ai", "year_id": "TY", "division_id": "div_ty_a"},
+    {"id": "asgn_ty_a_toc", "faculty_id": "fac_05", "subject_id": "sub_ty_toc", "year_id": "TY", "division_id": "div_ty_a"},
     {"id": "asgn_ty_a_cnl", "faculty_id": "fac_02", "subject_id": "sub_ty_cn_lab", "year_id": "TY", "division_id": "div_ty_a"},
     {"id": "asgn_ty_a_osl", "faculty_id": "fac_08", "subject_id": "sub_ty_os_lab", "year_id": "TY", "division_id": "div_ty_a"},
-    # TY B Assignments
+
+    # --- TY B Assignments ---
     {"id": "asgn_ty_b_cn", "faculty_id": "fac_02", "subject_id": "sub_ty_cn", "year_id": "TY", "division_id": "div_ty_b"},
     {"id": "asgn_ty_b_os", "faculty_id": "fac_08", "subject_id": "sub_ty_os", "year_id": "TY", "division_id": "div_ty_b"},
     {"id": "asgn_ty_b_se", "faculty_id": "fac_01", "subject_id": "sub_ty_se", "year_id": "TY", "division_id": "div_ty_b"},
+    {"id": "asgn_ty_b_ai", "faculty_id": "fac_10", "subject_id": "sub_ty_ai", "year_id": "TY", "division_id": "div_ty_b"},
+    {"id": "asgn_ty_b_toc", "faculty_id": "fac_05", "subject_id": "sub_ty_toc", "year_id": "TY", "division_id": "div_ty_b"},
     {"id": "asgn_ty_b_cnl", "faculty_id": "fac_02", "subject_id": "sub_ty_cn_lab", "year_id": "TY", "division_id": "div_ty_b"},
     {"id": "asgn_ty_b_osl", "faculty_id": "fac_08", "subject_id": "sub_ty_os_lab", "year_id": "TY", "division_id": "div_ty_b"},
-    # TY C Assignments
+
+    # --- TY C Assignments ---
     {"id": "asgn_ty_c_cn", "faculty_id": "fac_02", "subject_id": "sub_ty_cn", "year_id": "TY", "division_id": "div_ty_c"},
     {"id": "asgn_ty_c_os", "faculty_id": "fac_08", "subject_id": "sub_ty_os", "year_id": "TY", "division_id": "div_ty_c"},
     {"id": "asgn_ty_c_se", "faculty_id": "fac_01", "subject_id": "sub_ty_se", "year_id": "TY", "division_id": "div_ty_c"},
+    {"id": "asgn_ty_c_ai", "faculty_id": "fac_10", "subject_id": "sub_ty_ai", "year_id": "TY", "division_id": "div_ty_c"},
+    {"id": "asgn_ty_c_toc", "faculty_id": "fac_05", "subject_id": "sub_ty_toc", "year_id": "TY", "division_id": "div_ty_c"},
     {"id": "asgn_ty_c_cnl", "faculty_id": "fac_02", "subject_id": "sub_ty_cn_lab", "year_id": "TY", "division_id": "div_ty_c"},
     {"id": "asgn_ty_c_osl", "faculty_id": "fac_08", "subject_id": "sub_ty_os_lab", "year_id": "TY", "division_id": "div_ty_c"},
 ]
