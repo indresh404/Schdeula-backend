@@ -210,6 +210,49 @@ class SchedulingCoordinator:
             chosen_priority, chosen_req = request_priorities[0]
             valid_placements = request_feasibility[chosen_req.id]
 
+            # If chosen request is an MDM elective group, ensure candidate placements accommodate all sibling tracks simultaneously
+            sibling_electives = []
+            if getattr(chosen_req, "is_elective", False) and (getattr(chosen_req, "parent_subject_id", None) or getattr(chosen_req, "elective_group_id", None)):
+                p_sub = chosen_req.parent_subject_id or chosen_req.subject_id
+                l_idx = chosen_req.lecture_index
+                d_id = chosen_req.division_id
+                sibling_electives = [
+                    r for r in pending_requests
+                    if getattr(r, "is_elective", False) and
+                    (getattr(r, "parent_subject_id", None) == p_sub or r.subject_id == p_sub) and
+                    r.division_id == d_id and
+                    r.lecture_index == l_idx and
+                    r.id != chosen_req.id
+                ]
+                if sibling_electives:
+                    compatible_placements = []
+                    for cand in valid_placements:
+                        c_day = cand["day"]
+                        c_st = cand["start_time"]
+                        c_et = cand["end_time"]
+                        all_ok = True
+                        used_rooms = {cand["room_id"]}
+                        used_fac = {cand["faculty_id"]}
+                        for s_req in sibling_electives:
+                            s_room = getattr(s_req, "fixed_room_id", None)
+                            if s_room:
+                                if s_room in used_rooms or not self.room_manager.is_available(s_room, c_day, c_st, c_et)[0]:
+                                    all_ok = False
+                                    break
+                                used_rooms.add(s_room)
+                            avail_s_fac = [
+                                f for f in s_req.eligible_faculty_ids
+                                if f not in used_fac and self.faculty_manager.is_available(f, c_day, c_st, c_et)[0]
+                            ]
+                            if not avail_s_fac:
+                                all_ok = False
+                                break
+                            used_fac.add(avail_s_fac[0])
+                        if all_ok:
+                            compatible_placements.append(cand)
+                    if compatible_placements:
+                        valid_placements = compatible_placements
+
             # Step C: If 0 valid placements, attempt backtracking
             if not valid_placements:
                 if self.backtracking_solver.can_backtrack() and assignment_stack:
@@ -334,6 +377,48 @@ class SchedulingCoordinator:
                         }, scheduled_entries)
                         pending_requests.remove(b_req)
                         break
+
+            # Synchronize concurrent MDM elective tracks for this division so all tracks run at the exact same timing
+            if sibling_electives:
+                day = best_placement["day"]
+                s_t = best_placement["start_time"]
+                e_t = best_placement["end_time"]
+                for s_req in list(sibling_electives):
+                    avail_rooms = [
+                        rm for rm in self.rooms_data
+                        if self.room_manager.is_available(rm.get("id"), day, s_t, e_t)[0]
+                    ]
+                    if getattr(s_req, "fixed_room_id", None):
+                        fixed_m = [rm for rm in avail_rooms if rm.get("id") == s_req.fixed_room_id]
+                        if fixed_m:
+                            avail_rooms = fixed_m
+                        else:
+                            c_matches = [rm for rm in avail_rooms if rm.get("type") == "Classroom"]
+                            if c_matches:
+                                avail_rooms = c_matches
+
+                    avail_fac = [
+                        f_id for f_id in s_req.eligible_faculty_ids
+                        if self.faculty_manager.is_available(f_id, day, s_t, e_t)[0]
+                    ]
+                    if not avail_fac:
+                        avail_fac = [
+                            f["id"] for f in self.faculty_data
+                            if self.faculty_manager.is_available(f["id"], day, s_t, e_t)[0]
+                        ]
+
+                    if avail_rooms and avail_fac:
+                        chosen_room = avail_rooms[0]
+                        chosen_f_id = avail_fac[0]
+                        self._apply_assignment(s_req, {
+                            "day": day,
+                            "start_time": s_t,
+                            "end_time": e_t,
+                            "faculty_id": chosen_f_id,
+                            "room_id": chosen_room["id"],
+                        }, scheduled_entries)
+                        if s_req in pending_requests:
+                            pending_requests.remove(s_req)
 
             assignment_stack.append((chosen_req, best_placement, remaining_options))
 

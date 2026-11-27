@@ -302,7 +302,7 @@
     ],
     "weekly_lectures": 2,
     "duration_minutes": 60,
-    "type": "Elective",
+    "type": "Theory",
     "is_elective": true,
     "required_room_type": "Classroom",
     "elective_groups": [
@@ -312,7 +312,10 @@
         "fixed_room_id": "room_306",
         "faculty_id": "fac_05",
         "student_capacity": 35,
-        "weekly_lectures": 2
+        "weekly_lectures": 2,
+        "type": "Theory",
+        "duration_minutes": 60,
+        "required_room_type": "Classroom"
       },
       {
         "id": "egrp_cyber_1",
@@ -320,7 +323,10 @@
         "fixed_room_id": "room_307",
         "faculty_id": "fac_07",
         "student_capacity": 35,
-        "weekly_lectures": 2
+        "weekly_lectures": 2,
+        "type": "Theory",
+        "duration_minutes": 60,
+        "required_room_type": "Classroom"
       },
       {
         "id": "egrp_ai_1",
@@ -328,8 +334,12 @@
         "fixed_room_id": "room_308",
         "faculty_id": "fac_01",
         "student_capacity": 35,
-        "weekly_lectures": 2
+        "weekly_lectures": 2,
+        "type": "Theory",
+        "duration_minutes": 60,
+        "required_room_type": "Classroom"
       }
-    ]
+    ],
+    "lab_batch_required": false
   }
 ]

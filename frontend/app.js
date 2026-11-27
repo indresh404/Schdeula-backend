@@ -1478,9 +1478,10 @@ function renderTimetableGrid() {
         // Check if this slot contains MDM / elective tracks
         const isElective = matchingEntries.some((e) =>
           e.type !== "Practical" &&
-          !e.batch_id &&
           (e.is_elective ||
            e.type === "Elective" ||
+           Boolean(e.elective_group_id) ||
+           (e.parent_subject_id && e.parent_subject_id.toLowerCase().includes("mdm")) ||
            (e.subject_name && e.subject_name.toUpperCase().includes("MDM")) ||
            (e.subject_id && e.subject_id.toLowerCase().includes("mdm")))
         );

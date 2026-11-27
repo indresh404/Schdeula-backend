@@ -576,6 +576,106 @@ def schedule_step_node(state: SchedulingState) -> Dict[str, Any]:
                 pending_requests = [r for r in pending_requests if r["id"] != b_req["id"]]
                 break
 
+    # Synchronize concurrent MDM elective tracks for this division so all tracks run at the exact same timing
+    is_elec = bool(chosen_req.get("is_elective") or chosen_req.get("type") == "Elective")
+    if is_elec and (chosen_req.get("parent_subject_id") or chosen_req.get("elective_group_id")):
+        div_id = chosen_req.get("division_id")
+        p_sub = chosen_req.get("parent_subject_id") or chosen_req.get("subject_id")
+        l_idx = chosen_req.get("lecture_index")
+        day = best_placement["day"]
+        s_t = best_placement["start_time"]
+        e_t = best_placement["end_time"]
+
+        sib_elec_reqs = [
+            r for r in pending_requests
+            if (r.get("is_elective") or r.get("type") == "Elective") and
+            (r.get("parent_subject_id") == p_sub or r.get("subject_id") == p_sub) and
+            r.get("division_id") == div_id and
+            r.get("lecture_index") == l_idx and
+            r.get("id") != chosen_req.get("id")
+        ]
+
+        for s_req in list(sib_elec_reqs):
+            used_room_ids = {entry["room_id"]}.union({se["room_id"] for se in sibling_entries})
+            used_fac_ids = {entry["faculty_id"]}.union({se["faculty_id"] for se in sibling_entries})
+
+            avail_rooms = [
+                r for r in state.get("rooms_data", [])
+                if r.get("id") not in used_room_ids and
+                rm.is_available(r.get("id"), day, s_t, e_t)[0]
+            ]
+            if s_req.get("fixed_room_id"):
+                req_fixed = s_req.get("fixed_room_id")
+                fixed_matches = [r for r in avail_rooms if r.get("id") == req_fixed]
+                if fixed_matches:
+                    avail_rooms = fixed_matches
+                else:
+                    c_matches = [r for r in avail_rooms if r.get("type") == "Classroom"]
+                    if c_matches:
+                        avail_rooms = c_matches
+
+            avail_fac = [
+                f_id for f_id in s_req.get("eligible_faculty_ids", [])
+                if f_id not in used_fac_ids and
+                fm.is_available(f_id, day, s_t, e_t)[0]
+            ]
+            if not avail_fac:
+                avail_fac = [
+                    f["id"] for f in state.get("faculty_data", [])
+                    if f["id"] not in used_fac_ids and
+                    fm.is_available(f["id"], day, s_t, e_t)[0]
+                ]
+
+            if avail_rooms and avail_fac:
+                chosen_room = avail_rooms[0]
+                chosen_fac_id = avail_fac[0]
+                chosen_fac_obj = fm.get_faculty(chosen_fac_id)
+                chosen_fac_name = chosen_fac_obj.get("name", chosen_fac_id) if chosen_fac_obj else chosen_fac_id
+
+                sib_entry = {
+                    "id": f"entry_{uuid.uuid4().hex[:8]}",
+                    "lecture_request_id": s_req["id"],
+                    "subject_id": s_req["subject_id"],
+                    "subject_name": s_req["subject_name"],
+                    "year_id": s_req["year_id"],
+                    "division_id": s_req["division_id"],
+                    "division_name": s_req["division_name"],
+                    "batch_id": s_req.get("batch_id"),
+                    "batch_name": s_req.get("batch_name"),
+                    "faculty_id": chosen_fac_id,
+                    "faculty_name": chosen_fac_name,
+                    "room_id": chosen_room["id"],
+                    "room_name": chosen_room.get("name", chosen_room["id"]),
+                    "fixed_room_id": s_req.get("fixed_room_id"),
+                    "fixed_room_name": s_req.get("fixed_room_name"),
+                    "is_elective": True,
+                    "parent_subject_id": s_req.get("parent_subject_id"),
+                    "elective_group_id": s_req.get("elective_group_id"),
+                    "elective_group_name": s_req.get("elective_group_name"),
+                    "floor_id": chosen_room.get("floor_id"),
+                    "floor_name": chosen_room.get("floor_name"),
+                    "cluster_id": chosen_room.get("cluster_id"),
+                    "day": day,
+                    "start_time": s_t,
+                    "end_time": e_t,
+                    "type": "Theory",
+                    "duration_minutes": s_req.get("duration_minutes", 60),
+                    "student_capacity": s_req.get("student_capacity", 0),
+                    "is_manual": False,
+                }
+
+                fm.reserve(chosen_fac_id, day, s_t, e_t, sib_entry["id"])
+                rm.reserve(chosen_room["id"], day, s_t, e_t, sib_entry["id"])
+                fe.reserve_division_and_batch(
+                    div_id, s_req.get("batch_id"), day, s_t, e_t, sib_entry["id"],
+                    subject_id=s_req.get("subject_id"), faculty_id=chosen_fac_id, is_elective=True
+                )
+
+                sibling_entries.append(sib_entry)
+                sibling_requests.append(s_req)
+                scheduled_entries.append(sib_entry)
+                pending_requests = [r for r in pending_requests if r["id"] != s_req["id"]]
+
     assignment_stack = list(state.get("assignment_stack", []))
     assignment_stack.append({
         "request": chosen_req,

@@ -390,9 +390,10 @@ DEMO_SUBJECTS = [
         "division_ids": ["div_ty_a", "div_ty_b", "div_ty_c"],
         "weekly_lectures": 2,
         "duration_minutes": 60,
-        "type": "Elective",
+        "type": "Theory",
         "is_elective": True,
         "required_room_type": "Classroom",
+        "lab_batch_required": False,
         "elective_groups": [
             {
                 "id": "egrp_ds_1",
@@ -401,6 +402,9 @@ DEMO_SUBJECTS = [
                 "faculty_id": "fac_05",
                 "student_capacity": 35,
                 "weekly_lectures": 2,
+                "type": "Theory",
+                "duration_minutes": 60,
+                "required_room_type": "Classroom",
             },
             {
                 "id": "egrp_cyber_1",
@@ -409,6 +413,9 @@ DEMO_SUBJECTS = [
                 "faculty_id": "fac_07",
                 "student_capacity": 35,
                 "weekly_lectures": 2,
+                "type": "Theory",
+                "duration_minutes": 60,
+                "required_room_type": "Classroom",
             },
             {
                 "id": "egrp_ai_1",
@@ -417,6 +424,9 @@ DEMO_SUBJECTS = [
                 "faculty_id": "fac_01",
                 "student_capacity": 35,
                 "weekly_lectures": 2,
+                "type": "Theory",
+                "duration_minutes": 60,
+                "required_room_type": "Classroom",
             },
         ],
     },

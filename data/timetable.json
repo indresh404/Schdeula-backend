@@ -1,7 +1,7 @@
 {
   "entries": [
     {
-      "id": "entry_1cc52dcf",
+      "id": "entry_bc9bab70",
       "lecture_request_id": "req_sub_sy_dsa_lab_div_sy_a_batch_sy_a1_lec1",
       "subject_id": "sub_sy_dsa_lab",
       "subject_name": "Data Structures Lab",
@@ -32,7 +32,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_531e8603",
+      "id": "entry_902e8c93",
       "lecture_request_id": "req_sub_sy_dbms_lab_div_sy_a_batch_sy_a2_lec1",
       "subject_id": "sub_sy_dbms_lab",
       "subject_name": "DBMS Lab",
@@ -63,7 +63,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_e36d0b70",
+      "id": "entry_f6f08436",
       "lecture_request_id": "req_sub_sy_dsa_lab_div_sy_a_batch_sy_a2_lec1",
       "subject_id": "sub_sy_dsa_lab",
       "subject_name": "Data Structures Lab",
@@ -94,7 +94,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_3359dc94",
+      "id": "entry_6881d74e",
       "lecture_request_id": "req_sub_sy_dbms_lab_div_sy_a_batch_sy_a1_lec1",
       "subject_id": "sub_sy_dbms_lab",
       "subject_name": "DBMS Lab",
@@ -125,7 +125,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_f7e6a43a",
+      "id": "entry_bdbf561f",
       "lecture_request_id": "req_sub_sy_dsa_lab_div_sy_b_batch_sy_b1_lec1",
       "subject_id": "sub_sy_dsa_lab",
       "subject_name": "Data Structures Lab",
@@ -156,7 +156,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_0342d6a5",
+      "id": "entry_68e4496d",
       "lecture_request_id": "req_sub_sy_dbms_lab_div_sy_b_batch_sy_b2_lec1",
       "subject_id": "sub_sy_dbms_lab",
       "subject_name": "DBMS Lab",
@@ -187,7 +187,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_e740c9ef",
+      "id": "entry_aecbc161",
       "lecture_request_id": "req_sub_sy_dsa_lab_div_sy_b_batch_sy_b2_lec1",
       "subject_id": "sub_sy_dsa_lab",
       "subject_name": "Data Structures Lab",
@@ -218,7 +218,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_6ce99706",
+      "id": "entry_be590839",
       "lecture_request_id": "req_sub_sy_dbms_lab_div_sy_b_batch_sy_b1_lec1",
       "subject_id": "sub_sy_dbms_lab",
       "subject_name": "DBMS Lab",
@@ -249,7 +249,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_d53ca4db",
+      "id": "entry_104845d7",
       "lecture_request_id": "req_sub_sy_dsa_lab_div_sy_c_batch_sy_c1_lec1",
       "subject_id": "sub_sy_dsa_lab",
       "subject_name": "Data Structures Lab",
@@ -280,7 +280,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_c19ac250",
+      "id": "entry_e46413b8",
       "lecture_request_id": "req_sub_sy_dsa_lab_div_sy_c_batch_sy_c2_lec1",
       "subject_id": "sub_sy_dsa_lab",
       "subject_name": "Data Structures Lab",
@@ -311,7 +311,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_b6c27ce9",
+      "id": "entry_12deab61",
       "lecture_request_id": "req_sub_sy_dbms_lab_div_sy_c_batch_sy_c1_lec1",
       "subject_id": "sub_sy_dbms_lab",
       "subject_name": "DBMS Lab",
@@ -342,7 +342,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_022aed5a",
+      "id": "entry_e4a2fe96",
       "lecture_request_id": "req_sub_sy_dbms_lab_div_sy_c_batch_sy_c2_lec1",
       "subject_id": "sub_sy_dbms_lab",
       "subject_name": "DBMS Lab",
@@ -373,7 +373,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_74ec67a3",
+      "id": "entry_73d0125f",
       "lecture_request_id": "req_sub_ty_cn_lab_div_ty_a_batch_ty_a1_lec1",
       "subject_id": "sub_ty_cn_lab",
       "subject_name": "Computer Networks Lab",
@@ -404,7 +404,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_42bf370b",
+      "id": "entry_4443bfd2",
       "lecture_request_id": "req_sub_ty_os_lab_div_ty_a_batch_ty_a2_lec1",
       "subject_id": "sub_ty_os_lab",
       "subject_name": "Operating Systems Lab",
@@ -435,7 +435,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_ef34f999",
+      "id": "entry_181af591",
       "lecture_request_id": "req_sub_ty_cn_lab_div_ty_a_batch_ty_a2_lec1",
       "subject_id": "sub_ty_cn_lab",
       "subject_name": "Computer Networks Lab",
@@ -466,7 +466,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_f947feb7",
+      "id": "entry_8bd7be33",
       "lecture_request_id": "req_sub_ty_os_lab_div_ty_a_batch_ty_a1_lec1",
       "subject_id": "sub_ty_os_lab",
       "subject_name": "Operating Systems Lab",
@@ -497,7 +497,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_a950fdb2",
+      "id": "entry_8acb3b97",
       "lecture_request_id": "req_sub_ty_cn_lab_div_ty_b_batch_ty_b1_lec1",
       "subject_id": "sub_ty_cn_lab",
       "subject_name": "Computer Networks Lab",
@@ -528,7 +528,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_cfa382c6",
+      "id": "entry_f9c2719b",
       "lecture_request_id": "req_sub_ty_os_lab_div_ty_b_batch_ty_b2_lec1",
       "subject_id": "sub_ty_os_lab",
       "subject_name": "Operating Systems Lab",
@@ -559,7 +559,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_fbb75476",
+      "id": "entry_3a4ddc31",
       "lecture_request_id": "req_sub_ty_cn_lab_div_ty_b_batch_ty_b2_lec1",
       "subject_id": "sub_ty_cn_lab",
       "subject_name": "Computer Networks Lab",
@@ -590,7 +590,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_3a5939c7",
+      "id": "entry_8aae7e7b",
       "lecture_request_id": "req_sub_ty_os_lab_div_ty_b_batch_ty_b1_lec1",
       "subject_id": "sub_ty_os_lab",
       "subject_name": "Operating Systems Lab",
@@ -621,7 +621,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_a1696223",
+      "id": "entry_2f64bcb0",
       "lecture_request_id": "req_sub_ty_cn_lab_div_ty_c_batch_ty_c1_lec1",
       "subject_id": "sub_ty_cn_lab",
       "subject_name": "Computer Networks Lab",
@@ -652,7 +652,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_2ed51b2b",
+      "id": "entry_f5ae4828",
       "lecture_request_id": "req_sub_ty_os_lab_div_ty_c_batch_ty_c2_lec1",
       "subject_id": "sub_ty_os_lab",
       "subject_name": "Operating Systems Lab",
@@ -683,7 +683,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_832afede",
+      "id": "entry_c5ca81b9",
       "lecture_request_id": "req_sub_ty_cn_lab_div_ty_c_batch_ty_c2_lec1",
       "subject_id": "sub_ty_cn_lab",
       "subject_name": "Computer Networks Lab",
@@ -714,7 +714,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_0108e64c",
+      "id": "entry_b28d3bf4",
       "lecture_request_id": "req_sub_ty_os_lab_div_ty_c_batch_ty_c1_lec1",
       "subject_id": "sub_ty_os_lab",
       "subject_name": "Operating Systems Lab",
@@ -745,7 +745,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_dff15009",
+      "id": "entry_039c1f31",
       "lecture_request_id": "req_sub_sy_oop_div_sy_c_lec1",
       "subject_id": "sub_sy_oop",
       "subject_name": "Object Oriented Programming (Java)",
@@ -767,16 +767,16 @@
       "floor_id": "floor_2",
       "floor_name": null,
       "cluster_id": null,
-      "day": "Friday",
-      "start_time": "09:15",
-      "end_time": "10:15",
+      "day": "Tuesday",
+      "start_time": "15:45",
+      "end_time": "16:45",
       "type": "Theory",
       "duration_minutes": 60,
       "student_capacity": 65,
       "is_manual": false
     },
     {
-      "id": "entry_1fe191a0",
+      "id": "entry_6ffdb936",
       "lecture_request_id": "req_sub_sy_dsa_div_sy_a_lec1",
       "subject_id": "sub_sy_dsa",
       "subject_name": "Data Structures & Analysis",
@@ -807,7 +807,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_686f9d86",
+      "id": "entry_5c792527",
       "lecture_request_id": "req_sub_sy_dsa_div_sy_b_lec1",
       "subject_id": "sub_sy_dsa",
       "subject_name": "Data Structures & Analysis",
@@ -838,7 +838,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_a1503f8d",
+      "id": "entry_9c5ac63f",
       "lecture_request_id": "req_sub_ty_toc_div_ty_a_lec1",
       "subject_id": "sub_ty_toc",
       "subject_name": "Theory of Computation",
@@ -860,16 +860,16 @@
       "floor_id": "floor_3",
       "floor_name": null,
       "cluster_id": null,
-      "day": "Friday",
-      "start_time": "10:15",
-      "end_time": "11:15",
+      "day": "Wednesday",
+      "start_time": "09:15",
+      "end_time": "10:15",
       "type": "Theory",
       "duration_minutes": 60,
       "student_capacity": 65,
       "is_manual": false
     },
     {
-      "id": "entry_4fc6b78a",
+      "id": "entry_b2161aa4",
       "lecture_request_id": "req_sub_ty_toc_div_ty_b_lec1",
       "subject_id": "sub_ty_toc",
       "subject_name": "Theory of Computation",
@@ -891,16 +891,16 @@
       "floor_id": "floor_3",
       "floor_name": null,
       "cluster_id": null,
-      "day": "Wednesday",
-      "start_time": "10:15",
-      "end_time": "11:15",
+      "day": "Friday",
+      "start_time": "12:15",
+      "end_time": "13:15",
       "type": "Theory",
       "duration_minutes": 60,
       "student_capacity": 65,
       "is_manual": false
     },
     {
-      "id": "entry_73256925",
+      "id": "entry_28d8fcb8",
       "lecture_request_id": "req_sub_ty_toc_div_ty_c_lec1",
       "subject_id": "sub_ty_toc",
       "subject_name": "Theory of Computation",
@@ -931,7 +931,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_39804857",
+      "id": "entry_f30f27e6",
       "lecture_request_id": "req_sub_sy_oop_div_sy_b_lec1",
       "subject_id": "sub_sy_oop",
       "subject_name": "Object Oriented Programming (Java)",
@@ -942,8 +942,8 @@
       "batch_name": null,
       "faculty_id": "fac_09",
       "faculty_name": "Prof. Aniket Kadam",
-      "room_id": "room_201",
-      "room_name": "Classroom 201 (SY-A)",
+      "room_id": "room_202",
+      "room_name": "Classroom 202 (SY-B)",
       "fixed_room_id": null,
       "fixed_room_name": null,
       "is_elective": false,
@@ -953,16 +953,16 @@
       "floor_id": "floor_2",
       "floor_name": null,
       "cluster_id": null,
-      "day": "Tuesday",
-      "start_time": "10:15",
-      "end_time": "11:15",
+      "day": "Friday",
+      "start_time": "09:15",
+      "end_time": "10:15",
       "type": "Theory",
       "duration_minutes": 60,
       "student_capacity": 65,
       "is_manual": false
     },
     {
-      "id": "entry_f5e56ad3",
+      "id": "entry_351eed73",
       "lecture_request_id": "req_sub_sy_oop_div_sy_a_lec1",
       "subject_id": "sub_sy_oop",
       "subject_name": "Object Oriented Programming (Java)",
@@ -993,7 +993,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_56085c20",
+      "id": "entry_146be3dd",
       "lecture_request_id": "req_sub_sy_dsa_div_sy_c_lec1",
       "subject_id": "sub_sy_dsa",
       "subject_name": "Data Structures & Analysis",
@@ -1024,7 +1024,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_d3624237",
+      "id": "entry_be7b1bc9",
       "lecture_request_id": "req_sub_sy_dbms_div_sy_c_lec1",
       "subject_id": "sub_sy_dbms",
       "subject_name": "Database Management Systems",
@@ -1035,8 +1035,8 @@
       "batch_name": null,
       "faculty_id": "fac_09",
       "faculty_name": "Prof. Aniket Kadam",
-      "room_id": "room_202",
-      "room_name": "Classroom 202 (SY-B)",
+      "room_id": "room_201",
+      "room_name": "Classroom 201 (SY-A)",
       "fixed_room_id": null,
       "fixed_room_name": null,
       "is_elective": false,
@@ -1046,16 +1046,16 @@
       "floor_id": "floor_2",
       "floor_name": null,
       "cluster_id": null,
-      "day": "Friday",
-      "start_time": "12:15",
-      "end_time": "13:15",
+      "day": "Monday",
+      "start_time": "09:15",
+      "end_time": "10:15",
       "type": "Theory",
       "duration_minutes": 60,
       "student_capacity": 65,
       "is_manual": false
     },
     {
-      "id": "entry_d4c878f8",
+      "id": "entry_345ad63f",
       "lecture_request_id": "req_sub_ty_mdm_div_ty_b_egrp_ds_1_lec1",
       "subject_id": "sub_ty_mdm",
       "subject_name": "MDM",
@@ -1086,7 +1086,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_898e6817",
+      "id": "entry_79d9ca82",
       "lecture_request_id": "req_sub_ty_mdm_div_ty_b_egrp_cyber_1_lec1",
       "subject_id": "sub_ty_mdm",
       "subject_name": "MDM",
@@ -1117,7 +1117,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_a1329b94",
+      "id": "entry_586ecd2e",
       "lecture_request_id": "req_sub_ty_mdm_div_ty_b_egrp_ai_1_lec1",
       "subject_id": "sub_ty_mdm",
       "subject_name": "MDM",
@@ -1148,7 +1148,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_b5356236",
+      "id": "entry_508e83f6",
       "lecture_request_id": "req_sub_ty_mdm_div_ty_a_egrp_ds_1_lec1",
       "subject_id": "sub_ty_mdm",
       "subject_name": "MDM",
@@ -1179,7 +1179,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_56ae405d",
+      "id": "entry_37b6612b",
       "lecture_request_id": "req_sub_ty_mdm_div_ty_a_egrp_cyber_1_lec1",
       "subject_id": "sub_ty_mdm",
       "subject_name": "MDM",
@@ -1210,7 +1210,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_a811db41",
+      "id": "entry_5f1de810",
       "lecture_request_id": "req_sub_ty_mdm_div_ty_a_egrp_ai_1_lec1",
       "subject_id": "sub_ty_mdm",
       "subject_name": "MDM",
@@ -1241,7 +1241,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_24b82710",
+      "id": "entry_628fa57d",
       "lecture_request_id": "req_sub_ty_mdm_div_ty_c_egrp_ds_1_lec1",
       "subject_id": "sub_ty_mdm",
       "subject_name": "MDM",
@@ -1272,7 +1272,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_e983ab82",
+      "id": "entry_f0d5ffc3",
       "lecture_request_id": "req_sub_ty_mdm_div_ty_c_egrp_cyber_1_lec1",
       "subject_id": "sub_ty_mdm",
       "subject_name": "MDM",
@@ -1303,7 +1303,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_33a63198",
+      "id": "entry_999b3924",
       "lecture_request_id": "req_sub_ty_mdm_div_ty_c_egrp_ai_1_lec1",
       "subject_id": "sub_ty_mdm",
       "subject_name": "MDM",
@@ -1334,7 +1334,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_5130d486",
+      "id": "entry_d932cfeb",
       "lecture_request_id": "req_sub_sy_oop_div_sy_c_lec2",
       "subject_id": "sub_sy_oop",
       "subject_name": "Object Oriented Programming (Java)",
@@ -1365,7 +1365,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_d68d3d12",
+      "id": "entry_75f3ef64",
       "lecture_request_id": "req_sub_sy_dsa_div_sy_a_lec2",
       "subject_id": "sub_sy_dsa",
       "subject_name": "Data Structures & Analysis",
@@ -1396,7 +1396,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_5d678bd5",
+      "id": "entry_73039580",
       "lecture_request_id": "req_sub_sy_dsa_div_sy_b_lec2",
       "subject_id": "sub_sy_dsa",
       "subject_name": "Data Structures & Analysis",
@@ -1427,7 +1427,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_dc3994dd",
+      "id": "entry_b1d22eab",
       "lecture_request_id": "req_sub_sy_dsgt_div_sy_c_lec1",
       "subject_id": "sub_sy_dsgt",
       "subject_name": "Discrete Mathematics",
@@ -1458,7 +1458,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_3fb58aaa",
+      "id": "entry_f4e5cb86",
       "lecture_request_id": "req_sub_ty_toc_div_ty_b_lec2",
       "subject_id": "sub_ty_toc",
       "subject_name": "Theory of Computation",
@@ -1469,8 +1469,8 @@
       "batch_name": null,
       "faculty_id": "fac_05",
       "faculty_name": "Prof. Neha Kulkarni",
-      "room_id": "room_302",
-      "room_name": "Classroom 302 (TY-B)",
+      "room_id": "room_301",
+      "room_name": "Classroom 301 (TY-A)",
       "fixed_room_id": null,
       "fixed_room_name": null,
       "is_elective": false,
@@ -1480,16 +1480,16 @@
       "floor_id": "floor_3",
       "floor_name": null,
       "cluster_id": null,
-      "day": "Monday",
-      "start_time": "10:15",
-      "end_time": "11:15",
+      "day": "Friday",
+      "start_time": "09:15",
+      "end_time": "10:15",
       "type": "Theory",
       "duration_minutes": 60,
       "student_capacity": 65,
       "is_manual": false
     },
     {
-      "id": "entry_1b73932b",
+      "id": "entry_22625e8a",
       "lecture_request_id": "req_sub_sy_dsgt_div_sy_a_lec1",
       "subject_id": "sub_sy_dsgt",
       "subject_name": "Discrete Mathematics",
@@ -1520,7 +1520,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_0081c1c8",
+      "id": "entry_228c02cb",
       "lecture_request_id": "req_sub_ty_se_div_ty_b_lec1",
       "subject_id": "sub_ty_se",
       "subject_name": "Software Engineering",
@@ -1551,7 +1551,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_124fc6a8",
+      "id": "entry_a0a1d0cb",
       "lecture_request_id": "req_sub_sy_dsgt_div_sy_b_lec1",
       "subject_id": "sub_sy_dsgt",
       "subject_name": "Discrete Mathematics",
@@ -1582,7 +1582,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_1424d156",
+      "id": "entry_6bd6de17",
       "lecture_request_id": "req_sub_ty_toc_div_ty_a_lec2",
       "subject_id": "sub_ty_toc",
       "subject_name": "Theory of Computation",
@@ -1604,16 +1604,16 @@
       "floor_id": "floor_3",
       "floor_name": null,
       "cluster_id": null,
-      "day": "Wednesday",
-      "start_time": "09:15",
-      "end_time": "10:15",
+      "day": "Friday",
+      "start_time": "10:15",
+      "end_time": "11:15",
       "type": "Theory",
       "duration_minutes": 60,
       "student_capacity": 65,
       "is_manual": false
     },
     {
-      "id": "entry_2a4ff3de",
+      "id": "entry_fa21b253",
       "lecture_request_id": "req_sub_ty_se_div_ty_a_lec1",
       "subject_id": "sub_ty_se",
       "subject_name": "Software Engineering",
@@ -1644,7 +1644,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_fe281c1f",
+      "id": "entry_4aa3c90c",
       "lecture_request_id": "req_sub_ty_toc_div_ty_c_lec2",
       "subject_id": "sub_ty_toc",
       "subject_name": "Theory of Computation",
@@ -1675,7 +1675,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_1fd2fa29",
+      "id": "entry_919b9fe4",
       "lecture_request_id": "req_sub_ty_se_div_ty_c_lec1",
       "subject_id": "sub_ty_se",
       "subject_name": "Software Engineering",
@@ -1706,7 +1706,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_ea1757af",
+      "id": "entry_2b786a8d",
       "lecture_request_id": "req_sub_sy_oop_div_sy_b_lec2",
       "subject_id": "sub_sy_oop",
       "subject_name": "Object Oriented Programming (Java)",
@@ -1737,7 +1737,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_ce9b5990",
+      "id": "entry_41e0a9a8",
       "lecture_request_id": "req_sub_sy_oop_div_sy_a_lec2",
       "subject_id": "sub_sy_oop",
       "subject_name": "Object Oriented Programming (Java)",
@@ -1768,7 +1768,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_98763a02",
+      "id": "entry_23f0448e",
       "lecture_request_id": "req_sub_sy_dsa_div_sy_c_lec2",
       "subject_id": "sub_sy_dsa",
       "subject_name": "Data Structures & Analysis",
@@ -1790,16 +1790,16 @@
       "floor_id": "floor_2",
       "floor_name": null,
       "cluster_id": null,
-      "day": "Tuesday",
-      "start_time": "15:45",
-      "end_time": "16:45",
+      "day": "Thursday",
+      "start_time": "14:45",
+      "end_time": "15:45",
       "type": "Theory",
       "duration_minutes": 60,
       "student_capacity": 65,
       "is_manual": false
     },
     {
-      "id": "entry_51812bfc",
+      "id": "entry_373f1b20",
       "lecture_request_id": "req_sub_sy_dbms_div_sy_c_lec2",
       "subject_id": "sub_sy_dbms",
       "subject_name": "Database Management Systems",
@@ -1830,7 +1830,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_3e84b881",
+      "id": "entry_0f5f8a70",
       "lecture_request_id": "req_sub_ty_mdm_div_ty_b_egrp_ds_1_lec2",
       "subject_id": "sub_ty_mdm",
       "subject_name": "MDM",
@@ -1861,7 +1861,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_2974d0f7",
+      "id": "entry_d66f35eb",
       "lecture_request_id": "req_sub_ty_mdm_div_ty_b_egrp_cyber_1_lec2",
       "subject_id": "sub_ty_mdm",
       "subject_name": "MDM",
@@ -1892,7 +1892,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_9115c6e6",
+      "id": "entry_34a16bfc",
       "lecture_request_id": "req_sub_ty_mdm_div_ty_b_egrp_ai_1_lec2",
       "subject_id": "sub_ty_mdm",
       "subject_name": "MDM",
@@ -1923,7 +1923,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_4f6034b7",
+      "id": "entry_1a372a8f",
       "lecture_request_id": "req_sub_ty_mdm_div_ty_a_egrp_ds_1_lec2",
       "subject_id": "sub_ty_mdm",
       "subject_name": "MDM",
@@ -1954,7 +1954,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_e58a430f",
+      "id": "entry_e104d414",
       "lecture_request_id": "req_sub_ty_mdm_div_ty_a_egrp_cyber_1_lec2",
       "subject_id": "sub_ty_mdm",
       "subject_name": "MDM",
@@ -1985,7 +1985,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_30a05962",
+      "id": "entry_564ee891",
       "lecture_request_id": "req_sub_ty_mdm_div_ty_a_egrp_ai_1_lec2",
       "subject_id": "sub_ty_mdm",
       "subject_name": "MDM",
@@ -2016,7 +2016,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_0a6e50d6",
+      "id": "entry_fd417b65",
       "lecture_request_id": "req_sub_ty_mdm_div_ty_c_egrp_ds_1_lec2",
       "subject_id": "sub_ty_mdm",
       "subject_name": "MDM",
@@ -2047,7 +2047,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_3f037a59",
+      "id": "entry_f8c8f88d",
       "lecture_request_id": "req_sub_ty_mdm_div_ty_c_egrp_cyber_1_lec2",
       "subject_id": "sub_ty_mdm",
       "subject_name": "MDM",
@@ -2078,7 +2078,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_10fe1c71",
+      "id": "entry_cf4c4ab4",
       "lecture_request_id": "req_sub_ty_mdm_div_ty_c_egrp_ai_1_lec2",
       "subject_id": "sub_ty_mdm",
       "subject_name": "MDM",
@@ -2109,7 +2109,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_0d6b8b52",
+      "id": "entry_7f9bbdcc",
       "lecture_request_id": "req_sub_sy_oop_div_sy_c_lec3",
       "subject_id": "sub_sy_oop",
       "subject_name": "Object Oriented Programming (Java)",
@@ -2131,16 +2131,16 @@
       "floor_id": "floor_2",
       "floor_name": null,
       "cluster_id": null,
-      "day": "Wednesday",
-      "start_time": "12:15",
-      "end_time": "13:15",
+      "day": "Friday",
+      "start_time": "09:15",
+      "end_time": "10:15",
       "type": "Theory",
       "duration_minutes": 60,
       "student_capacity": 65,
       "is_manual": false
     },
     {
-      "id": "entry_49a72572",
+      "id": "entry_fa45394c",
       "lecture_request_id": "req_sub_sy_dsgt_div_sy_c_lec2",
       "subject_id": "sub_sy_dsgt",
       "subject_name": "Discrete Mathematics",
@@ -2162,16 +2162,16 @@
       "floor_id": "floor_2",
       "floor_name": null,
       "cluster_id": null,
-      "day": "Thursday",
-      "start_time": "14:45",
-      "end_time": "15:45",
+      "day": "Wednesday",
+      "start_time": "12:15",
+      "end_time": "13:15",
       "type": "Theory",
       "duration_minutes": 60,
       "student_capacity": 65,
       "is_manual": false
     },
     {
-      "id": "entry_512530af",
+      "id": "entry_d4290100",
       "lecture_request_id": "req_sub_sy_dsa_div_sy_a_lec3",
       "subject_id": "sub_sy_dsa",
       "subject_name": "Data Structures & Analysis",
@@ -2202,7 +2202,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_ba1c021c",
+      "id": "entry_fb9ef1df",
       "lecture_request_id": "req_sub_sy_dsa_div_sy_b_lec3",
       "subject_id": "sub_sy_dsa",
       "subject_name": "Data Structures & Analysis",
@@ -2233,7 +2233,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_cf12c896",
+      "id": "entry_6da981e5",
       "lecture_request_id": "req_sub_ty_toc_div_ty_b_lec3",
       "subject_id": "sub_ty_toc",
       "subject_name": "Theory of Computation",
@@ -2255,16 +2255,16 @@
       "floor_id": "floor_3",
       "floor_name": null,
       "cluster_id": null,
-      "day": "Friday",
-      "start_time": "12:15",
-      "end_time": "13:15",
+      "day": "Wednesday",
+      "start_time": "10:15",
+      "end_time": "11:15",
       "type": "Theory",
       "duration_minutes": 60,
       "student_capacity": 65,
       "is_manual": false
     },
     {
-      "id": "entry_45ce252e",
+      "id": "entry_f369ce73",
       "lecture_request_id": "req_sub_ty_se_div_ty_b_lec2",
       "subject_id": "sub_ty_se",
       "subject_name": "Software Engineering",
@@ -2295,7 +2295,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_5077ea63",
+      "id": "entry_7827e8a6",
       "lecture_request_id": "req_sub_sy_dbms_div_sy_a_lec1",
       "subject_id": "sub_sy_dbms",
       "subject_name": "Database Management Systems",
@@ -2326,7 +2326,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_b62c9545",
+      "id": "entry_152c38e1",
       "lecture_request_id": "req_sub_sy_dbms_div_sy_b_lec1",
       "subject_id": "sub_sy_dbms",
       "subject_name": "Database Management Systems",
@@ -2357,7 +2357,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_0bcc5f51",
+      "id": "entry_ad2a0e6b",
       "lecture_request_id": "req_sub_sy_dsgt_div_sy_b_lec2",
       "subject_id": "sub_sy_dsgt",
       "subject_name": "Discrete Mathematics",
@@ -2388,7 +2388,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_997ef2d5",
+      "id": "entry_ea55ee31",
       "lecture_request_id": "req_sub_sy_dsgt_div_sy_a_lec2",
       "subject_id": "sub_sy_dsgt",
       "subject_name": "Discrete Mathematics",
@@ -2419,7 +2419,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_38daa6bf",
+      "id": "entry_9f9e906c",
       "lecture_request_id": "req_sub_ty_toc_div_ty_a_lec3",
       "subject_id": "sub_ty_toc",
       "subject_name": "Theory of Computation",
@@ -2450,7 +2450,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_605d54d2",
+      "id": "entry_c5c43830",
       "lecture_request_id": "req_sub_ty_toc_div_ty_c_lec3",
       "subject_id": "sub_ty_toc",
       "subject_name": "Theory of Computation",
@@ -2481,7 +2481,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_691dc2eb",
+      "id": "entry_9df57ae9",
       "lecture_request_id": "req_sub_ty_se_div_ty_a_lec2",
       "subject_id": "sub_ty_se",
       "subject_name": "Software Engineering",
@@ -2512,7 +2512,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_a0d31fa9",
+      "id": "entry_c1b25ac4",
       "lecture_request_id": "req_sub_ty_se_div_ty_c_lec2",
       "subject_id": "sub_ty_se",
       "subject_name": "Software Engineering",
@@ -2543,7 +2543,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_1db77acf",
+      "id": "entry_2c2fd3f0",
       "lecture_request_id": "req_sub_sy_oop_div_sy_a_lec3",
       "subject_id": "sub_sy_oop",
       "subject_name": "Object Oriented Programming (Java)",
@@ -2574,7 +2574,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_0f5279da",
+      "id": "entry_3b6c195b",
       "lecture_request_id": "req_sub_sy_dsa_div_sy_c_lec3",
       "subject_id": "sub_sy_dsa",
       "subject_name": "Data Structures & Analysis",
@@ -2605,44 +2605,13 @@
       "is_manual": false
     },
     {
-      "id": "entry_49171bab",
+      "id": "entry_b6721203",
       "lecture_request_id": "req_sub_sy_dbms_div_sy_c_lec3",
       "subject_id": "sub_sy_dbms",
       "subject_name": "Database Management Systems",
       "year_id": "SY",
       "division_id": "div_sy_c",
       "division_name": "Division C",
-      "batch_id": null,
-      "batch_name": null,
-      "faculty_id": "fac_09",
-      "faculty_name": "Prof. Aniket Kadam",
-      "room_id": "room_201",
-      "room_name": "Classroom 201 (SY-A)",
-      "fixed_room_id": null,
-      "fixed_room_name": null,
-      "is_elective": false,
-      "parent_subject_id": null,
-      "elective_group_id": null,
-      "elective_group_name": null,
-      "floor_id": "floor_2",
-      "floor_name": null,
-      "cluster_id": null,
-      "day": "Monday",
-      "start_time": "09:15",
-      "end_time": "10:15",
-      "type": "Theory",
-      "duration_minutes": 60,
-      "student_capacity": 65,
-      "is_manual": false
-    },
-    {
-      "id": "entry_d5529c7b",
-      "lecture_request_id": "req_sub_sy_oop_div_sy_b_lec3",
-      "subject_id": "sub_sy_oop",
-      "subject_name": "Object Oriented Programming (Java)",
-      "year_id": "SY",
-      "division_id": "div_sy_b",
-      "division_name": "Division B",
       "batch_id": null,
       "batch_name": null,
       "faculty_id": "fac_09",
@@ -2659,15 +2628,46 @@
       "floor_name": null,
       "cluster_id": null,
       "day": "Friday",
-      "start_time": "09:15",
-      "end_time": "10:15",
+      "start_time": "12:15",
+      "end_time": "13:15",
       "type": "Theory",
       "duration_minutes": 60,
       "student_capacity": 65,
       "is_manual": false
     },
     {
-      "id": "entry_388ff936",
+      "id": "entry_2d78c997",
+      "lecture_request_id": "req_sub_sy_oop_div_sy_b_lec3",
+      "subject_id": "sub_sy_oop",
+      "subject_name": "Object Oriented Programming (Java)",
+      "year_id": "SY",
+      "division_id": "div_sy_b",
+      "division_name": "Division B",
+      "batch_id": null,
+      "batch_name": null,
+      "faculty_id": "fac_09",
+      "faculty_name": "Prof. Aniket Kadam",
+      "room_id": "room_201",
+      "room_name": "Classroom 201 (SY-A)",
+      "fixed_room_id": null,
+      "fixed_room_name": null,
+      "is_elective": false,
+      "parent_subject_id": null,
+      "elective_group_id": null,
+      "elective_group_name": null,
+      "floor_id": "floor_2",
+      "floor_name": null,
+      "cluster_id": null,
+      "day": "Tuesday",
+      "start_time": "10:15",
+      "end_time": "11:15",
+      "type": "Theory",
+      "duration_minutes": 60,
+      "student_capacity": 65,
+      "is_manual": false
+    },
+    {
+      "id": "entry_eb96a2a4",
       "lecture_request_id": "req_sub_sy_dsgt_div_sy_c_lec3",
       "subject_id": "sub_sy_dsgt",
       "subject_name": "Discrete Mathematics",
@@ -2698,7 +2698,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_3bd430f0",
+      "id": "entry_9271d062",
       "lecture_request_id": "req_sub_sy_dsgt_div_sy_b_lec3",
       "subject_id": "sub_sy_dsgt",
       "subject_name": "Discrete Mathematics",
@@ -2709,8 +2709,8 @@
       "batch_name": null,
       "faculty_id": "fac_06",
       "faculty_name": "Prof. Rohan Joshi",
-      "room_id": "room_203",
-      "room_name": "Classroom 203 (SY-C)",
+      "room_id": "room_202",
+      "room_name": "Classroom 202 (SY-B)",
       "fixed_room_id": null,
       "fixed_room_name": null,
       "is_elective": false,
@@ -2720,16 +2720,16 @@
       "floor_id": "floor_2",
       "floor_name": null,
       "cluster_id": null,
-      "day": "Friday",
-      "start_time": "11:15",
-      "end_time": "12:15",
+      "day": "Monday",
+      "start_time": "10:15",
+      "end_time": "11:15",
       "type": "Theory",
       "duration_minutes": 60,
       "student_capacity": 65,
       "is_manual": false
     },
     {
-      "id": "entry_5ec7ffb0",
+      "id": "entry_0e4a39dd",
       "lecture_request_id": "req_sub_sy_dsgt_div_sy_a_lec3",
       "subject_id": "sub_sy_dsgt",
       "subject_name": "Discrete Mathematics",
@@ -2751,16 +2751,16 @@
       "floor_id": "floor_2",
       "floor_name": null,
       "cluster_id": null,
-      "day": "Tuesday",
-      "start_time": "11:15",
-      "end_time": "12:15",
+      "day": "Monday",
+      "start_time": "12:15",
+      "end_time": "13:15",
       "type": "Theory",
       "duration_minutes": 60,
       "student_capacity": 65,
       "is_manual": false
     },
     {
-      "id": "entry_f764d6d7",
+      "id": "entry_39410306",
       "lecture_request_id": "req_sub_ty_se_div_ty_b_lec3",
       "subject_id": "sub_ty_se",
       "subject_name": "Software Engineering",
@@ -2791,7 +2791,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_b4ee0ff0",
+      "id": "entry_70f5e0d5",
       "lecture_request_id": "req_sub_sy_dbms_div_sy_b_lec2",
       "subject_id": "sub_sy_dbms",
       "subject_name": "Database Management Systems",
@@ -2822,7 +2822,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_ace4e9d1",
+      "id": "entry_fac71eb7",
       "lecture_request_id": "req_sub_ty_cn_div_ty_a_lec1",
       "subject_id": "sub_ty_cn",
       "subject_name": "Computer Networks",
@@ -2833,8 +2833,8 @@
       "batch_name": null,
       "faculty_id": "fac_02",
       "faculty_name": "Dr. Rajesh Sharma",
-      "room_id": "room_302",
-      "room_name": "Classroom 302 (TY-B)",
+      "room_id": "room_303",
+      "room_name": "Classroom 303 (TY-C)",
       "fixed_room_id": null,
       "fixed_room_name": null,
       "is_elective": false,
@@ -2844,16 +2844,16 @@
       "floor_id": "floor_3",
       "floor_name": null,
       "cluster_id": null,
-      "day": "Wednesday",
-      "start_time": "11:15",
-      "end_time": "12:15",
+      "day": "Friday",
+      "start_time": "09:15",
+      "end_time": "10:15",
       "type": "Theory",
       "duration_minutes": 60,
       "student_capacity": 65,
       "is_manual": false
     },
     {
-      "id": "entry_83d6aa30",
+      "id": "entry_318ada1f",
       "lecture_request_id": "req_sub_ty_os_div_ty_a_lec1",
       "subject_id": "sub_ty_os",
       "subject_name": "Operating Systems",
@@ -2884,7 +2884,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_1d96aaeb",
+      "id": "entry_60661100",
       "lecture_request_id": "req_sub_ty_cn_div_ty_b_lec1",
       "subject_id": "sub_ty_cn",
       "subject_name": "Computer Networks",
@@ -2915,7 +2915,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_f387584f",
+      "id": "entry_a227884d",
       "lecture_request_id": "req_sub_ty_os_div_ty_b_lec1",
       "subject_id": "sub_ty_os",
       "subject_name": "Operating Systems",
@@ -2946,7 +2946,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_da5e7c61",
+      "id": "entry_d1bda278",
       "lecture_request_id": "req_sub_ty_os_div_ty_c_lec1",
       "subject_id": "sub_ty_os",
       "subject_name": "Operating Systems",
@@ -2977,7 +2977,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_9ec88a8e",
+      "id": "entry_1a07121c",
       "lecture_request_id": "req_sub_sy_dbms_div_sy_a_lec2",
       "subject_id": "sub_sy_dbms",
       "subject_name": "Database Management Systems",
@@ -3008,7 +3008,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_5c1d61f8",
+      "id": "entry_c8b22cef",
       "lecture_request_id": "req_sub_ty_cn_div_ty_c_lec1",
       "subject_id": "sub_ty_cn",
       "subject_name": "Computer Networks",
@@ -3039,7 +3039,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_4247ba12",
+      "id": "entry_7617a364",
       "lecture_request_id": "req_sub_ty_se_div_ty_c_lec3",
       "subject_id": "sub_ty_se",
       "subject_name": "Software Engineering",
@@ -3070,7 +3070,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_15bfb857",
+      "id": "entry_f0cee1a7",
       "lecture_request_id": "req_sub_ty_se_div_ty_a_lec3",
       "subject_id": "sub_ty_se",
       "subject_name": "Software Engineering",
@@ -3101,7 +3101,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_a6a1716d",
+      "id": "entry_4a7a67a6",
       "lecture_request_id": "req_sub_ty_os_div_ty_a_lec2",
       "subject_id": "sub_ty_os",
       "subject_name": "Operating Systems",
@@ -3132,7 +3132,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_7921ca84",
+      "id": "entry_d1baa137",
       "lecture_request_id": "req_sub_ty_os_div_ty_b_lec2",
       "subject_id": "sub_ty_os",
       "subject_name": "Operating Systems",
@@ -3163,7 +3163,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_c5d36bb1",
+      "id": "entry_8c39f860",
       "lecture_request_id": "req_sub_ty_os_div_ty_c_lec2",
       "subject_id": "sub_ty_os",
       "subject_name": "Operating Systems",
@@ -3194,7 +3194,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_cdcb858c",
+      "id": "entry_c883a91f",
       "lecture_request_id": "req_sub_ty_cn_div_ty_a_lec2",
       "subject_id": "sub_ty_cn",
       "subject_name": "Computer Networks",
@@ -3225,7 +3225,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_528428f7",
+      "id": "entry_5a8e7c9b",
       "lecture_request_id": "req_sub_ty_cn_div_ty_b_lec2",
       "subject_id": "sub_ty_cn",
       "subject_name": "Computer Networks",
@@ -3256,7 +3256,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_7280a691",
+      "id": "entry_3d46bc93",
       "lecture_request_id": "req_sub_sy_dbms_div_sy_b_lec3",
       "subject_id": "sub_sy_dbms",
       "subject_name": "Database Management Systems",
@@ -3287,7 +3287,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_dfd9a314",
+      "id": "entry_6fc7363f",
       "lecture_request_id": "req_sub_ty_cn_div_ty_c_lec2",
       "subject_id": "sub_ty_cn",
       "subject_name": "Computer Networks",
@@ -3318,7 +3318,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_f2cc825d",
+      "id": "entry_a0c8c28e",
       "lecture_request_id": "req_sub_sy_dbms_div_sy_a_lec3",
       "subject_id": "sub_sy_dbms",
       "subject_name": "Database Management Systems",
@@ -3349,7 +3349,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_c3e90b23",
+      "id": "entry_6f7c2b16",
       "lecture_request_id": "req_sub_ty_os_div_ty_a_lec3",
       "subject_id": "sub_ty_os",
       "subject_name": "Operating Systems",
@@ -3380,7 +3380,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_e546cd31",
+      "id": "entry_dcf5a2a9",
       "lecture_request_id": "req_sub_ty_os_div_ty_b_lec3",
       "subject_id": "sub_ty_os",
       "subject_name": "Operating Systems",
@@ -3411,7 +3411,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_29b772a2",
+      "id": "entry_6beb3bf4",
       "lecture_request_id": "req_sub_ty_os_div_ty_c_lec3",
       "subject_id": "sub_ty_os",
       "subject_name": "Operating Systems",
@@ -3442,7 +3442,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_d4de2d7b",
+      "id": "entry_4ef45ad6",
       "lecture_request_id": "req_sub_ty_cn_div_ty_a_lec3",
       "subject_id": "sub_ty_cn",
       "subject_name": "Computer Networks",
@@ -3453,8 +3453,8 @@
       "batch_name": null,
       "faculty_id": "fac_02",
       "faculty_name": "Dr. Rajesh Sharma",
-      "room_id": "room_303",
-      "room_name": "Classroom 303 (TY-C)",
+      "room_id": "room_302",
+      "room_name": "Classroom 302 (TY-B)",
       "fixed_room_id": null,
       "fixed_room_name": null,
       "is_elective": false,
@@ -3464,16 +3464,16 @@
       "floor_id": "floor_3",
       "floor_name": null,
       "cluster_id": null,
-      "day": "Friday",
-      "start_time": "09:15",
-      "end_time": "10:15",
+      "day": "Wednesday",
+      "start_time": "11:15",
+      "end_time": "12:15",
       "type": "Theory",
       "duration_minutes": 60,
       "student_capacity": 65,
       "is_manual": false
     },
     {
-      "id": "entry_c697319b",
+      "id": "entry_b31a69d8",
       "lecture_request_id": "req_sub_ty_cn_div_ty_b_lec3",
       "subject_id": "sub_ty_cn",
       "subject_name": "Computer Networks",
@@ -3504,7 +3504,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_43f53169",
+      "id": "entry_4a61ef4a",
       "lecture_request_id": "req_sub_ty_cn_div_ty_c_lec3",
       "subject_id": "sub_ty_cn",
       "subject_name": "Computer Networks",
@@ -3535,7 +3535,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_948bdda9",
+      "id": "entry_c49c6a08",
       "lecture_request_id": "req_sub_sy_coa_div_sy_c_lec1",
       "subject_id": "sub_sy_coa",
       "subject_name": "Computer Organization & Architecture",
@@ -3546,8 +3546,8 @@
       "batch_name": null,
       "faculty_id": "fac_07",
       "faculty_name": "Prof. Pooja Shah",
-      "room_id": "room_201",
-      "room_name": "Classroom 201 (SY-A)",
+      "room_id": "room_203",
+      "room_name": "Classroom 203 (SY-C)",
       "fixed_room_id": null,
       "fixed_room_name": null,
       "is_elective": false,
@@ -3557,16 +3557,16 @@
       "floor_id": "floor_2",
       "floor_name": null,
       "cluster_id": null,
-      "day": "Wednesday",
-      "start_time": "13:45",
-      "end_time": "14:45",
+      "day": "Friday",
+      "start_time": "10:15",
+      "end_time": "11:15",
       "type": "Theory",
       "duration_minutes": 60,
       "student_capacity": 65,
       "is_manual": false
     },
     {
-      "id": "entry_a44a1dba",
+      "id": "entry_2516bb48",
       "lecture_request_id": "req_sub_ty_ai_div_ty_a_lec1",
       "subject_id": "sub_ty_ai",
       "subject_name": "Artificial Intelligence",
@@ -3597,7 +3597,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_98173be4",
+      "id": "entry_7f9a6749",
       "lecture_request_id": "req_sub_ty_ai_div_ty_b_lec1",
       "subject_id": "sub_ty_ai",
       "subject_name": "Artificial Intelligence",
@@ -3608,8 +3608,8 @@
       "batch_name": null,
       "faculty_id": "fac_10",
       "faculty_name": "Dr. Kavita Nair",
-      "room_id": "room_301",
-      "room_name": "Classroom 301 (TY-A)",
+      "room_id": "room_302",
+      "room_name": "Classroom 302 (TY-B)",
       "fixed_room_id": null,
       "fixed_room_name": null,
       "is_elective": false,
@@ -3619,16 +3619,16 @@
       "floor_id": "floor_3",
       "floor_name": null,
       "cluster_id": null,
-      "day": "Wednesday",
-      "start_time": "12:15",
-      "end_time": "13:15",
+      "day": "Monday",
+      "start_time": "14:45",
+      "end_time": "15:45",
       "type": "Theory",
       "duration_minutes": 60,
       "student_capacity": 65,
       "is_manual": false
     },
     {
-      "id": "entry_5a630a28",
+      "id": "entry_7976086c",
       "lecture_request_id": "req_sub_ty_ai_div_ty_c_lec1",
       "subject_id": "sub_ty_ai",
       "subject_name": "Artificial Intelligence",
@@ -3659,7 +3659,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_b02240a1",
+      "id": "entry_23098200",
       "lecture_request_id": "req_sub_sy_coa_div_sy_b_lec1",
       "subject_id": "sub_sy_coa",
       "subject_name": "Computer Organization & Architecture",
@@ -3690,7 +3690,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_5a31d696",
+      "id": "entry_fd8a9555",
       "lecture_request_id": "req_sub_sy_coa_div_sy_a_lec1",
       "subject_id": "sub_sy_coa",
       "subject_name": "Computer Organization & Architecture",
@@ -3721,7 +3721,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_425df2da",
+      "id": "entry_9a4df3fc",
       "lecture_request_id": "req_sub_sy_coa_div_sy_c_lec2",
       "subject_id": "sub_sy_coa",
       "subject_name": "Computer Organization & Architecture",
@@ -3732,8 +3732,8 @@
       "batch_name": null,
       "faculty_id": "fac_07",
       "faculty_name": "Prof. Pooja Shah",
-      "room_id": "room_203",
-      "room_name": "Classroom 203 (SY-C)",
+      "room_id": "room_201",
+      "room_name": "Classroom 201 (SY-A)",
       "fixed_room_id": null,
       "fixed_room_name": null,
       "is_elective": false,
@@ -3743,16 +3743,16 @@
       "floor_id": "floor_2",
       "floor_name": null,
       "cluster_id": null,
-      "day": "Friday",
-      "start_time": "10:15",
-      "end_time": "11:15",
+      "day": "Wednesday",
+      "start_time": "13:45",
+      "end_time": "14:45",
       "type": "Theory",
       "duration_minutes": 60,
       "student_capacity": 65,
       "is_manual": false
     },
     {
-      "id": "entry_fc3f9844",
+      "id": "entry_bfa47676",
       "lecture_request_id": "req_sub_ty_ai_div_ty_a_lec2",
       "subject_id": "sub_ty_ai",
       "subject_name": "Artificial Intelligence",
@@ -3783,7 +3783,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_7edcf6d3",
+      "id": "entry_87f30d73",
       "lecture_request_id": "req_sub_ty_ai_div_ty_b_lec2",
       "subject_id": "sub_ty_ai",
       "subject_name": "Artificial Intelligence",
@@ -3794,8 +3794,8 @@
       "batch_name": null,
       "faculty_id": "fac_10",
       "faculty_name": "Dr. Kavita Nair",
-      "room_id": "room_301",
-      "room_name": "Classroom 301 (TY-A)",
+      "room_id": "room_302",
+      "room_name": "Classroom 302 (TY-B)",
       "fixed_room_id": null,
       "fixed_room_name": null,
       "is_elective": false,
@@ -3805,16 +3805,16 @@
       "floor_id": "floor_3",
       "floor_name": null,
       "cluster_id": null,
-      "day": "Friday",
-      "start_time": "09:15",
-      "end_time": "10:15",
+      "day": "Monday",
+      "start_time": "10:15",
+      "end_time": "11:15",
       "type": "Theory",
       "duration_minutes": 60,
       "student_capacity": 65,
       "is_manual": false
     },
     {
-      "id": "entry_bb2b1155",
+      "id": "entry_680a583f",
       "lecture_request_id": "req_sub_ty_ai_div_ty_c_lec2",
       "subject_id": "sub_ty_ai",
       "subject_name": "Artificial Intelligence",
@@ -3845,7 +3845,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_7c440aba",
+      "id": "entry_8bacae6c",
       "lecture_request_id": "req_sub_sy_coa_div_sy_b_lec2",
       "subject_id": "sub_sy_coa",
       "subject_name": "Computer Organization & Architecture",
@@ -3867,7 +3867,7 @@
       "floor_id": "floor_2",
       "floor_name": null,
       "cluster_id": null,
-      "day": "Wednesday",
+      "day": "Friday",
       "start_time": "11:15",
       "end_time": "12:15",
       "type": "Theory",
@@ -3876,7 +3876,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_b60e6051",
+      "id": "entry_a2c57f78",
       "lecture_request_id": "req_sub_sy_coa_div_sy_a_lec2",
       "subject_id": "sub_sy_coa",
       "subject_name": "Computer Organization & Architecture",
@@ -3907,7 +3907,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_d93723bd",
+      "id": "entry_8de62e93",
       "lecture_request_id": "req_sub_sy_coa_div_sy_c_lec3",
       "subject_id": "sub_sy_coa",
       "subject_name": "Computer Organization & Architecture",
@@ -3938,7 +3938,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_6ef6e3f3",
+      "id": "entry_394fcc77",
       "lecture_request_id": "req_sub_ty_ai_div_ty_a_lec3",
       "subject_id": "sub_ty_ai",
       "subject_name": "Artificial Intelligence",
@@ -3969,7 +3969,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_0950784b",
+      "id": "entry_1ef99af6",
       "lecture_request_id": "req_sub_ty_ai_div_ty_b_lec3",
       "subject_id": "sub_ty_ai",
       "subject_name": "Artificial Intelligence",
@@ -3980,8 +3980,8 @@
       "batch_name": null,
       "faculty_id": "fac_10",
       "faculty_name": "Dr. Kavita Nair",
-      "room_id": "room_302",
-      "room_name": "Classroom 302 (TY-B)",
+      "room_id": "room_301",
+      "room_name": "Classroom 301 (TY-A)",
       "fixed_room_id": null,
       "fixed_room_name": null,
       "is_elective": false,
@@ -3991,16 +3991,16 @@
       "floor_id": "floor_3",
       "floor_name": null,
       "cluster_id": null,
-      "day": "Monday",
-      "start_time": "14:45",
-      "end_time": "15:45",
+      "day": "Wednesday",
+      "start_time": "12:15",
+      "end_time": "13:15",
       "type": "Theory",
       "duration_minutes": 60,
       "student_capacity": 65,
       "is_manual": false
     },
     {
-      "id": "entry_642cd6bd",
+      "id": "entry_64c43c3e",
       "lecture_request_id": "req_sub_ty_ai_div_ty_c_lec3",
       "subject_id": "sub_ty_ai",
       "subject_name": "Artificial Intelligence",
@@ -4031,7 +4031,7 @@
       "is_manual": false
     },
     {
-      "id": "entry_911b68e7",
+      "id": "entry_a0a3a321",
       "lecture_request_id": "req_sub_sy_coa_div_sy_b_lec3",
       "subject_id": "sub_sy_coa",
       "subject_name": "Computer Organization & Architecture",
@@ -4042,8 +4042,8 @@
       "batch_name": null,
       "faculty_id": "fac_07",
       "faculty_name": "Prof. Pooja Shah",
-      "room_id": "room_202",
-      "room_name": "Classroom 202 (SY-B)",
+      "room_id": "room_203",
+      "room_name": "Classroom 203 (SY-C)",
       "fixed_room_id": null,
       "fixed_room_name": null,
       "is_elective": false,
@@ -4053,16 +4053,16 @@
       "floor_id": "floor_2",
       "floor_name": null,
       "cluster_id": null,
-      "day": "Monday",
-      "start_time": "10:15",
-      "end_time": "11:15",
+      "day": "Wednesday",
+      "start_time": "11:15",
+      "end_time": "12:15",
       "type": "Theory",
       "duration_minutes": 60,
       "student_capacity": 65,
       "is_manual": false
     },
     {
-      "id": "entry_20373490",
+      "id": "entry_aa83eff0",
       "lecture_request_id": "req_sub_sy_coa_div_sy_a_lec3",
       "subject_id": "sub_sy_coa",
       "subject_name": "Computer Organization & Architecture",
@@ -4084,16 +4084,16 @@
       "floor_id": "floor_2",
       "floor_name": null,
       "cluster_id": null,
-      "day": "Monday",
-      "start_time": "12:15",
-      "end_time": "13:15",
+      "day": "Tuesday",
+      "start_time": "11:15",
+      "end_time": "12:15",
       "type": "Theory",
       "duration_minutes": 60,
       "student_capacity": 65,
       "is_manual": false
     }
   ],
-  "last_generated": "2026-11-27T20:38:45.741727",
+  "last_generated": "2026-11-27T20:58:22.199971",
   "statistics": {
     "total_requests": 132,
     "scheduled_count": 132,
