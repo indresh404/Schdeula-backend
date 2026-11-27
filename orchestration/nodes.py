@@ -465,7 +465,7 @@ def schedule_step_node(state: SchedulingState) -> Dict[str, Any]:
                 "day": best_placement["day"],
                 "start_time": best_placement["start_time"],
                 "end_time": best_placement["end_time"],
-                "type": "Elective",
+                "type": sib_req.get("type", "Theory"),
                 "duration_minutes": chosen_req.get("duration_minutes", 60),
                 "student_capacity": sib_req.get("student_capacity", 0),
                 "is_manual": False,

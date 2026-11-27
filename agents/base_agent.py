@@ -147,7 +147,8 @@ class BaseYearAgent:
                         grp_weekly = grp.get("weekly_lectures") or weekly_lec
                         grp_dur = grp.get("duration_minutes") or duration
                         grp_cap = int(grp.get("student_capacity") or 0)
-                        grp_room_type = grp.get("required_room_type") or room_type
+                        grp_room_type = grp.get("required_room_type") or "Classroom"
+                        grp_type = grp.get("type") or "Theory"
 
                         for lec_idx in range(1, grp_weekly + 1):
                             req = LectureRequest(
@@ -158,7 +159,7 @@ class BaseYearAgent:
                                 division_id=div_id,
                                 division_name=div_name,
                                 duration_minutes=grp_dur,
-                                type="Elective",
+                                type=grp_type,
                                 eligible_faculty_ids=grp_faculty,
                                 required_room_type=grp_room_type,
                                 student_capacity=grp_cap,

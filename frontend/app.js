@@ -1531,20 +1531,20 @@ function renderTimetableGrid() {
 
 function renderEntryCard(entry, conflictingEntryIds, isCompactBatch = false) {
   const hasClash = conflictingEntryIds.has(entry.id);
-  const isElective = Boolean(
+  const isMDM = Boolean(
     entry.is_elective ||
     entry.type === "Elective" ||
     entry.fixed_room_id ||
     (entry.subject_name && entry.subject_name.toUpperCase().includes("MDM"))
   );
-  const typeClass =
-    entry.type === "Practical"
-      ? "practical"
-      : isElective
-      ? "elective"
-      : entry.type === "Other"
-      ? "other"
-      : "theory";
+  const isLab = entry.type === "Practical" || entry.duration_minutes === 120;
+  const typeClass = isLab
+    ? "practical"
+    : isMDM
+    ? "elective"
+    : entry.type === "Other"
+    ? "other"
+    : "theory";
   const clashClass = hasClash ? "has-clash" : "";
 
   // Lookup Subject Code
@@ -1553,9 +1553,9 @@ function renderEntryCard(entry, conflictingEntryIds, isCompactBatch = false) {
 
   // Clean subject display: show MDM only, not composite sub-subjects
   let subjectDisplay = entry.subject_name || "Lecture";
-  if (isElective) {
+  if (isMDM) {
     if (subjectDisplay.toUpperCase().includes("MDM")) {
-      subjectDisplay = "MDM";
+      subjectDisplay = "MDM (Theory)";
     } else if (subjectDisplay.includes(" (")) {
       subjectDisplay = subjectDisplay.split(" (")[0];
     }
@@ -1566,16 +1566,20 @@ function renderEntryCard(entry, conflictingEntryIds, isCompactBatch = false) {
   const facShort = getShortFacultyName(entry.faculty_name);
   const roomShort = getShortRoomName(entry.room_name);
 
-  const batchBadge = entry.elective_group_name || entry.batch_name
-    ? `<span class="badge ${isElective ? 'badge-primary' : 'badge-warning'}" style="font-size:10px; padding:2px 5px;">${entry.elective_group_name || entry.batch_name}</span>`
+  const batchBadge = entry.elective_group_name
+    ? `<span class="badge" style="font-size:10px; background:#f5f3ff; color:#7c3aed; border:1px solid #ddd6fe; padding:2px 5px; font-weight:600;">📖 Track: ${entry.elective_group_name}</span>`
+    : entry.batch_name
+    ? `<span class="badge badge-warning" style="font-size:10px; padding:2px 5px; font-weight:600;">🔬 Batch ${entry.batch_name}</span>`
     : "";
 
-  const typeBadge = isElective
-    ? `<span class="badge" style="font-size:9px; background:#ede9fe; color:#6d28d9; padding:1px 4px; font-weight:600;">Elective</span>`
-    : `<span class="badge" style="font-size:9px; background:rgba(0,0,0,0.06); color:#334155; padding:1px 4px;">${entry.type || "Theory"}</span>`;
+  const typeBadge = isMDM
+    ? `<span class="badge" style="font-size:9px; background:#ede9fe; color:#6d28d9; padding:1px 5px; font-weight:700;">MDM (Theory)</span>`
+    : isLab
+    ? `<span class="badge" style="font-size:9px; background:#dcfce7; color:#15803d; padding:1px 5px; font-weight:700;">🔬 Lab (Practical)</span>`
+    : `<span class="badge" style="font-size:9px; background:rgba(0,0,0,0.06); color:#334155; padding:1px 4px;">Theory</span>`;
 
   const roomDisplay = entry.fixed_room_id
-    ? `<span class="tt-entry-room" title="Fixed MDM Elective Room Reservation">
+    ? `<span class="tt-entry-room" title="Fixed Classroom Reservation">
          <span class="tt-room-full">📍 ${entry.room_name} <strong style="color:#7c3aed;">🔒</strong></span>
          <span class="tt-room-short">📍 ${roomShort}🔒</span>
        </span>`
@@ -1765,8 +1769,8 @@ function renderConsolidatedElectiveCard(entries, conflictingEntryIds) {
          title="Click to view all MDM tracks, or drag to swap/reschedule">
       <div class="tt-entry-header">
         <span class="tt-entry-sub" style="color: #6d28d9; font-weight: 700;">
-          <span class="tt-sub-full">🎓 ${title} ${subCode ? `<span class="tt-sub-code" style="background:#ede9fe; color:#6d28d9;">${subCode}</span>` : ""}</span>
-          <span class="tt-sub-short">🎓 ${subShort}</span>
+          <span class="tt-sub-full">📖 ${title} <span class="badge" style="background:#ede9fe; color:#6d28d9; font-size:9px; font-weight:700; margin-left:3px;">Theory</span></span>
+          <span class="tt-sub-short">📖 ${subShort}</span>
         </span>
         <div style="display:inline-flex; align-items:center; gap:3px;">
           ${hasClash ? `<button type="button" class="tt-clash-badge-btn" title="Click to auto-fix this clash" onclick="event.stopPropagation(); window.handleFixSingleEntry('${first.id}', 'fix_this')">⚠️ Fix</button>` : ""}
@@ -1780,12 +1784,12 @@ function renderConsolidatedElectiveCard(entries, conflictingEntryIds) {
         <span class="tt-fac-short">👨‍🏫 ${facShort}</span>
       </div>
       <div class="tt-entry-meta">
-        <span class="tt-entry-room" title="Allocated Rooms">
-          <span class="tt-room-full">📍 ${roomNames || "Assigned Rooms"} <strong style="color:#7c3aed;">🔒</strong></span>
+        <span class="tt-entry-room" title="Allocated Classrooms">
+          <span class="tt-room-full">📍 Classrooms: ${roomNames || "Assigned Classrooms"} <strong style="color:#7c3aed;">🔒</strong></span>
           <span class="tt-room-short">📍 ${roomShort}🔒</span>
         </span>
         <div style="display:flex; gap:3px; align-items:center;">
-          <span class="tt-elec-pill">⚡ ${trackCount} Tracks</span>
+          <span class="tt-elec-pill" style="background:#f3e8ff; color:#6b21a8; font-weight:700;">📖 ${trackCount} Theory Tracks</span>
         </div>
       </div>
       <div class="tt-entry-meta" style="margin-top:2px;">
@@ -1844,9 +1848,9 @@ window.openElectiveDetailsModal = function (entryIdsJson) {
 
   const first = entries[0];
   const parentSub = (state.subjects || []).find((s) => s.id === first.parent_subject_id || s.id === first.subject_id);
-  let title = "MDM (Multidisciplinary Minor)";
+  let title = "MDM (Theory Lecture)";
   if (parentSub && parentSub.name) {
-    title = parentSub.name.toUpperCase().includes("MDM") ? "MDM (Multidisciplinary Minor)" : parentSub.name;
+    title = parentSub.name.toUpperCase().includes("MDM") ? "MDM (Theory Lecture)" : `${parentSub.name} (Theory Lecture)`;
   }
 
   const divObj = (state.divisions || []).find((d) => d.id === first.division_id);
@@ -1856,12 +1860,12 @@ window.openElectiveDetailsModal = function (entryIdsJson) {
   if (titleEl) titleEl.textContent = title;
 
   const divEl = document.getElementById("elec-detail-division");
-  if (divEl) divEl.textContent = `Class Schedule: ${first.year_id || ""} ${divName} (Whole Division Scheduled for MDM)`;
+  if (divEl) divEl.textContent = `Class Schedule: ${first.year_id || ""} ${divName} • MDM Theory Lecture across Classrooms`;
 
   const timeEl = document.getElementById("elec-detail-timing");
   if (timeEl) {
     const durMin = toMin(first.end_time) - toMin(first.start_time);
-    timeEl.innerHTML = `<strong>Day:</strong> ${first.day} &nbsp;|&nbsp; <strong>Time:</strong> ${first.start_time} - ${first.end_time} (${durMin} mins) &nbsp;|&nbsp; <strong>Parallel Tracks:</strong> ${entries.length}`;
+    timeEl.innerHTML = `<strong>Day:</strong> ${first.day} &nbsp;|&nbsp; <strong>Time:</strong> ${first.start_time} - ${first.end_time} (${durMin} mins) &nbsp;|&nbsp; <strong>Format:</strong> Theory Lecture &nbsp;|&nbsp; <strong>Parallel Tracks:</strong> ${entries.length}`;
   }
 
   const tracksContainer = document.getElementById("elec-detail-tracks-list");
@@ -1885,16 +1889,16 @@ window.openElectiveDetailsModal = function (entryIdsJson) {
         <div class="elec-track-card" style="background:#f8fafc; border:1px solid #cbd5e1; border-left:4px solid #7c3aed; border-radius:8px; padding:12px 14px; margin-bottom:8px;">
           <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
             <span class="elec-track-name" style="font-size:14px; color:#1e1b4b; font-weight:700;">
-              📚 ${subSubjectName}
+              📖 ${subSubjectName}
             </span>
             <span class="badge" style="background:#ede9fe; color:#6d28d9; font-size:11px; padding:3px 8px; font-weight:600; border-radius:12px;">
               👥 ${cap} Students
             </span>
           </div>
           <div class="elec-track-meta" style="display:grid; grid-template-columns:1fr 1fr; gap:6px; font-size:12px; color:#334155;">
-            <div><strong>📍 Room / Lab:</strong> <span style="color:#7c3aed; font-weight:700;">${room}</span> <strong style="color:#7c3aed;">🔒</strong></div>
+            <div><strong>📍 Classroom:</strong> <span style="color:#7c3aed; font-weight:700;">${room}</span> <strong style="color:#7c3aed;">🔒</strong></div>
             <div><strong>👨‍🏫 Faculty:</strong> <span style="font-weight:600; color:#0f172a;">${fac}</span></div>
-            <div><strong>🏫 Division:</strong> ${e.year_id || ""} ${divName}</div>
+            <div><strong>📖 Format:</strong> <span style="font-weight:700; color:#0f172a;">Theory Lecture (60m)</span></div>
             <div><strong>🕒 Time:</strong> ${e.day} ${e.start_time}–${e.end_time}</div>
           </div>
         </div>

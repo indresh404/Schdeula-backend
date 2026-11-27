@@ -107,9 +107,9 @@ def test_normalization_cooling_preserves_hard_constraints():
     tt_data = store.read("timetable.json") or {"entries": []}
     entries = tt_data.get("entries", [])
     if not entries:
-        from scheduler.coordinator import TimetableCoordinator
-        coord = TimetableCoordinator()
-        entries, _ = coord.run_scheduling()
+        from scheduler.coordinator import SchedulingCoordinator
+        coord = SchedulingCoordinator()
+        entries = coord.run_scheduling().get("entries", [])
 
     faculty = store.read("faculty.json") or []
     rooms = store.read("rooms.json") or []
@@ -214,4 +214,39 @@ def test_admin_manual_override_with_audit_log(client):
     # Cleanup created entry
     if entry_id:
         client.delete(f"/api/timetable/entry/{entry_id}")
+
+def test_labs_vs_mdm_distinction(client):
+    """Verify Labs are 120-min practicals in Laboratories and MDM is 60-min theory in Classrooms."""
+    res = client.post("/api/timetable/generate")
+    assert res.status_code == 200
+    entries = res.get_json()["timetable_entries"]
+
+    rooms = store.read("rooms.json") or []
+    room_map = {r["id"]: r for r in rooms}
+
+    # 1. Check all MDM entries
+    mdm_entries = [e for e in entries if e.get("is_elective") or "MDM" in e.get("subject_name", "").upper()]
+    assert len(mdm_entries) > 0, "MDM entries must be present"
+    for m in mdm_entries:
+        assert m.get("type") == "Theory", f"MDM must be a Theory lecture, got {m.get('type')}"
+        sh, sm = map(int, m["start_time"].split(":"))
+        eh, em = map(int, m["end_time"].split(":"))
+        duration = (eh * 60 + em) - (sh * 60 + sm)
+        assert duration == 60, f"MDM lecture must be 60 min (1 period), got {duration}"
+        r_type = room_map.get(m["room_id"], {}).get("type")
+        assert r_type == "Classroom", f"MDM must be held in a Classroom, got {r_type}"
+
+    # 2. Check all Lab entries
+    lab_entries = [e for e in entries if e.get("type") == "Practical"]
+    assert len(lab_entries) > 0, "Practical lab entries must be present"
+    for l in lab_entries:
+        assert l.get("type") == "Practical"
+        sh, sm = map(int, l["start_time"].split(":"))
+        eh, em = map(int, l["end_time"].split(":"))
+        duration = (eh * 60 + em) - (sh * 60 + sm)
+        assert duration == 120, f"Lab must be 120 min (double period), got {duration}"
+        r_type = room_map.get(l["room_id"], {}).get("type")
+        assert r_type == "Laboratory", f"Lab must be held in a Laboratory, got {r_type}"
+        assert l.get("batch_name") is not None, "Lab must belong to a practical batch"
+
 
