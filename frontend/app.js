@@ -1477,10 +1477,12 @@ function renderTimetableGrid() {
 
         // Check if this slot contains MDM / elective tracks
         const isElective = matchingEntries.some((e) =>
-          e.is_elective ||
-          e.type === "Elective" ||
-          e.fixed_room_id ||
-          (e.subject_name && e.subject_name.toUpperCase().includes("MDM"))
+          e.type !== "Practical" &&
+          !e.batch_id &&
+          (e.is_elective ||
+           e.type === "Elective" ||
+           (e.subject_name && e.subject_name.toUpperCase().includes("MDM")) ||
+           (e.subject_id && e.subject_id.toLowerCase().includes("mdm")))
         );
 
         let cellContent = "";
@@ -1531,13 +1533,15 @@ function renderTimetableGrid() {
 
 function renderEntryCard(entry, conflictingEntryIds, isCompactBatch = false) {
   const hasClash = conflictingEntryIds.has(entry.id);
+  const isLab = entry.type === "Practical" || entry.duration_minutes === 120 || Boolean(entry.batch_id);
   const isMDM = Boolean(
-    entry.is_elective ||
-    entry.type === "Elective" ||
-    entry.fixed_room_id ||
-    (entry.subject_name && entry.subject_name.toUpperCase().includes("MDM"))
+    !isLab &&
+    (entry.is_elective ||
+     entry.type === "Elective" ||
+     (entry.subject_name && entry.subject_name.toUpperCase().includes("MDM")) ||
+     (entry.subject_id && entry.subject_id.toLowerCase().includes("mdm")))
   );
-  const isLab = entry.type === "Practical" || entry.duration_minutes === 120;
+  const isElective = isMDM;
   const typeClass = isLab
     ? "practical"
     : isMDM
