@@ -1350,7 +1350,9 @@ def faculty_availability_api():
     faculty_list = store.read("faculty.json") or []
     settings = store.read("settings.json") or {}
     rules = store.read("faculty_availability.json") or []
-    slot_matrix = generate_faculty_availability_matrix(faculty_list, settings, rules)
+    timetable_data = store.read("timetable.json") or {}
+    timetable_entries = timetable_data.get("entries") if isinstance(timetable_data, dict) else (timetable_data if isinstance(timetable_data, list) else [])
+    slot_matrix = generate_faculty_availability_matrix(faculty_list, settings, rules, timetable_entries=timetable_entries)
     return jsonify({
         "status": "ok",
         "success": True,
@@ -1641,6 +1643,7 @@ def generate_timetable():
     settings = store.read("settings.json") or {}
     floors = store.read("floors.json") or []
     building_graph = store.read("building_graph.json") or []
+    faculty_availability = store.read("faculty_availability.json") or []
 
     # Sync to SQLite permanent store
     try:
@@ -1663,6 +1666,7 @@ def generate_timetable():
         settings=settings,
         floors_data=floors,
         building_distances_data=building_graph,
+        faculty_availability_data=faculty_availability,
         thread_id=thread_id,
         checkpointer=checkpointer,
     )
@@ -1791,6 +1795,7 @@ def generate_timetable_stream():
                 batches_data=batches,
                 assignments_data=assignments,
                 settings_data=settings,
+                faculty_availability=faculty_avail,
             )
             repair_res = repairer.repair(draft_entries, u_dicts)
             draft_entries = repair_res["entries"]

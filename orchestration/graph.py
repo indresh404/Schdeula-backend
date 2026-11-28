@@ -136,6 +136,7 @@ def run_langgraph_orchestration(
     building_distances: Optional[list] = None,
     floors_data: Optional[list] = None,
     building_distances_data: Optional[list] = None,
+    faculty_availability_data: Optional[list] = None,
     thread_id: str = "main_generation",
     checkpointer: Optional[SqliteSaver] = None,
     max_backtracks: int = 50,
@@ -160,6 +161,7 @@ def run_langgraph_orchestration(
         "settings_data": settings,
         "floors_data": fl_data,
         "building_distances_data": bd_data,
+        "faculty_availability_data": faculty_availability_data or [],
         "max_backtracks": max_backtracks,
     }
 

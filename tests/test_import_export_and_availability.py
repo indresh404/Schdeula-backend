@@ -154,3 +154,83 @@ def test_faculty_availability_busy_only_and_loader_elements():
     assert "function setButtonLoading(" in js
     assert 'filterStatus === "NOT_AVAILABLE"' in js
 
+
+def test_faculty_availability_includes_scheduled_timetable_lectures(client):
+    # Test that generate_faculty_availability_matrix includes scheduled timetable lectures
+    faculty_list = [{"id": "fac_test_1", "name": "Prof. Test"}]
+    settings = {
+        "working_days": ["Monday", "Tuesday"],
+        "day_start_time": "09:15",
+        "day_end_time": "17:15",
+        "lecture_duration_minutes": 60
+    }
+    rules = []
+    timetable_entries = [
+        {
+            "id": "entry_1",
+            "faculty_id": "fac_test_1",
+            "day": "Monday",
+            "start_time": "09:15",
+            "end_time": "10:15",
+            "subject_name": "Data Structures",
+            "division_name": "Division A",
+            "room_name": "Room 201"
+        }
+    ]
+
+    matrix = generate_faculty_availability_matrix(faculty_list, settings, rules, timetable_entries=timetable_entries)
+    busy_slots = [s for s in matrix if s["status"] == "NOT_AVAILABLE"]
+    assert len(busy_slots) >= 1
+    scheduled_slot = next(s for s in busy_slots if s["day"] == "Monday" and s["start_time"] == "09:15")
+    assert scheduled_slot["is_scheduled_lecture"] is True
+    assert "Data Structures" in scheduled_slot["reason"]
+
+
+def test_auto_generate_detects_imported_faculty_unavailability():
+    # Test that FacultyManager and ConstraintValidator reject scheduling when faculty is marked NOT_AVAILABLE
+    from resources.faculty_manager import FacultyManager
+    from scheduler.constraint_validator import ConstraintValidator
+
+    faculty_list = [{"id": "fac_01", "name": "Prof. Utkarsha Patil", "is_available": True}]
+    settings = {"working_days": ["Monday", "Tuesday"], "working_hours": {"start": "09:15", "end": "16:45"}, "lecture_duration_minutes": 60}
+    avail_rules = [
+        {
+            "id": "rule_busy_mon",
+            "faculty_id": "fac_01",
+            "day": "Monday",
+            "start_time": "09:15",
+            "end_time": "10:15",
+            "status": "NOT_AVAILABLE",
+            "reason": "Department Meeting"
+        }
+    ]
+
+    fm = FacultyManager(faculty_list, settings, faculty_availability_list=avail_rules)
+    ok, reason = fm.is_available("fac_01", "Monday", "09:15", "10:15")
+    assert ok is False
+    assert "Department Meeting" in reason or "unavailable" in reason.lower()
+
+    # Verify that different day / time is still free
+    ok_tue, _ = fm.is_available("fac_01", "Tuesday", "09:15", "10:15")
+    assert ok_tue is True
+
+    # ConstraintValidator also catches it as hard conflict
+    validator = ConstraintValidator(faculty_list, [], [], settings, faculty_availability=avail_rules)
+    test_entry = {"id": "e_test", "faculty_id": "fac_01", "day": "Monday", "start_time": "09:15", "end_time": "10:15"}
+    report = validator.validate_all([test_entry])
+    assert report["is_valid"] is False
+    assert any(c["type"] == "FACULTY_UNAVAILABLE" for c in report["hard_conflicts"])
+
+
+def test_parallel_batch_auto_mapping_handlers_in_frontend():
+    with open("frontend/app.js", "r", encoding="utf-8") as f:
+        js = f.read()
+
+    assert "function handleParallelBatchRoomChange(" in js
+    assert "function handleParallelBatchSubjectChange(" in js
+    assert "handleParallelBatchRoomChange(row, divId)" in js
+    assert "handleParallelBatchSubjectChange(row, divId)" in js
+    assert "navigateToTimetableSlot(" in js
+    assert "btn-view-tt-slot" in js
+
+

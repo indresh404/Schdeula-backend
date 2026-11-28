@@ -8,15 +8,5 @@
     "end_time": "05:15",
     "status": "NOT_AVAILABLE",
     "reason": "Admin Work"
-  },
-  {
-    "id": "avail_6cecc77f",
-    "faculty_id": "fac_01",
-    "faculty_name": "Prof. Utkarsha Patil",
-    "day": "Friday",
-    "start_time": "14:45",
-    "end_time": "15:45",
-    "status": "NOT_AVAILABLE",
-    "reason": "Unavailable slot"
   }
 ]

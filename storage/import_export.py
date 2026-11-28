@@ -45,7 +45,9 @@ def export_section_data(section: str, store, sqlite_store=None) -> Dict[str, Any
         faculty = store.read("faculty.json") or []
         settings = store.read("settings.json") or {}
         rules = store.read("faculty_availability.json") or []
-        slot_matrix = generate_faculty_availability_matrix(faculty, settings, rules)
+        timetable_data = store.read("timetable.json") or {}
+        timetable_entries = timetable_data.get("entries") if isinstance(timetable_data, dict) else (timetable_data if isinstance(timetable_data, list) else [])
+        slot_matrix = generate_faculty_availability_matrix(faculty, settings, rules, timetable_entries=timetable_entries)
         return {
             "schema_version": SCHEMA_VERSION,
             "export_type": "faculty_availability",
@@ -146,9 +148,10 @@ def generate_faculty_availability_matrix(
     faculty_list: List[Dict[str, Any]],
     settings: Dict[str, Any],
     rules: List[Dict[str, Any]],
+    timetable_entries: Optional[List[Dict[str, Any]]] = None,
 ) -> List[Dict[str, Any]]:
     """
-    Expands availability rules into a full dynamic slot matrix:
+    Expands availability rules and scheduled timetable lectures into a full dynamic slot matrix:
     Faculty ID | Faculty Name | Day | Time Slot | Status (FREE / NOT_AVAILABLE) | Reason
     """
     working_days = settings.get("working_days", ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"])
@@ -157,39 +160,80 @@ def generate_faculty_availability_matrix(
 
     # Index explicit rules by faculty_id -> list of rules
     rules_by_fac: Dict[str, List[Dict[str, Any]]] = {}
-    for r in rules:
+    for r in (rules or []):
         fid = r.get("faculty_id")
         if fid:
             rules_by_fac.setdefault(fid, []).append(r)
+
+    # Index timetable entries by faculty_id -> list of scheduled lectures
+    tt_by_fac: Dict[str, List[Dict[str, Any]]] = {}
+    for e in (timetable_entries or []):
+        fid = e.get("faculty_id")
+        if fid:
+            tt_by_fac.setdefault(fid, []).append(e)
 
     for fac in faculty_list:
         f_id = fac.get("id")
         f_name = fac.get("name", f_id)
         fac_rules = rules_by_fac.get(f_id, [])
+        fac_tt = tt_by_fac.get(f_id, [])
 
         for day in working_days:
             for s_start, s_end in canonical_slots:
-                # Check if matching rule exists
                 status = "FREE"
                 reason = ""
+                rule_id = None
+                is_manual_rule = False
+                is_scheduled_lecture = False
+                lecture_id = None
+
+                # 1. Check if matching manual availability rule exists
                 for rule in fac_rules:
                     if rule.get("day") == day:
                         r_start = rule.get("start_time")
                         r_end = rule.get("end_time")
                         if r_start and r_end and intervals_overlap(s_start, s_end, r_start, r_end):
                             status = rule.get("status", "NOT_AVAILABLE")
-                            reason = rule.get("reason", "")
+                            reason = rule.get("reason", "Marked as Not Available")
+                            rule_id = rule.get("id")
+                            is_manual_rule = True
                             break
+
+                # 2. If no manual rule, check if faculty is teaching a scheduled lecture in the timetable
+                if status == "FREE" and fac_tt:
+                    for entry in fac_tt:
+                        if entry.get("day") == day:
+                            e_start = entry.get("start_time")
+                            e_end = entry.get("end_time")
+                            if e_start and e_end and intervals_overlap(s_start, s_end, e_start, e_end):
+                                status = "NOT_AVAILABLE"
+                                is_scheduled_lecture = True
+                                lecture_id = entry.get("id")
+                                sub_name = entry.get("subject_name") or entry.get("subject_id") or "Lecture"
+                                div_name = entry.get("division_name") or entry.get("division_id") or ""
+                                batch_name = entry.get("batch_name") or ""
+                                rm_name = entry.get("room_name") or entry.get("room_id") or ""
+                                is_lab = entry.get("type") == "Practical" or bool(batch_name) or entry.get("duration_minutes", 60) > 60
+                                lec_type = "Practical" if is_lab else "Lecture"
+                                batch_part = f" • Batch {batch_name}" if batch_name else ""
+                                room_part = f" @ {rm_name}" if rm_name else ""
+                                reason = f"Scheduled {lec_type}: {sub_name} ({div_name}{batch_part}){room_part}"
+                                break
 
                 matrix.append({
                     "faculty_id": f_id,
                     "faculty_name": f_name,
                     "day": day,
                     "time": f"{s_start}–{s_end}",
+                    "time_interval": f"{s_start}–{s_end}",
                     "start_time": s_start,
                     "end_time": s_end,
                     "status": status,
                     "reason": reason,
+                    "rule_id": rule_id,
+                    "is_manual_rule": is_manual_rule,
+                    "is_scheduled_lecture": is_scheduled_lecture,
+                    "lecture_id": lecture_id,
                 })
 
     return matrix

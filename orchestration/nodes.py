@@ -89,15 +89,16 @@ def build_managers(state: SchedulingState) -> Tuple[
     settings_data = state.get("settings_data", {})
     floors_data = state.get("floors_data", [])
     building_distances_data = state.get("building_distances_data", [])
+    faculty_availability_data = state.get("faculty_availability_data", [])
 
-    fm = FacultyManager(faculty_data, settings_data)
+    fm = FacultyManager(faculty_data, settings_data, faculty_availability_list=faculty_availability_data)
     rm = RoomManager(rooms_data, settings_data)
     fe = FeasibilityEngine(settings_data, fm, rm)
     fe.reset_division_and_batch_state(divisions_data, batches_data)
     
     spatial_engine = SpatialEngine(floors_data, rooms_data, building_distances_data, divisions=divisions_data) if (floors_data or rooms_data) else None
     fl = FlexibilityEngine(rooms_data, spatial_engine=spatial_engine)
-    cv = ConstraintValidator(faculty_data, rooms_data, subjects_data, settings_data, batches_list=batches_data)
+    cv = ConstraintValidator(faculty_data, rooms_data, subjects_data, settings_data, batches_list=batches_data, faculty_availability=faculty_availability_data)
 
     # Compute resource metrics for PriorityEngine
     faculty_demand = {}

@@ -2719,6 +2719,27 @@ window.openEditLectureModal = function (entryId) {
   document.getElementById("edit-start-time").value = entry.start_time;
   document.getElementById("edit-end-time").value = entry.end_time;
 
+  // If this is a practical subject or batch session, synchronize parallel batch controls
+  const subObj = (state.subjects || []).find((s) => s.id === entry.subject_id);
+  const isPrac = (subObj && (subObj.type === "Practical" || subObj.type === "Lab")) || Boolean(entry.batch_id);
+  if (isPrac) {
+    syncEditSubjectSelection();
+    setTimeout(() => {
+      const matchRow = document.querySelector(`.edit-parallel-batch-row[data-batch-id="${entry.batch_id}"]`);
+      if (matchRow) {
+        if (entry.subject_id && matchRow.querySelector(".parallel-batch-sub")) {
+          matchRow.querySelector(".parallel-batch-sub").value = entry.subject_id;
+        }
+        if (entry.faculty_id && matchRow.querySelector(".parallel-batch-fac")) {
+          matchRow.querySelector(".parallel-batch-fac").value = entry.faculty_id;
+        }
+        if (entry.room_id && matchRow.querySelector(".parallel-batch-room")) {
+          matchRow.querySelector(".parallel-batch-room").value = entry.room_id;
+        }
+      }
+    }, 60);
+  }
+
   openModal("modal-edit-lecture");
 };
 
@@ -2827,24 +2848,37 @@ function renderEditParallelBatches(divBatches, selectedSub, divId) {
   if (!container) return;
 
   const pracSubjects = (state.subjects || []).filter(
-    (s) => (s.division_ids || []).includes(divId) && (s.type === "Practical" || s.type === "Lab")
+    (s) => (s.division_ids || []).includes(divId) && (s.type === "Practical" || s.type === "Lab" || s.lab_batch_required)
   );
   const subjectsToUse = pracSubjects.length > 0 ? pracSubjects : [selectedSub];
 
   const labs = (state.rooms || []).filter((r) => (r.type || "").toLowerCase().includes("lab"));
   const roomsToUse = labs.length > 0 ? labs : (state.rooms || []);
 
-  container.innerHTML = divBatches.map((b, idx) => {
-    // Determine assigned faculty for this batch
-    const assignedFacId = getAssignedFacultyForDivisionAndSubject(divId, selectedSub.id, b.id) ||
-      (selectedSub.eligible_faculty_ids && selectedSub.eligible_faculty_ids[idx % selectedSub.eligible_faculty_ids.length]) ||
-      (state.faculty[idx % state.faculty.length] ? state.faculty[idx % state.faculty.length].id : "");
+  const usedFacultyInit = new Set();
 
+  container.innerHTML = divBatches.map((b, idx) => {
     // Distinct lab room suggestion for each batch
     const defaultRoomId = roomsToUse[idx % roomsToUse.length] ? roomsToUse[idx % roomsToUse.length].id : "";
 
+    // Subject for this batch: check if another practical subject links to this room, or rotate
+    const linkedSub = pracSubjects.find((s) => s.fixed_room_id === defaultRoomId) || subjectsToUse[idx % subjectsToUse.length] || selectedSub;
+
+    // Distinct faculty for this batch
+    let assignedFacId = getAssignedFacultyForDivisionAndSubject(divId, linkedSub.id, b.id);
+    if (!assignedFacId || usedFacultyInit.has(assignedFacId)) {
+      if (linkedSub.eligible_faculty_ids && linkedSub.eligible_faculty_ids.length > 0) {
+        assignedFacId = linkedSub.eligible_faculty_ids.find((f) => !usedFacultyInit.has(f)) || linkedSub.eligible_faculty_ids[0];
+      }
+    }
+    if (!assignedFacId || usedFacultyInit.has(assignedFacId)) {
+      const freeFac = (state.faculty || []).find((f) => !usedFacultyInit.has(f.id));
+      if (freeFac) assignedFacId = freeFac.id;
+    }
+    if (assignedFacId) usedFacultyInit.add(assignedFacId);
+
     const subOpts = subjectsToUse.map(
-      (s) => `<option value="${s.id}" ${s.id === selectedSub.id ? "selected" : ""}>${s.name} (${s.code || "Lab"})</option>`
+      (s) => `<option value="${s.id}" ${s.id === linkedSub.id ? "selected" : ""}>${s.name} (${s.code || "Lab"})</option>`
     ).join("");
 
     const facOpts = (state.faculty || []).map(
@@ -2875,6 +2909,116 @@ function renderEditParallelBatches(divBatches, selectedSub, divId) {
       </div>
     `;
   }).join("");
+
+  // Attach change event listeners to auto-map faculty whenever other lab or subject is selected
+  container.querySelectorAll(".edit-parallel-batch-row").forEach((row) => {
+    const roomSelect = row.querySelector(".parallel-batch-room");
+    const subSelect = row.querySelector(".parallel-batch-sub");
+
+    if (roomSelect) {
+      roomSelect.addEventListener("change", () => {
+        handleParallelBatchRoomChange(row, divId);
+      });
+    }
+
+    if (subSelect) {
+      subSelect.addEventListener("change", () => {
+        handleParallelBatchSubjectChange(row, divId);
+      });
+    }
+  });
+}
+
+function handleParallelBatchRoomChange(row, divId) {
+  const roomSelect = row.querySelector(".parallel-batch-room");
+  const subSelect = row.querySelector(".parallel-batch-sub");
+  const facSelect = row.querySelector(".parallel-batch-fac");
+  const batchId = row.getAttribute("data-batch-id");
+  const selectedRoomId = roomSelect ? roomSelect.value : null;
+  if (!selectedRoomId) return;
+
+  // 1. Check if another practical subject for this division is configured for this lab room
+  const linkedSub = (state.subjects || []).find(
+    (s) => (s.fixed_room_id === selectedRoomId || s.room_id === selectedRoomId) &&
+           (s.type === "Practical" || s.type === "Lab" || s.lab_batch_required) &&
+           (s.division_ids || []).includes(divId)
+  );
+  if (linkedSub && subSelect && subSelect.value !== linkedSub.id) {
+    subSelect.value = linkedSub.id;
+  }
+
+  const currentSubId = subSelect ? subSelect.value : null;
+  const currentSub = (state.subjects || []).find((s) => s.id === currentSubId);
+
+  // 2. Identify faculty already selected in other batch rows to avoid duplicate faculty clashes
+  const otherSelectedFacIds = new Set();
+  document.querySelectorAll(".edit-parallel-batch-row").forEach((otherRow) => {
+    if (otherRow !== row) {
+      const otherFac = otherRow.querySelector(".parallel-batch-fac")?.value;
+      if (otherFac) otherSelectedFacIds.add(otherFac);
+    }
+  });
+
+  // 3. Find explicit assignment for (divId, currentSubId, batchId)
+  let chosenFacId = null;
+  const bAsgn = (state.assignments || []).find(
+    (a) => a.subject_id === currentSubId && a.division_id === divId && a.batch_id === batchId && !otherSelectedFacIds.has(a.faculty_id)
+  );
+  if (bAsgn && bAsgn.faculty_id) chosenFacId = bAsgn.faculty_id;
+
+  // 4. If not found, check eligible faculty for this subject that isn't already assigned to other batch
+  if (!chosenFacId && currentSub && Array.isArray(currentSub.eligible_faculty_ids)) {
+    chosenFacId = currentSub.eligible_faculty_ids.find((fId) => !otherSelectedFacIds.has(fId)) ||
+                  currentSub.eligible_faculty_ids[0];
+  }
+
+  // 5. Check if any faculty has an assignment for this room
+  if (!chosenFacId) {
+    const rAsgn = (state.assignments || []).find(
+      (a) => (a.room_id === selectedRoomId || a.fixed_room_id === selectedRoomId) && !otherSelectedFacIds.has(a.faculty_id)
+    );
+    if (rAsgn && rAsgn.faculty_id) chosenFacId = rAsgn.faculty_id;
+  }
+
+  // 6. Check historical timetable entries for this room
+  if (!chosenFacId && state.timetable && Array.isArray(state.timetable.entries)) {
+    const ttEntry = state.timetable.entries.find(
+      (e) => (e.room_id === selectedRoomId || e.fixed_room_id === selectedRoomId) && e.faculty_id && !otherSelectedFacIds.has(e.faculty_id)
+    );
+    if (ttEntry) chosenFacId = ttEntry.faculty_id;
+  }
+
+  // 7. Fallback: pick any available faculty not already in other lanes
+  if (!chosenFacId) {
+    const freeFac = (state.faculty || []).find((f) => !otherSelectedFacIds.has(f.id));
+    if (freeFac) chosenFacId = freeFac.id;
+  }
+
+  if (chosenFacId && facSelect) {
+    facSelect.value = chosenFacId;
+    facSelect.style.transition = "all 0.3s";
+    facSelect.style.borderColor = "#2563eb";
+    facSelect.style.boxShadow = "0 0 0 3px rgba(37,99,235,0.25)";
+    setTimeout(() => {
+      facSelect.style.borderColor = "";
+      facSelect.style.boxShadow = "";
+    }, 800);
+  }
+}
+
+function handleParallelBatchSubjectChange(row, divId) {
+  const roomSelect = row.querySelector(".parallel-batch-room");
+  const subSelect = row.querySelector(".parallel-batch-sub");
+  const currentSubId = subSelect ? subSelect.value : null;
+  const currentSub = (state.subjects || []).find((s) => s.id === currentSubId);
+  if (!currentSub) return;
+
+  // Auto-map fixed room if available
+  if (currentSub.fixed_room_id && roomSelect) {
+    roomSelect.value = currentSub.fixed_room_id;
+  }
+
+  handleParallelBatchRoomChange(row, divId);
 }
 
 function syncEditSubjectSelection() {
@@ -7647,17 +7791,23 @@ function renderFacultyAvailabilityTable() {
 
   tbody.innerHTML = filtered.map((row) => {
     const isUnavailable = row.status === "NOT_AVAILABLE" || row.status === "BUSY";
-    const statusBadge = isUnavailable
-      ? `<span class="badge badge-danger" style="font-weight:700; font-size:11px;">🚫 BUSY / UNAVAILABLE</span>`
-      : `<span class="badge badge-success" style="font-weight:700; font-size:11px;">FREE</span>`;
+    let statusBadge = "";
+    let actionBtnHtml = "";
 
-    const toggleBtn = isUnavailable
-      ? `<button class="btn btn-xs btn-success btn-toggle-avail" data-fac-id="${row.faculty_id}" data-day="${row.day}" data-start="${row.start_time}" data-end="${row.end_time}">Mark FREE</button>`
-      : `<button class="btn btn-xs btn-warning btn-toggle-avail" data-fac-id="${row.faculty_id}" data-day="${row.day}" data-start="${row.start_time}" data-end="${row.end_time}">Mark Busy</button>`;
-
-    const deleteBtn = (row.is_rule && row.rule_id)
-      ? `<button class="btn btn-xs btn-outline-danger btn-delete-avail-rule" data-rule-id="${row.rule_id}" title="Remove rule" style="margin-left:4px;">✕</button>`
-      : ``;
+    if (row.is_scheduled_lecture) {
+      statusBadge = `<span class="badge" style="background:#dbeafe; color:#1e40af; border:1px solid #93c5fd; font-weight:700; font-size:11px;">📅 SCHEDULED TIMETABLE LECTURE</span>`;
+      actionBtnHtml = `<button class="btn btn-xs btn-outline-primary btn-view-tt-slot" data-day="${row.day}" data-start="${row.start_time}" data-fac-id="${row.faculty_id}" title="Jump to Timetable Grid">🔍 View in TT</button>`;
+    } else if (isUnavailable) {
+      statusBadge = `<span class="badge badge-danger" style="font-weight:700; font-size:11px;">🚫 BUSY / UNAVAILABLE</span>`;
+      const toggleBtn = `<button class="btn btn-xs btn-success btn-toggle-avail" data-fac-id="${row.faculty_id}" data-day="${row.day}" data-start="${row.start_time}" data-end="${row.end_time}">Mark FREE</button>`;
+      const deleteBtn = row.rule_id
+        ? `<button class="btn btn-xs btn-outline-danger btn-delete-avail-rule" data-rule-id="${row.rule_id}" title="Remove rule" style="margin-left:4px;">✕</button>`
+        : ``;
+      actionBtnHtml = `${toggleBtn}${deleteBtn}`;
+    } else {
+      statusBadge = `<span class="badge badge-success" style="font-weight:700; font-size:11px;">FREE</span>`;
+      actionBtnHtml = `<button class="btn btn-xs btn-warning btn-toggle-avail" data-fac-id="${row.faculty_id}" data-day="${row.day}" data-start="${row.start_time}" data-end="${row.end_time}">Mark Busy</button>`;
+    }
 
     return `
       <tr>
@@ -7669,8 +7819,7 @@ function renderFacultyAvailabilityTable() {
         <td style="font-size:12px; color:#475569;">${row.reason || (row.is_rule ? "Rule override" : "Blocked Slot")}</td>
         <td>
           <div style="display:flex; align-items:center;">
-            ${toggleBtn}
-            ${deleteBtn}
+            ${actionBtnHtml}
           </div>
         </td>
       </tr>
@@ -7678,10 +7827,49 @@ function renderFacultyAvailabilityTable() {
   }).join("");
 }
 
+function navigateToTimetableSlot(day, start, facId) {
+  const tabBtn = document.querySelector('[data-tab="tab-timetable"]');
+  if (tabBtn) tabBtn.click();
+
+  const facFilter = document.getElementById("filter-faculty");
+  if (facFilter) {
+    facFilter.value = facId;
+    state.filters.faculty = facId;
+  }
+  const dayFilter = document.getElementById("filter-day");
+  if (dayFilter) {
+    dayFilter.value = "ALL";
+    state.filters.day = "ALL";
+  }
+  renderTimetableGrid();
+
+  setTimeout(() => {
+    const targetCell = document.querySelector(`td[data-day="${day}"][data-start="${start}"]`);
+    if (targetCell) {
+      targetCell.scrollIntoView({ behavior: "smooth", block: "center" });
+      targetCell.style.outline = "3px solid #2563eb";
+      targetCell.style.outlineOffset = "4px";
+      setTimeout(() => {
+        targetCell.style.outline = "";
+        targetCell.style.outlineOffset = "";
+      }, 2000);
+    }
+  }, 250);
+}
+
 function setupFacultyAvailability() {
   const tbody = document.getElementById("tbody-faculty-availability");
   if (tbody) {
     tbody.addEventListener("click", async (e) => {
+      const viewTtBtn = e.target.closest(".btn-view-tt-slot");
+      if (viewTtBtn) {
+        const facId = viewTtBtn.getAttribute("data-fac-id");
+        const day = viewTtBtn.getAttribute("data-day");
+        const start = viewTtBtn.getAttribute("data-start");
+        navigateToTimetableSlot(day, start, facId);
+        return;
+      }
+
       const toggleBtn = e.target.closest(".btn-toggle-avail");
       if (toggleBtn) {
         const facId = toggleBtn.getAttribute("data-fac-id");

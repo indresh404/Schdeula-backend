@@ -99,7 +99,13 @@ class SchedulingCoordinator:
         )
         self.flexibility_engine = FlexibilityEngine(self.rooms_data, spatial_engine=self.spatial_engine)
         self.validator = ConstraintValidator(
-            self.faculty_data, self.rooms_data, self.subjects_data, self.settings, batches_list=self.batches_data
+            self.faculty_data,
+            self.rooms_data,
+            self.subjects_data,
+            self.settings,
+            batches_list=self.batches_data,
+            divisions_list=self.divisions_data,
+            faculty_availability=self.faculty_availability_data,
         )
         self.backtracking_solver = BacktrackingSolver(max_backtracks=300)
 
@@ -584,6 +590,7 @@ class SchedulingCoordinator:
                 batches_data=self.batches_data,
                 assignments_data=self.faculty_assignments_data,
                 settings_data=self.settings,
+                faculty_availability=self.faculty_availability_data,
                 max_attempts=40,
                 time_limit_sec=12.0,
             )

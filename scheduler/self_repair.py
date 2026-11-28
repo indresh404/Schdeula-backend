@@ -32,6 +32,7 @@ class TimetableSelfRepair:
         batches_data: List[Dict[str, Any]],
         assignments_data: List[Dict[str, Any]],
         settings_data: Dict[str, Any],
+        faculty_availability: Optional[List[Dict[str, Any]]] = None,
         max_attempts: int = 50,
         time_limit_sec: float = 15.0,
     ):
@@ -42,11 +43,18 @@ class TimetableSelfRepair:
         self.batches_data = batches_data
         self.assignments_data = assignments_data
         self.settings = settings_data
+        self.faculty_availability = faculty_availability or []
         self.max_attempts = max_attempts
         self.time_limit_sec = time_limit_sec
 
         self.validator = ConstraintValidator(
-            self.faculty_data, self.rooms_data, self.subjects_data, self.settings
+            self.faculty_data,
+            self.rooms_data,
+            self.subjects_data,
+            self.settings,
+            batches_list=self.batches_data,
+            divisions_list=self.divisions_data,
+            faculty_availability=self.faculty_availability,
         )
 
         self.subject_map = {s["id"]: s for s in self.subjects_data}
