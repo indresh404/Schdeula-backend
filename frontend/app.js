@@ -2082,6 +2082,27 @@ window.handleCellDrop = async function (e, targetDay, targetStart, targetEnd, ta
     return;
   }
 
+  // Preserve scroll positions
+  const scrollY = window.scrollY;
+  const scrollX = window.scrollX;
+  const gridContainer = document.querySelector(".tt-grid-container") || document.querySelector(".table-responsive") || document.querySelector("#timetable-grid");
+  const gridScrollTop = gridContainer ? gridContainer.scrollTop : 0;
+  const gridScrollLeft = gridContainer ? gridContainer.scrollLeft : 0;
+
+  const restoreGridScroll = () => {
+    requestAnimationFrame(() => {
+      if (gridContainer) {
+        gridContainer.scrollTop = gridScrollTop;
+        gridContainer.scrollLeft = gridScrollLeft;
+      }
+      window.scrollTo(scrollX, scrollY);
+    });
+  };
+
+  // Snapshot before drag for safe transactional rollback
+  const previousEntries = JSON.parse(JSON.stringify(state.timetable.entries || []));
+  const previousValReport = state.timetable.validation_report ? JSON.parse(JSON.stringify(state.timetable.validation_report)) : null;
+
   const toMin = (t) => {
     const [h, m] = t.split(":").map(Number);
     return h * 60 + m;
@@ -2094,7 +2115,7 @@ window.handleCellDrop = async function (e, targetDay, targetStart, targetEnd, ta
 
   const origDuration = toMin(entry.end_time) - toMin(entry.start_time);
   const newStartMin = toMin(targetStart);
-  const newEndMin = newStartMin + (origDuration > 0 ? origDuration : 60);
+  const newEndMin = newStartMin + (origDuration > 0 ? origDuration : (entry.duration_minutes || 60));
   const newEnd = toTime(newEndMin);
 
   // Check if overlaps any break
@@ -2138,16 +2159,35 @@ window.handleCellDrop = async function (e, targetDay, targetStart, targetEnd, ta
     const data = await res.json();
 
     if (res.ok && data.success) {
+      if (Array.isArray(data.entries) && data.entries.length > 0) {
+        state.timetable.entries = data.entries;
+        if (data.validation_report) {
+          state.timetable.validation_report = data.validation_report;
+        }
+      } else {
+        entry.day = targetDay;
+        entry.start_time = targetStart;
+        entry.end_time = newEnd;
+        if (targetDivId && !entry.is_elective) entry.division_id = targetDivId;
+      }
+
       state.recentlySwappedEntryIds = [entryId];
       if (swapPayload.target_entry_id) {
         state.recentlySwappedEntryIds.push(swapPayload.target_entry_id);
       }
+
+      renderTimetableGrid();
+      if (typeof loadTimetableInsights === "function") {
+        loadTimetableInsights();
+      }
+      restoreGridScroll();
+
       setTimeout(() => {
         state.recentlySwappedEntryIds = [];
         document.querySelectorAll(".tt-entry.tt-entry-swapped").forEach((el) => {
           el.classList.remove("tt-entry-swapped");
         });
-      }, 1200);
+      }, 1500);
 
       if (data.has_clash) {
         showBanner(`${data.message} ⚠️ Warning: Conflict detected in new arrangement. Hover on cards to auto-fix.`, "warning");
@@ -2155,22 +2195,33 @@ window.handleCellDrop = async function (e, targetDay, targetStart, targetEnd, ta
         showBanner(data.message, "success");
       }
       if (window.deselectCurrentSlot) window.deselectCurrentSlot();
-      await refreshAllData();
       return;
     }
 
-    if (!res.ok) {
-      if (data.refresh_required) {
-        showBanner("Timetable was updated or regenerated. Reloading data — please retry the drag.", "warning");
-        await refreshAllData();
-        return;
+    // Server returned failure: rollback safely
+    state.timetable.entries = previousEntries;
+    if (previousValReport) state.timetable.validation_report = previousValReport;
+    renderTimetableGrid();
+    restoreGridScroll();
+
+    if (data.refresh_required) {
+      showBanner("Timetable was updated on server. Refreshing timetable data.", "warning");
+      const ttRes = await fetch("/api/timetable");
+      const ttData = await ttRes.json();
+      if (ttData && Array.isArray(ttData.entries) && ttData.entries.length > 0) {
+        state.timetable = ttData;
+        renderTimetableGrid();
       }
-      showBanner(data.error || data.message || "Failed to swap/move lecture.", "danger");
       return;
     }
+    showBanner(data.error || data.message || "Failed to swap/move lecture. Original position restored.", "danger");
   } catch (err) {
-    console.error(err);
-    showBanner("Network error while swapping/moving lecture.", "danger");
+    console.error("Drag-and-drop error:", err);
+    state.timetable.entries = previousEntries;
+    if (previousValReport) state.timetable.validation_report = previousValReport;
+    renderTimetableGrid();
+    restoreGridScroll();
+    showBanner("Network or server error while moving lecture. Timetable position restored.", "danger");
   }
 };
 
@@ -2184,7 +2235,16 @@ window.handleFixSingleEntry = async function (entryId, mode) {
     const data = await res.json();
     if (res.ok && data.success) {
       showBanner(data.message, data.is_conflict_free ? "success" : "info");
-      await refreshAllData();
+      if (Array.isArray(data.entries) && data.entries.length > 0) {
+        state.timetable.entries = data.entries;
+        if (data.validation_report) {
+          state.timetable.validation_report = data.validation_report;
+        }
+        renderTimetableGrid();
+        if (typeof loadTimetableInsights === "function") loadTimetableInsights();
+      } else {
+        await refreshAllData();
+      }
     } else {
       showBanner(data.error || "Could not automatically resolve this clash.", "warning");
     }

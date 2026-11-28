@@ -91,6 +91,9 @@ class FeasibilityEngine:
         # Track daily practical lab counts (at most 1 lab per day per division and batch)
         self.division_lab_count: Dict[str, Dict[str, int]] = {}
         self.batch_lab_count: Dict[str, Dict[str, int]] = {}
+        # Track daily practical lab time intervals per division: division_id -> day -> set of (start_t, end_t)
+        # Sibling batches of the same division must schedule in parallel at the SAME slot on that day
+        self.division_lab_slots: Dict[str, Dict[str, Set[Tuple[str, str]]]] = {}
         # Track division elective occupancy: division_id -> day -> list of (start_time, end_time, entry_id, parent_subject_id)
         self.division_elective_occupancy: Dict[str, Dict[str, List[Tuple[str, str, str, str]]]] = {}
         # Track batch to division mapping (support 1 batch -> multiple divisions, e.g. shared elective groups)
@@ -137,6 +140,9 @@ class FeasibilityEngine:
         }
         self.division_lab_count = {
             d["id"]: {day: 0 for day in self.working_days} for d in divisions
+        }
+        self.division_lab_slots = {
+            d["id"]: {day: set() for day in self.working_days} for d in divisions
         }
         self.batch_lab_count = {
             b["id"]: {day: 0 for day in self.working_days} for b in batches
@@ -313,6 +319,7 @@ class FeasibilityEngine:
                     lab_hours = max(1, (time_to_minutes(end_time) - time_to_minutes(start_time)) // 60)
                     self.division_daily_count[division_id][day] += lab_hours
                     self.division_lab_count[division_id][day] = self.division_lab_count[division_id].get(day, 0) + 1
+                self.division_lab_slots.setdefault(division_id, {}).setdefault(day, set()).add((start_time, end_time))
                 self.batch_to_division[batch_id] = division_id
                 self.batch_to_divisions.setdefault(batch_id, set()).add(division_id)
             if batch_id:
@@ -382,6 +389,13 @@ class FeasibilityEngine:
                 )
                 if not has_other_lab:
                     self.division_lab_count[division_id][day] = 0
+                slot_still_used = any(
+                    (occ[0] == start_time and occ[1] == end_time)
+                    for b in self.regular_batches_by_division.get(division_id, [])
+                    for occ in self.batch_occupancy.get(b, {}).get(day, [])
+                )
+                if not slot_still_used and division_id in self.division_lab_slots:
+                    self.division_lab_slots[division_id].get(day, set()).discard((start_time, end_time))
             if subject_id:
                 key = (batch_id, subject_id)
                 if key in self.batch_subject_entries and entry_id in self.batch_subject_entries[key]:
@@ -430,14 +444,19 @@ class FeasibilityEngine:
             return []
 
         for day in self.working_days:
-            # Strictly enforce: at most 1 lab per day per division and per batch
-            if request.type == "Practical":
-                if self.division_lab_count.get(request.division_id, {}).get(day, 0) >= 1:
-                    continue
-                if request.batch_id and self.batch_lab_count.get(request.batch_id, {}).get(day, 0) >= 1:
+            # Strictly enforce: at most 1 lab per day per batch
+            if request.type == "Practical" and request.batch_id:
+                if self.batch_lab_count.get(request.batch_id, {}).get(day, 0) >= 1:
                     continue
 
             for start_t, end_t in candidate_intervals:
+                # If division already has a practical scheduled on this day,
+                # any sibling practical batch MUST be scheduled in parallel at the SAME slot!
+                # (Disallowing a second, separate practical at a different time on the same day)
+                if request.type == "Practical" and request.division_id:
+                    existing_slots = self.division_lab_slots.get(request.division_id, {}).get(day, set())
+                    if existing_slots and (start_t, end_t) not in existing_slots:
+                        continue
                 # 1. Division / Batch / Elective availability
                 is_req_elec = bool(getattr(request, "is_elective", False) or request.type == "Elective")
                 if is_req_elec:

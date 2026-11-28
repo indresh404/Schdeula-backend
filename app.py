@@ -3218,7 +3218,9 @@ def swap_timetable():
         "message": swap_msg,
         "is_valid": val_report["is_valid"],
         "has_clash": not val_report["is_valid"],
-        "conflicts": val_report.get("hard_conflicts", [])
+        "conflicts": val_report.get("hard_conflicts", []),
+        "validation_report": val_report,
+        "entries": entries,
     })
 
 
@@ -3390,6 +3392,8 @@ def fix_single_entry():
         "mode": mode,
         "is_conflict_free": new_val["is_valid"],
         "remaining_conflicts_count": len(new_val["hard_conflicts"]),
+        "validation_report": new_val,
+        "entries": entries,
     })
 
 
