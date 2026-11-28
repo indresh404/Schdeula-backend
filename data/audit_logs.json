@@ -1300,5 +1300,75 @@
       "manual_override": true,
       "confirmed_clash_override": true
     }
+  },
+  {
+    "id": "audit_20eb7161",
+    "timestamp": "2026-11-28T13:48:17.620689",
+    "action": "TIMETABLE_AUTO_GENERATION",
+    "username": "admin",
+    "details": "Generated and published clash-free timetable with 132 lectures.",
+    "metadata": {}
+  },
+  {
+    "id": "audit_c4068874",
+    "timestamp": "2026-11-28T13:48:28.264221",
+    "action": "EXPLICIT_CLASH_OVERRIDE",
+    "username": "admin",
+    "details": "Admin explicitly authorized clash override for 'None' (Monday 09:15).",
+    "metadata": {
+      "id": "manual_8fe8a02e",
+      "lecture_request_id": "manual_5fe404",
+      "subject_id": "sub_sy_dsa_lab",
+      "subject_name": null,
+      "year_id": null,
+      "division_id": "div_ty_b",
+      "division_name": null,
+      "batch_id": null,
+      "batch_name": null,
+      "faculty_id": "fac_03",
+      "faculty_name": null,
+      "room_id": "lab_204",
+      "room_name": null,
+      "day": "Monday",
+      "start_time": "09:15",
+      "end_time": "11:15",
+      "type": "Theory",
+      "duration_minutes": 60,
+      "student_capacity": 65,
+      "is_manual": true,
+      "manual_override": true,
+      "confirmed_clash_override": true
+    }
+  },
+  {
+    "id": "audit_4fd7bdac",
+    "timestamp": "2026-11-28T13:48:28.496992",
+    "action": "MANUAL_ENTRY_DELETED",
+    "username": "admin",
+    "details": "Admin deleted timetable lecture 'None'.",
+    "metadata": {
+      "id": "manual_8fe8a02e",
+      "lecture_request_id": "manual_5fe404",
+      "subject_id": "sub_sy_dsa_lab",
+      "subject_name": null,
+      "year_id": null,
+      "division_id": "div_ty_b",
+      "division_name": null,
+      "batch_id": null,
+      "batch_name": null,
+      "faculty_id": "fac_03",
+      "faculty_name": null,
+      "room_id": "lab_204",
+      "room_name": null,
+      "day": "Monday",
+      "start_time": "09:15",
+      "end_time": "11:15",
+      "type": "Theory",
+      "duration_minutes": 60,
+      "student_capacity": 65,
+      "is_manual": true,
+      "manual_override": true,
+      "confirmed_clash_override": true
+    }
   }
 ]

@@ -482,7 +482,12 @@ async function refreshAllData() {
     state.rooms = await roomsRes.json();
     state.assignments = await asgnRes.json();
     state.settings = await settingsRes.json();
-    state.timetable = await ttRes.json();
+    const newTt = await ttRes.json();
+    if (newTt && Array.isArray(newTt.entries) && newTt.entries.length > 0) {
+      state.timetable = newTt;
+    } else if (!state.timetable || !state.timetable.entries || state.timetable.entries.length === 0) {
+      state.timetable = newTt || { entries: [] };
+    }
     state.floors = await floorsRes.json();
     state.roomsByFloor = await roomsByFloorRes.json();
     state.distances = await distancesRes.json();
@@ -3971,14 +3976,31 @@ function setupEventListeners() {
         fetch("/api/subjects"),
         fetch("/api/divisions"),
         fetch("/api/rooms"),
-        fetch("/api/assignments")
+        fetch("/api/faculty-assignments")
       ]);
-      state.stats = await statsRes.json();
-      state.faculty = await facultyRes.json();
-      state.subjects = await subjectsRes.json();
-      state.divisions = await divisionsRes.json();
-      state.rooms = await roomsRes.json();
-      state.assignments = await asgnRes.json();
+
+      const safeJson = async (res) => {
+        if (!res || !res.ok) return null;
+        try {
+          return await res.json();
+        } catch (e) {
+          return null;
+        }
+      };
+
+      const sStats = await safeJson(statsRes);
+      if (sStats) state.stats = sStats;
+      const sFac = await safeJson(facultyRes);
+      if (sFac) state.faculty = sFac;
+      const sSub = await safeJson(subjectsRes);
+      if (sSub) state.subjects = sSub;
+      const sDiv = await safeJson(divisionsRes);
+      if (sDiv) state.divisions = sDiv;
+      const sRooms = await safeJson(roomsRes);
+      if (sRooms) state.rooms = sRooms;
+      const sAsgn = await safeJson(asgnRes);
+      if (sAsgn) state.assignments = sAsgn;
+
       renderDashboard();
       renderFacultyTable();
       renderSubjectsTable();

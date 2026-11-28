@@ -722,6 +722,7 @@ def delete_subject(subject_id):
 # ---------------------------------------------------------
 # Faculty Assignments API
 # ---------------------------------------------------------
+@app.route("/api/assignments", methods=["GET"])
 @app.route("/api/faculty-assignments", methods=["GET"])
 def get_faculty_assignments():
     assignments = store.read("faculty_assignments.json") or []
@@ -760,6 +761,7 @@ def get_faculty_assignments():
     return jsonify(combined)
 
 
+@app.route("/api/assignments", methods=["POST"])
 @app.route("/api/faculty-assignments", methods=["POST"])
 @require_role(["main_admin", "academic_admin"])
 def add_faculty_assignment():
@@ -795,6 +797,7 @@ def add_faculty_assignment():
     return jsonify({"message": "Assignment created", "assignment": new_asgn}), 201
 
 
+@app.route("/api/assignments/<asgn_id>", methods=["DELETE"])
 @app.route("/api/faculty-assignments/<asgn_id>", methods=["DELETE"])
 @require_role(["main_admin", "academic_admin"])
 def delete_faculty_assignment(asgn_id):
@@ -1284,6 +1287,12 @@ def get_timetable():
             if db_tt and db_tt.get("entries"):
                 timetable = db_tt
                 store.write("timetable.json", timetable)
+            else:
+                draft_tt = store.read("draft_timetable.json")
+                if draft_tt and draft_tt.get("entries"):
+                    timetable = draft_tt
+                    store.write("timetable.json", timetable)
+                    sqlite_store.save_timetable(timetable)
         except Exception:
             pass
 
@@ -1291,8 +1300,9 @@ def get_timetable():
     rooms = store.read("rooms.json") or []
     subjects = store.read("subjects.json") or []
     settings = store.read("settings.json") or {}
+    batches = store.read("batches.json") or []
 
-    validator = ConstraintValidator(faculty, rooms, subjects, settings)
+    validator = ConstraintValidator(faculty, rooms, subjects, settings, batches_list=batches)
     val_report = validator.validate_all(timetable.get("entries", []))
 
     return jsonify({
@@ -1615,12 +1625,19 @@ def generate_timetable_stream():
 
             yield f"event: complete\ndata: {json.dumps({'event': 'COMPLETE', 'success': True, 'message': f'Timetable generated successfully! {len(draft_entries)} lectures scheduled, 0 clashes.', 'scheduled_count': len(draft_entries), 'timetable_entries': draft_entries, 'entries': draft_entries, 'execution_logs': coord_res.get('log', {}).get('execution_logs', []), 'backtracking_attempts': backtrack_cnt, 'self_repair_applied': True, 'cooling_factor_applied': True, 'validation_report': final_val, 'progress': 100})}\n\n"
         else:
-            # Safe Draft: preserve existing published timetable!
-            store.write("draft_timetable.json", {
+            # Save draft and ensure timetable.json & SQLite also keep these entries so frontend and backend remain in sync
+            draft_tt = {
                 "entries": draft_entries,
                 "status": "draft_with_conflicts",
                 "validation_report": final_val,
-            })
+                "last_generated": datetime.datetime.now().isoformat(),
+            }
+            store.write("draft_timetable.json", draft_tt)
+            store.write("timetable.json", draft_tt)
+            try:
+                sqlite_store.save_timetable(draft_tt)
+            except Exception as e:
+                app.logger.warning(f"SQLite save warning: {e}")
             unres_cnt = final_val.get("hard_conflicts_count", 0)
             yield f"event: complete\ndata: {json.dumps({'event': 'COMPLETE', 'success': False, 'message': f'Draft generated with {unres_cnt} unresolved conflicts. Published timetable preserved safely.', 'unresolved_count': unres_cnt, 'scheduled_count': len(draft_entries), 'timetable_entries': draft_entries, 'entries': draft_entries, 'backtracking_attempts': backtrack_cnt, 'validation_report': final_val, 'progress': 100})}\n\n"
 
@@ -3047,6 +3064,30 @@ def swap_timetable():
             pass
 
     source_entry = next((e for e in entries if e["id"] == source_entry_id), None)
+    if not source_entry:
+        # Check SQLite and draft_timetable.json as recovery fallbacks
+        try:
+            db_tt = sqlite_store.get_timetable()
+            if db_tt and db_tt.get("entries"):
+                match = next((e for e in db_tt.get("entries", []) if e["id"] == source_entry_id), None)
+                if match:
+                    timetable = db_tt
+                    entries = timetable.get("entries", [])
+                    source_entry = match
+                    store.write("timetable.json", timetable)
+            if not source_entry:
+                draft_tt = store.read("draft_timetable.json")
+                if draft_tt and draft_tt.get("entries"):
+                    match = next((e for e in draft_tt.get("entries", []) if e["id"] == source_entry_id), None)
+                    if match:
+                        timetable = draft_tt
+                        entries = timetable.get("entries", [])
+                        source_entry = match
+                        store.write("timetable.json", timetable)
+                        sqlite_store.save_timetable(timetable)
+        except Exception:
+            pass
+
     if not source_entry:
         return jsonify({
             "error": (
