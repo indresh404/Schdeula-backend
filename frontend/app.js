@@ -2154,6 +2154,11 @@ window.handleCellDrop = async function (e, targetDay, targetStart, targetEnd, ta
     }
 
     if (!res.ok) {
+      if (data.refresh_required) {
+        showBanner("Timetable was updated or regenerated. Reloading data — please retry the drag.", "warning");
+        await refreshAllData();
+        return;
+      }
       showBanner(data.error || data.message || "Failed to swap/move lecture.", "danger");
       return;
     }
@@ -7429,23 +7434,47 @@ function renderInsightsClashes(reports) {
   }
 
   container.innerHTML = reports.map((r) => {
-    const isWarning = r.severity === "warning";
+    const isWarning = r.severity === "warning" || r.type === "MIN_DIVISION_DAILY_LECTURES" || (r.type || "").startsWith("MIN_");
     const entryId = r.entry_id || (r.affected_entry_ids && r.affected_entry_ids[0]) || "";
+    const dismissBtn = isWarning
+      ? `<button class="insight-dismiss-btn" title="Dismiss this warning" onclick="event.stopPropagation(); this.closest('.insight-clash-card').remove(); _updateInsightDismissBadge();">✕</button>`
+      : "";
     return `
       <div class="insight-clash-card ${isWarning ? 'warning-type' : ''}" data-entry-id="${entryId}" onclick="focusTimetableEntry('${entryId}')">
         <div class="insight-card-header">
           <span class="insight-card-title">${r.type || 'Clash Detected'}</span>
           <span class="insight-card-time">${r.day || ''} ${r.slot || ''}</span>
+          ${dismissBtn}
         </div>
         <div class="insight-card-desc">${r.message}</div>
         <div class="insight-card-hint">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 16 16 12 12 8"></polyline><line x1="8" y1="12" x2="16" y2="12"></line></svg>
-          <span>Click to navigate & highlight slot</span>
+          <span>${isWarning ? 'Click to navigate & highlight slot (soft warning — can be dismissed)' : 'Click to navigate & highlight slot'}</span>
         </div>
       </div>
     `;
   }).join("");
 }
+
+window._updateInsightDismissBadge = function () {
+  const container = document.getElementById("insights-clashes-container");
+  const countBadge = document.getElementById("insights-clash-count-badge");
+  if (!container || !countBadge) return;
+  const remaining = container.querySelectorAll(".insight-clash-card").length;
+  if (remaining > 0) {
+    countBadge.textContent = remaining;
+    countBadge.style.display = "inline-block";
+  } else {
+    countBadge.style.display = "none";
+    container.innerHTML = `
+      <div style="text-align:center; padding:32px 16px; color:#10b981; background:#ecfdf5; border-radius:8px; border:1px solid #a7f3d0;">
+        <div style="font-size:24px; margin-bottom:6px;">✅</div>
+        <div style="font-weight:700; font-size:14px;">All warnings dismissed!</div>
+        <div style="font-size:12px; color:#047857; margin-top:4px;">No remaining clashes or warnings to display.</div>
+      </div>
+    `;
+  }
+};
 
 function renderInsightsWorkload(facultyList) {
   const container = document.getElementById("insights-workload-container");
@@ -7575,23 +7604,39 @@ function renderInsightsLogs(logs) {
 window.focusTimetableEntry = function (entryId) {
   if (!entryId) return;
 
-  // Make sure Timetable tab is selected
+  // Switch to timetable tab first
   const tabTimetableNav = document.querySelector('[data-tab="tab-timetable"]');
   if (tabTimetableNav) tabTimetableNav.click();
 
-  // Look for elements with data-entry-id
-  const targetEl = document.querySelector(`[data-entry-id="${entryId}"]`);
-  if (targetEl) {
-    targetEl.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
-    targetEl.classList.remove("tt-entry-highlight-pulse");
-    void targetEl.offsetWidth; // trigger reflow
-    targetEl.classList.add("tt-entry-highlight-pulse");
-    setTimeout(() => {
-      targetEl.classList.remove("tt-entry-highlight-pulse");
-    }, 2800);
-  } else {
-    showBanner(`Entry ${entryId} is not visible under current year filters. Switch to "All Years" to view it.`, "info");
+  // Reset all filters to ALL so the entry is guaranteed visible
+  if (state.filters) {
+    state.filters.year = "ALL";
+    state.filters.division = "ALL";
+    state.filters.faculty = "ALL";
+    state.filters.room = "ALL";
+    state.filters.day = "ALL";
+    if (Array.isArray(state.filters.years)) state.filters.years = ["ALL"];
+    if (Array.isArray(state.filters.divisions)) state.filters.divisions = ["ALL"];
+    if (Array.isArray(state.filters.days)) state.filters.days = ["ALL"];
   }
+  if (typeof populateFilterDropdowns === "function") populateFilterDropdowns();
+  renderTimetableGrid();
+
+  // Wait for DOM to update, then scroll & highlight
+  setTimeout(() => {
+    const targetEl = document.querySelector(`[data-entry-id="${entryId}"]`);
+    if (targetEl) {
+      targetEl.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" });
+      targetEl.classList.remove("tt-entry-highlight-pulse");
+      void targetEl.offsetWidth; // trigger reflow
+      targetEl.classList.add("tt-entry-highlight-pulse");
+      setTimeout(() => {
+        targetEl.classList.remove("tt-entry-highlight-pulse");
+      }, 2800);
+    } else {
+      showBanner(`Entry ${entryId} could not be found in the grid. It may have been deleted or regenerated.`, "info");
+    }
+  }, 200);
 };
 
 

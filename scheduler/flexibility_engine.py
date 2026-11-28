@@ -73,13 +73,17 @@ class FlexibilityEngine:
         
         min_div_daily = getattr(feasibility_engine, "min_div_daily", 3)
         if div_day_count < min_div_daily:
-            # High priority bonus to bring days up to at least 3 lectures
-            daily_distribution_bonus = (min_div_daily - div_day_count) * 20.0
-        elif div_day_count >= 5:
-            # Soft penalty to prevent cramming 5+ lectures into one day
-            daily_distribution_bonus = -((div_day_count - 4) * 15.0)
-        else:
+            # Strong bonus: bring under-served days up to minimum first
+            daily_distribution_bonus = (min_div_daily - div_day_count) * 40.0
+        elif div_day_count == min_div_daily:
+            # Neutral — this day is exactly at minimum
             daily_distribution_bonus = 5.0
+        elif div_day_count <= min_div_daily + 1:
+            # Slight penalty — this day has one extra already
+            daily_distribution_bonus = -10.0
+        else:
+            # Strong penalty to prevent cramming 5+ lectures into one day
+            daily_distribution_bonus = -((div_day_count - min_div_daily) * 25.0)
 
         # Spatial & Movement Optimization (Soft Constraint)
         spatial_bonus = 0.0

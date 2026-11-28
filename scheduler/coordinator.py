@@ -349,8 +349,6 @@ class SchedulingCoordinator:
                             if r.get("type") == "Laboratory" and
                             self.room_manager.is_available(r.get("id"), day, s_t, e_t)[0]
                         ]
-                        if not avail_rooms:
-                            continue
 
                         if getattr(b_req, "fixed_room_id", None):
                             req_f = b_req.fixed_room_id
@@ -362,7 +360,39 @@ class SchedulingCoordinator:
                             f_id for f_id in b_req.eligible_faculty_ids
                             if self.faculty_manager.is_available(f_id, day, s_t, e_t)[0]
                         ]
-                        if not avail_fac:
+
+                        # If no faculty or room available at the same slot, try next available slot
+                        # from the standard candidate intervals so the sibling batch is not left free
+                        if not avail_fac or not avail_rooms:
+                            fallback_placed = False
+                            working_days = self.settings.get("working_days", [])
+                            for fb_day in working_days:
+                                for fb_st, fb_et in candidate_intervals_120:
+                                    fb_rooms = [
+                                        r for r in self.rooms_data
+                                        if r.get("type") == "Laboratory" and
+                                        self.room_manager.is_available(r.get("id"), fb_day, fb_st, fb_et)[0]
+                                    ]
+                                    fb_fac = [
+                                        f_id for f_id in b_req.eligible_faculty_ids
+                                        if self.faculty_manager.is_available(f_id, fb_day, fb_st, fb_et)[0]
+                                    ]
+                                    if fb_rooms and fb_fac:
+                                        self._apply_assignment(b_req, {
+                                            "day": fb_day,
+                                            "start_time": fb_st,
+                                            "end_time": fb_et,
+                                            "faculty_id": fb_fac[0],
+                                            "room_id": fb_rooms[0]["id"],
+                                        }, scheduled_entries)
+                                        if b_req in pending_requests:
+                                            pending_requests.remove(b_req)
+                                        fallback_placed = True
+                                        break
+                                if fallback_placed:
+                                    break
+                            if fallback_placed:
+                                break
                             continue
 
                         chosen_room = avail_rooms[0]
@@ -495,7 +525,13 @@ class SchedulingCoordinator:
             scheduled_entries = norm_res["entries"]
             execution_logs.extend(norm_res.get("logs", []))
 
-        # 4c. Independent validation & Spatial Metrics
+        # 4c. Post-scheduling daily spread rebalancing
+        min_lec = int(self.settings.get("min_lectures_per_division_per_day", 3))
+        if self.settings.get("enforce_min_division_daily_limit") and min_lec > 0:
+            rebalance_logs = self._rebalance_daily_spread(scheduled_entries, min_lec)
+            execution_logs.extend(rebalance_logs)
+
+        # 4d. Independent validation & Spatial Metrics
         validation_report = self.validator.validate_all(scheduled_entries)
         spatial_metrics = self.spatial_engine.calculate_spatial_metrics(scheduled_entries)
 
@@ -644,6 +680,187 @@ class SchedulingCoordinator:
             "spatial_metrics": spatial_metrics,
             "log": log_summary,
         }
+
+    def _rebalance_daily_spread(
+        self,
+        scheduled_entries: List[Dict[str, Any]],
+        min_daily: int,
+    ) -> List[Dict[str, Any]]:
+        """
+        Post-scheduling pass: for each division+day that has at least 1 session but fewer
+        than min_daily periods, attempt to move a Theory lecture from an over-stacked day
+        (> min_daily) to that day.  Matching the validator's counting logic exactly:
+        only division-level (non-batch) entries are counted.
+        Up to 5 rebalance passes; tries all excess days and all movable entries per pass.
+        """
+        logs = []
+        working_days = self.settings.get("working_days", ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"])
+        breaks_raw = self.settings.get("breaks", [])
+        day_start = self.settings.get("day_start_time", "09:00")
+        day_end = self.settings.get("day_end_time", "17:00")
+
+        def t2m(t: str) -> int:
+            if not t:
+                return 0
+            parts = t.split(":")
+            return int(parts[0]) * 60 + int(parts[1])
+
+        def m2t(mins: int) -> str:
+            return f"{mins // 60:02d}:{mins % 60:02d}"
+
+        def overlaps_break(st: str, et: str) -> bool:
+            for b in breaks_raw:
+                if t2m(st) < t2m(b.get("end", "00:00")) and t2m(et) > t2m(b.get("start", "00:00")):
+                    return True
+            return False
+
+        def periods_for_entries(entries_list: List[Dict]) -> int:
+            """Count periods exactly as the validator does (unique slots, duration//60)."""
+            seen = set()
+            total = 0
+            for e in entries_list:
+                slot_key = (e.get("start_time"), e.get("end_time"))
+                if slot_key not in seen:
+                    seen.add(slot_key)
+                    dur = e.get("duration_minutes", 60)
+                    total += max(1, int(dur) // 60)
+            return total
+
+        def try_move(entry_to_move: Dict, def_day: str) -> Optional[str]:
+            """Try to find a valid slot on def_day for entry_to_move. Returns new start_time or None."""
+            dur = int(entry_to_move.get("duration_minutes", 60))
+            start_m = t2m(day_start)
+            end_limit = t2m(day_end)
+            eid = entry_to_move["id"]
+            div_id = entry_to_move.get("division_id")
+            fac_id = entry_to_move.get("faculty_id")
+            room_id = entry_to_move.get("room_id")
+
+            while start_m + dur <= end_limit:
+                slot_st = m2t(start_m)
+                slot_et = m2t(start_m + dur)
+                if overlaps_break(slot_st, slot_et):
+                    start_m += 60
+                    continue
+                # Division conflict?
+                if any(
+                    e.get("day") == def_day and e.get("id") != eid and
+                    e.get("division_id") == div_id and
+                    t2m(e.get("start_time", "00:00")) < t2m(slot_et) and
+                    t2m(e.get("end_time", "00:00")) > t2m(slot_st)
+                    for e in scheduled_entries
+                ):
+                    start_m += 60
+                    continue
+                # Batch entries of same division also block the slot for division
+                if any(
+                    e.get("day") == def_day and e.get("id") != eid and
+                    e.get("division_id") == div_id and e.get("batch_id") and
+                    t2m(e.get("start_time", "00:00")) < t2m(slot_et) and
+                    t2m(e.get("end_time", "00:00")) > t2m(slot_st)
+                    for e in scheduled_entries
+                ):
+                    start_m += 60
+                    continue
+                # Faculty conflict?
+                if fac_id and any(
+                    e.get("day") == def_day and e.get("id") != eid and
+                    e.get("faculty_id") == fac_id and
+                    t2m(e.get("start_time", "00:00")) < t2m(slot_et) and
+                    t2m(e.get("end_time", "00:00")) > t2m(slot_st)
+                    for e in scheduled_entries
+                ):
+                    start_m += 60
+                    continue
+                # Room conflict?
+                if room_id and any(
+                    e.get("day") == def_day and e.get("id") != eid and
+                    e.get("room_id") == room_id and
+                    t2m(e.get("start_time", "00:00")) < t2m(slot_et) and
+                    t2m(e.get("end_time", "00:00")) > t2m(slot_st)
+                    for e in scheduled_entries
+                ):
+                    start_m += 60
+                    continue
+                return slot_st  # Valid slot found
+            return None
+
+        all_div_ids = list({e.get("division_id") for e in scheduled_entries if e.get("division_id")})
+
+        for _pass in range(5):  # up to 5 rebalance passes
+            moved_any = False
+            for div_id in all_div_ids:
+                # Count non-batch (division-level) entries per day — matches validator
+                div_entries_all = [
+                    e for e in scheduled_entries
+                    if e.get("division_id") == div_id and not e.get("batch_id")
+                ]
+                day_entries: Dict[str, List[Dict]] = {d: [] for d in working_days}
+                for e in div_entries_all:
+                    d = e.get("day")
+                    if d in day_entries:
+                        day_entries[d].append(e)
+
+                day_periods = {d: periods_for_entries(day_entries[d]) for d in working_days}
+
+                # Days that have sessions but are below minimum
+                deficit_days = [
+                    d for d in working_days
+                    if 0 < day_periods[d] < min_daily
+                ]
+                # Days that have more than minimum (donate a lecture)
+                # Use > min_daily (not min+1) so we can donate even from a day with min+1
+                donor_days = [
+                    d for d in working_days
+                    if day_periods[d] > min_daily
+                ]
+
+                for def_day in deficit_days:
+                    if not donor_days:
+                        break
+                    placed = False
+                    for exc_day in sorted(donor_days, key=lambda d: -day_periods[d]):
+                        # Try each movable Theory entry on exc_day
+                        candidates = [
+                            e for e in day_entries[exc_day]
+                            if e.get("type") == "Theory"
+                            and not e.get("is_manual")
+                            and not e.get("is_elective")
+                        ]
+                        for cand in candidates:
+                            new_st = try_move(cand, def_day)
+                            if new_st is None:
+                                continue
+                            dur = int(cand.get("duration_minutes", 60))
+                            new_et = m2t(t2m(new_st) + dur)
+                            old_day = cand["day"]
+                            old_st = cand["start_time"]
+                            old_et = cand["end_time"]
+                            cand["day"] = def_day
+                            cand["start_time"] = new_st
+                            cand["end_time"] = new_et
+                            logs.append({
+                                "timestamp": datetime.datetime.now().isoformat(),
+                                "agent": "Daily Spread Rebalancer",
+                                "type": "REBALANCE",
+                                "message": (
+                                    f"[Pass {_pass+1}] Moved '{cand.get('subject_name')}' "
+                                    f"({cand.get('division_name', div_id)}) "
+                                    f"from {old_day} {old_st}–{old_et} "
+                                    f"→ {def_day} {new_st}–{new_et} "
+                                    f"(day had {day_periods[def_day]} period(s), needed ≥{min_daily})."
+                                ),
+                            })
+                            placed = True
+                            moved_any = True
+                            break
+                        if placed:
+                            break
+
+            if not moved_any:
+                break
+
+        return logs
 
     def _apply_assignment(
         self,

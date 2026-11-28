@@ -3025,7 +3025,13 @@ def swap_timetable():
 
     source_entry = next((e for e in entries if e["id"] == source_entry_id), None)
     if not source_entry:
-        return jsonify({"error": f"Source entry {source_entry_id} not found."}), 404
+        return jsonify({
+            "error": (
+                f"Source entry '{source_entry_id}' not found. "
+                "The timetable may have been regenerated. Please refresh the page and retry."
+            ),
+            "refresh_required": True,
+        }), 404
 
     # Determine if source is an elective / MDM cluster
     is_source_mdm = bool(

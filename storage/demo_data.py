@@ -458,7 +458,7 @@ DEMO_ASSIGNMENTS = [
     {"id": "asgn_sy_c_coa", "faculty_id": "fac_07", "subject_id": "sub_sy_coa", "year_id": "SY", "division_id": "div_sy_c"},
     {"id": "asgn_sy_c_oop", "faculty_id": "fac_03", "subject_id": "sub_sy_oop", "year_id": "SY", "division_id": "div_sy_c"},
     {"id": "asgn_sy_c_dsal", "faculty_id": "fac_09", "subject_id": "sub_sy_dsa_lab", "year_id": "SY", "division_id": "div_sy_c"},
-    {"id": "asgn_sy_c_dbmsl", "faculty_id": "fac_09", "subject_id": "sub_sy_dbms_lab", "year_id": "SY", "division_id": "div_sy_c"},
+    {"id": "asgn_sy_c_dbmsl", "faculty_id": "fac_04", "subject_id": "sub_sy_dbms_lab", "year_id": "SY", "division_id": "div_sy_c"},
 
     # --- TY A Assignments ---
     {"id": "asgn_ty_a_cn", "faculty_id": "fac_02", "subject_id": "sub_ty_cn", "year_id": "TY", "division_id": "div_ty_a"},

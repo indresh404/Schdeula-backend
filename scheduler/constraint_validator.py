@@ -376,6 +376,7 @@ class ConstraintValidator:
                     if periods < min_div_daily:
                         soft_warnings.append({
                             "type": "MIN_DIVISION_DAILY_LECTURES",
+                            "severity": "warning",
                             "division_id": div_id,
                             "day": d,
                             "message": f"Division '{div_name}' has only {periods} lecture(s) on {d}, below the configured minimum of {min_div_daily}.",
