@@ -121,3 +121,36 @@ def test_import_preview_and_execute_faculty(client):
 
     # Clean up
     client.delete("/api/faculty/fac_unit_test")
+
+
+def test_faculty_availability_busy_only_and_loader_elements():
+    # 1. Verify index.html contains global progress bar, modal loader overlay, and busy-only default filter
+    with open("frontend/index.html", "r", encoding="utf-8") as f:
+        html = f.read()
+
+    assert 'id="global-top-progress-bar"' in html
+    assert 'id="global-loader-overlay"' in html
+    assert 'value="NOT_AVAILABLE" selected' in html
+    assert "Busy Faculty" in html or "Busy / Unavailable" in html
+
+    # 2. Verify style.css contains loader and spinner styles
+    with open("frontend/style.css", "r", encoding="utf-8") as f:
+        css = f.read()
+
+    assert "#global-top-progress-bar" in css
+    assert "#global-loader-overlay" in css
+    assert ".app-spinner-ring" in css
+    assert ".app-spinner-ring-sm" in css
+    assert ".table-loading-row" in css
+
+    # 3. Verify app.js contains loader helper functions and busy-only table filtering
+    with open("frontend/app.js", "r", encoding="utf-8") as f:
+        js = f.read()
+
+    assert "function showTopLoader()" in js
+    assert "function hideTopLoader()" in js
+    assert "function showGlobalLoader(" in js
+    assert "function hideGlobalLoader()" in js
+    assert "function setButtonLoading(" in js
+    assert 'filterStatus === "NOT_AVAILABLE"' in js
+

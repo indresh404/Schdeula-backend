@@ -3764,6 +3764,138 @@ body.help-tour-active .help-tour-current-target {
   animation: slotPulseAnim 0.65s cubic-bezier(0.2, 0.8, 0.2, 1) forwards !important;
 }
 
+/* ==========================================================================
+   GLOBAL APP LOADERS & INTERACTIVE SPINNERS
+   ========================================================================== */
+
+/* 1. Global Sleek Top Progress Bar */
+#global-top-progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 3px;
+  background: linear-gradient(90deg, #2563eb, #38bdf8, #10b981);
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.7);
+  z-index: 999999;
+  transition: width 0.25s ease, opacity 0.35s ease;
+  pointer-events: none;
+  opacity: 0;
+}
+
+#global-top-progress-bar.active {
+  opacity: 1;
+}
+
+/* 2. Global Centered Loader Overlay */
+#global-loader-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 999998;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#global-loader-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.global-loader-card {
+  background: #ffffff;
+  padding: 24px 36px;
+  border-radius: 12px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  border: 1px solid #cbd5e1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  min-width: 240px;
+  text-align: center;
+  transform: scale(0.95);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#global-loader-overlay.active .global-loader-card {
+  transform: scale(1);
+}
+
+.global-loader-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.global-loader-subtext {
+  font-size: 12px;
+  color: #64748b;
+  margin-top: -6px;
+}
+
+/* 3. Spinner Animation Rings */
+.app-spinner-ring {
+  width: 32px;
+  height: 32px;
+  border: 3px solid #e2e8f0;
+  border-top-color: #2563eb;
+  border-radius: 50%;
+  animation: appSpinRing 0.75s linear infinite;
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.app-spinner-ring-sm {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: appSpinRing 0.65s linear infinite;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 6px;
+}
+
+.btn-outline .app-spinner-ring-sm,
+.btn-light .app-spinner-ring-sm {
+  border-color: rgba(30, 41, 59, 0.25);
+  border-top-color: #1e293b;
+}
+
+@keyframes appSpinRing {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* 4. Table Inline Loading State */
+.table-loading-row {
+  text-align: center;
+  padding: 42px 16px;
+  color: #64748b;
+}
+
+.table-loading-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.table-loading-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+}
+
 
 
 

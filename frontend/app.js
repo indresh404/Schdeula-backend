@@ -36,6 +36,71 @@ const state = {
   recentlySwappedEntryIds: [],
 };
 
+// =============================================================================
+// GLOBAL LOADER & SPINNER UTILITIES
+// =============================================================================
+
+let activeAjaxCount = 0;
+
+function showTopLoader() {
+  activeAjaxCount++;
+  const bar = document.getElementById("global-top-progress-bar");
+  if (bar) {
+    bar.classList.add("active");
+    bar.style.width = "40%";
+    setTimeout(() => {
+      if (activeAjaxCount > 0 && bar) bar.style.width = "75%";
+    }, 180);
+  }
+}
+
+function hideTopLoader() {
+  activeAjaxCount = Math.max(0, activeAjaxCount - 1);
+  if (activeAjaxCount === 0) {
+    const bar = document.getElementById("global-top-progress-bar");
+    if (bar) {
+      bar.style.width = "100%";
+      setTimeout(() => {
+        if (activeAjaxCount === 0 && bar) {
+          bar.classList.remove("active");
+          bar.style.width = "0%";
+        }
+      }, 260);
+    }
+  }
+}
+
+function showGlobalLoader(message = "Processing...", subtitle = "Please wait a moment") {
+  showTopLoader();
+  const overlay = document.getElementById("global-loader-overlay");
+  const msgEl = document.getElementById("global-loader-msg");
+  const subEl = document.getElementById("global-loader-sub");
+  if (msgEl) msgEl.textContent = message;
+  if (subEl) subEl.textContent = subtitle;
+  if (overlay) overlay.classList.add("active");
+}
+
+function hideGlobalLoader() {
+  hideTopLoader();
+  const overlay = document.getElementById("global-loader-overlay");
+  if (overlay) overlay.classList.remove("active");
+}
+
+function setButtonLoading(btn, isLoading, loadingText = "Processing...") {
+  if (!btn) return;
+  if (isLoading) {
+    btn.dataset.originalHtml = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = `<span class="app-spinner-ring-sm"></span> ${loadingText}`;
+  } else {
+    btn.disabled = false;
+    if (btn.dataset.originalHtml) {
+      btn.innerHTML = btn.dataset.originalHtml;
+      delete btn.dataset.originalHtml;
+    }
+  }
+}
+
 // -------------------------------------------------------------
 // Initialization
 // -------------------------------------------------------------
@@ -451,6 +516,7 @@ function updateAuthUI() {
 // Data Fetching & Sync
 // -------------------------------------------------------------
 async function refreshAllData() {
+  showTopLoader();
   try {
     const [
       statsRes,
@@ -527,6 +593,8 @@ async function refreshAllData() {
   } catch (err) {
     console.error("Error loading data:", err);
     showBanner("Failed to load data from server. Check backend connection.", "danger");
+  } finally {
+    hideTopLoader();
   }
 }
 
@@ -2352,6 +2420,7 @@ async function exportTimetable(format = "png") {
   }
 
   showBanner(`Generating high-resolution ${format.toUpperCase()} export...`, "info");
+  showGlobalLoader(`Exporting Timetable as ${format.toUpperCase()}...`, "Rendering high-resolution canvas snapshot");
 
   // 2. Build Dedicated Offscreen Full-Size Export Container
   const exportContainer = document.createElement("div");
@@ -2539,6 +2608,7 @@ async function exportTimetable(format = "png") {
     console.error("Export error:", err);
     showBanner(`Failed to export timetable: ${err.message}`, "danger");
   } finally {
+    hideGlobalLoader();
     if (exportContainer && exportContainer.parentNode) {
       exportContainer.parentNode.removeChild(exportContainer);
     }
@@ -3047,6 +3117,10 @@ async function handleSaveLectureEdit(e) {
     payload.replace_entry_id = entryId;
   }
 
+  const saveBtn = document.querySelector("#form-edit-lecture button[type='submit']");
+  setButtonLoading(saveBtn, true, isNew ? "Adding Schedule..." : "Saving Lecture...");
+  showTopLoader();
+
   try {
     const res = await fetch(url, {
       method,
@@ -3138,6 +3212,9 @@ async function handleSaveLectureEdit(e) {
   } catch (err) {
     console.error("Save lecture error:", err);
     showBanner("Failed to communicate with backend.", "danger");
+  } finally {
+    setButtonLoading(saveBtn, false);
+    hideTopLoader();
   }
 }
 
@@ -3160,6 +3237,10 @@ async function handleDeleteLecture() {
     return;
   }
 
+  const btnDelete = document.getElementById("btn-delete-entry");
+  setButtonLoading(btnDelete, true, "Deleting...");
+  showTopLoader();
+
   try {
     const res = await fetch(`/api/timetable/entry/${entryId}`, { method: "DELETE" });
     if (res.ok) {
@@ -3172,6 +3253,9 @@ async function handleDeleteLecture() {
     }
   } catch (e) {
     console.error(e);
+  } finally {
+    setButtonLoading(btnDelete, false);
+    hideTopLoader();
   }
 }
 
@@ -3256,6 +3340,7 @@ window.deleteFaculty = async function (id, force = false) {
     return;
   }
 
+  showTopLoader();
   try {
     const res = await fetch(`/api/faculty/${id}${force ? "?force=true" : ""}`, {
       method: "DELETE",
@@ -3277,6 +3362,8 @@ window.deleteFaculty = async function (id, force = false) {
     await refreshAllData();
   } catch (e) {
     console.error(e);
+  } finally {
+    hideTopLoader();
   }
 };
 
@@ -3493,6 +3580,7 @@ function addElectiveGroupRow(data = {}) {
 
 window.deleteSubject = async function (id) {
   if (!confirm("Are you sure you want to delete this subject?")) return;
+  showTopLoader();
   try {
     const res = await fetch(`/api/subjects/${id}`, { method: "DELETE" });
     if (res.ok) {
@@ -3501,6 +3589,8 @@ window.deleteSubject = async function (id) {
     }
   } catch (e) {
     console.error(e);
+  } finally {
+    hideTopLoader();
   }
 };
 
@@ -3596,6 +3686,7 @@ function renderAssignmentsTable() {
 }
 
 window.deleteAssignment = async function (id) {
+  showTopLoader();
   try {
     const res = await fetch(`/api/faculty-assignments/${id}`, { method: "DELETE" });
     if (res.ok) {
@@ -3604,6 +3695,8 @@ window.deleteAssignment = async function (id) {
     }
   } catch (e) {
     console.error(e);
+  } finally {
+    hideTopLoader();
   }
 };
 
@@ -3695,6 +3788,7 @@ window.openEditDivisionModal = function (id) {
 
 window.deleteDivision = async function (id) {
   if (!confirm("Delete this division?")) return;
+  showTopLoader();
   try {
     const res = await fetch(`/api/divisions/${id}`, { method: "DELETE" });
     if (res.ok) {
@@ -3703,11 +3797,14 @@ window.deleteDivision = async function (id) {
     }
   } catch (e) {
     console.error(e);
+  } finally {
+    hideTopLoader();
   }
 };
 
 window.deleteBatch = async function (id) {
   if (!confirm("Delete this batch?")) return;
+  showTopLoader();
   try {
     const res = await fetch(`/api/batches/${id}`, { method: "DELETE" });
     if (res.ok) {
@@ -3716,6 +3813,8 @@ window.deleteBatch = async function (id) {
     }
   } catch (e) {
     console.error(e);
+  } finally {
+    hideTopLoader();
   }
 };
 
@@ -3969,6 +4068,7 @@ window.openEditRoomModal = function(id) {
 
 window.deleteRoom = async function (id) {
   if (!confirm("Delete this room?")) return;
+  showTopLoader();
   try {
     const res = await fetch(`/api/rooms/${id}`, { method: "DELETE" });
     if (res.ok) {
@@ -3977,6 +4077,8 @@ window.deleteRoom = async function (id) {
     }
   } catch (e) {
     console.error(e);
+  } finally {
+    hideTopLoader();
   }
 };
 
@@ -4464,6 +4566,7 @@ function setupEventListeners() {
 
   // Generate Timetable (Live SSE streaming with real agent progress & safe draft commit)
   async function executeGenerateTimetable(triggerBtn) {
+    showTopLoader();
     const btn = triggerBtn || document.getElementById("btn-generate-timetable");
     const origText = btn ? btn.textContent : "⚡ Generate Timetable";
     if (btn) {
@@ -4506,6 +4609,7 @@ function setupEventListeners() {
       let streamFinished = false;
 
       const resetBtns = () => {
+        hideTopLoader();
         if (btn) {
           btn.disabled = false;
           btn.textContent = origText;
@@ -4670,6 +4774,8 @@ function setupEventListeners() {
       if (livePanel) livePanel.classList.add("hidden");
       console.error(e);
       showBanner("Timetable generation failed.", "danger");
+    } finally {
+      hideTopLoader();
     }
   }
 
@@ -4910,6 +5016,8 @@ function setupEventListeners() {
       "Reset Timetable",
       "Are you sure you want to clear all generated timetable entries? This action will back up existing data before clearing.",
       async () => {
+        showGlobalLoader("Resetting Timetable...", "Clearing all scheduled timetable slots");
+        showTopLoader();
         try {
           const res = await fetch("/api/timetable/clear", { method: "POST" });
           const data = await res.json();
@@ -4933,6 +5041,9 @@ function setupEventListeners() {
         } catch (err) {
           console.error("Clear timetable error:", err);
           showBanner("Network error while resetting timetable.", "danger");
+        } finally {
+          hideTopLoader();
+          hideGlobalLoader();
         }
       }
     );
@@ -4944,6 +5055,8 @@ function setupEventListeners() {
       "Reset All Department Data",
       "WARNING: This will completely wipe all faculty, subjects, divisions, batches, rooms, assignments, and timetable data to empty so you can enter everything fresh. An automatic backup will be created beforehand. Proceed?",
       async () => {
+        showGlobalLoader("Wiping Department Data...", "Resetting all records to fresh empty state");
+        showTopLoader();
         try {
           const res = await fetch("/api/data/reset-all", { method: "POST" });
           const data = await res.json();
@@ -4956,6 +5069,9 @@ function setupEventListeners() {
         } catch (e) {
           console.error(e);
           showBanner("Failed to reset data.", "danger");
+        } finally {
+          hideTopLoader();
+          hideGlobalLoader();
         }
       }
     );
@@ -4968,6 +5084,8 @@ function setupEventListeners() {
       "This will load complete CMPN department demonstration data across FY, SY, TY, and BE (including classrooms, labs, faculty with workloads, lab batches, theory & practical subjects, and explicit assignments). An automatic backup will be created beforehand. Proceed?",
       async () => {
         showTimetableLoadingBar("📦 Loading Complete Demonstration Dataset...", 35);
+        showGlobalLoader("Loading Demonstration Dataset...", "Populating faculty, rooms, subjects & divisions");
+        showTopLoader();
         try {
           const res = await fetch("/api/data/load-demo", { method: "POST" });
           const data = await res.json();
@@ -4984,6 +5102,9 @@ function setupEventListeners() {
           hideTimetableLoadingBar();
           console.error(e);
           showBanner("Failed to load demo data due to network error.", "danger");
+        } finally {
+          hideTopLoader();
+          hideGlobalLoader();
         }
       }
     );
@@ -5627,43 +5748,70 @@ function setupEventListeners() {
   // Forms
   document.getElementById("form-add-faculty").addEventListener("submit", async (e) => {
     e.preventDefault();
+    const submitBtn = e.target.querySelector("button[type='submit']");
+    setButtonLoading(submitBtn, true, "Adding Faculty...");
+    showTopLoader();
+
     const name = document.getElementById("fac-input-name").value.trim();
     const floorSelect = document.getElementById("fac-input-floor");
     const staff_room_floor_id = floorSelect ? floorSelect.value || null : null;
 
-    const res = await fetch("/api/faculty", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, staff_room_floor_id }),
-    });
-    if (res.ok) {
-      closeModal("modal-add-faculty");
-      document.getElementById("fac-input-name").value = "";
-      if (floorSelect) floorSelect.value = "";
-      showBanner("Faculty added successfully!", "success");
-      await refreshAllData();
-    } else {
-      const d = await res.json();
-      alert(d.error || "Failed to add faculty.");
+    try {
+      const res = await fetch("/api/faculty", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, staff_room_floor_id }),
+      });
+      if (res.ok) {
+        closeModal("modal-add-faculty");
+        document.getElementById("fac-input-name").value = "";
+        if (floorSelect) floorSelect.value = "";
+        showBanner("Faculty added successfully!", "success");
+        await refreshAllData();
+      } else {
+        const d = await res.json();
+        alert(d.error || "Failed to add faculty.");
+      }
+    } catch (err) {
+      console.error(err);
+      showBanner("Failed to add faculty.", "danger");
+    } finally {
+      setButtonLoading(submitBtn, false);
+      hideTopLoader();
     }
   });
 
   document.getElementById("form-rename-faculty").addEventListener("submit", async (e) => {
     e.preventDefault();
+    const submitBtn = e.target.querySelector("button[type='submit']");
+    setButtonLoading(submitBtn, true, "Updating...");
+    showTopLoader();
+
     const id = document.getElementById("fac-rename-id").value;
     const name = document.getElementById("fac-rename-name").value.trim();
     const floorSelect = document.getElementById("fac-rename-floor");
     const staff_room_floor_id = floorSelect ? floorSelect.value || null : null;
 
-    const res = await fetch(`/api/faculty/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, staff_room_floor_id }),
-    });
-    if (res.ok) {
-      closeModal("modal-rename-faculty");
-      showBanner("Faculty updated successfully.", "success");
-      await refreshAllData();
+    try {
+      const res = await fetch(`/api/faculty/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, staff_room_floor_id }),
+      });
+      if (res.ok) {
+        closeModal("modal-rename-faculty");
+        showBanner("Faculty updated successfully.", "success");
+        await refreshAllData();
+      } else {
+        const d = await res.json();
+        showBanner(d.error || "Failed to update faculty.", "danger");
+      }
+    } catch (err) {
+      console.error(err);
+      showBanner("Failed to update faculty.", "danger");
+    } finally {
+      setButtonLoading(submitBtn, false);
+      hideTopLoader();
     }
   });
 
@@ -5764,26 +5912,38 @@ function setupEventListeners() {
 
   document.getElementById("form-auto-split-batches").addEventListener("submit", async (e) => {
     e.preventDefault();
+    const submitBtn = e.target.querySelector("button[type='submit']");
+    setButtonLoading(submitBtn, true, "Splitting Batches...");
+    showTopLoader();
+
     const payload = {
       division_id: document.getElementById("split-input-division").value,
       num_parts: parseInt(document.getElementById("split-input-parts").value),
       prefix: document.getElementById("split-input-prefix").value.trim(),
     };
 
-    const res = await fetch("/api/batches/auto-split", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
+    try {
+      const res = await fetch("/api/batches/auto-split", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
 
-    if (res.ok) {
-      const data = await res.json();
-      closeModal("modal-auto-split-batches");
-      showBanner(data.message, "success");
-      await refreshAllData();
-    } else {
-      const d = await res.json();
-      alert(d.error || "Failed to auto-split batches.");
+      if (res.ok) {
+        const data = await res.json();
+        closeModal("modal-auto-split-batches");
+        showBanner(data.message, "success");
+        await refreshAllData();
+      } else {
+        const d = await res.json();
+        alert(d.error || "Failed to auto-split batches.");
+      }
+    } catch (err) {
+      console.error(err);
+      showBanner("Failed to auto-split batches.", "danger");
+    } finally {
+      setButtonLoading(submitBtn, false);
+      hideTopLoader();
     }
   });
 
@@ -6026,8 +6186,11 @@ function setupEventListeners() {
 
   document.getElementById("form-subject").addEventListener("submit", async (e) => {
     e.preventDefault();
+    const submitBtn = e.target.querySelector("button[type='submit']");
     const subId = document.getElementById("sub-id").value;
     const isEdit = Boolean(subId);
+    setButtonLoading(submitBtn, true, isEdit ? "Updating Subject..." : "Adding Subject...");
+    showTopLoader();
 
     const divIds = [];
     document.querySelectorAll("#sub-divisions-checkboxes input:checked").forEach((cb) => {
@@ -6063,6 +6226,8 @@ function setupEventListeners() {
         }
       });
       if (electiveGroups.length === 0) {
+        setButtonLoading(submitBtn, false);
+        hideTopLoader();
         showBanner("Please add at least one Elective Group with an assigned Fixed Room.", "warning");
         return;
       }
@@ -6086,19 +6251,27 @@ function setupEventListeners() {
     const url = isEdit ? `/api/subjects/${subId}` : "/api/subjects";
     const method = isEdit ? "PUT" : "POST";
 
-    const res = await fetch(url, {
-      method: method,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
+    try {
+      const res = await fetch(url, {
+        method: method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
 
-    if (res.ok) {
-      closeModal("modal-subject");
-      showBanner(isEdit ? "Subject updated successfully!" : "Subject added successfully!", "success");
-      await refreshAllData();
-    } else {
-      const d = await res.json();
-      showBanner(d.error || "Failed to save subject.", "danger");
+      if (res.ok) {
+        closeModal("modal-subject");
+        showBanner(isEdit ? "Subject updated successfully!" : "Subject added successfully!", "success");
+        await refreshAllData();
+      } else {
+        const d = await res.json();
+        showBanner(d.error || "Failed to save subject.", "danger");
+      }
+    } catch (err) {
+      console.error(err);
+      showBanner("Failed to save subject.", "danger");
+    } finally {
+      setButtonLoading(submitBtn, false);
+      hideTopLoader();
     }
   });
 
@@ -6157,6 +6330,10 @@ function setupEventListeners() {
 
   document.getElementById("form-assign-faculty").addEventListener("submit", async (e) => {
     e.preventDefault();
+    const submitBtn = e.target.querySelector("button[type='submit']");
+    setButtonLoading(submitBtn, true, "Saving Assignment...");
+    showTopLoader();
+
     const subId = document.getElementById("asgn-subject").value;
     const sub = state.subjects.find((s) => s.id === subId);
 
@@ -6168,21 +6345,36 @@ function setupEventListeners() {
       batch_id: document.getElementById("asgn-batch").value || null,
     };
 
-    const res = await fetch("/api/faculty-assignments", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
+    try {
+      const res = await fetch("/api/faculty-assignments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
 
-    if (res.ok) {
-      closeModal("modal-assign-faculty");
-      showBanner("Assignment saved successfully!", "success");
-      await refreshAllData();
+      if (res.ok) {
+        closeModal("modal-assign-faculty");
+        showBanner("Assignment saved successfully!", "success");
+        await refreshAllData();
+      } else {
+        const d = await res.json();
+        showBanner(d.error || "Failed to save assignment.", "danger");
+      }
+    } catch (err) {
+      console.error(err);
+      showBanner("Failed to save assignment.", "danger");
+    } finally {
+      setButtonLoading(submitBtn, false);
+      hideTopLoader();
     }
   });
 
   document.getElementById("form-add-division").addEventListener("submit", async (e) => {
     e.preventDefault();
+    const submitBtn = e.target.querySelector("button[type='submit']");
+    setButtonLoading(submitBtn, true, "Adding Division...");
+    showTopLoader();
+
     const payload = {
       year_id: document.getElementById("div-input-year").value,
       name: document.getElementById("div-input-name").value.trim(),
@@ -6191,16 +6383,28 @@ function setupEventListeners() {
       auto_split: document.getElementById("div-auto-split").checked,
       num_parts: parseInt(document.getElementById("div-split-parts").value) || 3,
     };
-    const res = await fetch("/api/divisions", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-    if (res.ok) {
-      closeModal("modal-add-division");
-      document.getElementById("div-input-name").value = "";
-      showBanner("Division added.", "success");
-      await refreshAllData();
+
+    try {
+      const res = await fetch("/api/divisions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (res.ok) {
+        closeModal("modal-add-division");
+        document.getElementById("div-input-name").value = "";
+        showBanner("Division added.", "success");
+        await refreshAllData();
+      } else {
+        const d = await res.json();
+        showBanner(d.error || "Failed to add division.", "danger");
+      }
+    } catch (err) {
+      console.error(err);
+      showBanner("Failed to add division.", "danger");
+    } finally {
+      setButtonLoading(submitBtn, false);
+      hideTopLoader();
     }
   });
 
@@ -6208,6 +6412,10 @@ function setupEventListeners() {
   if (formEditDiv) {
     formEditDiv.addEventListener("submit", async (e) => {
       e.preventDefault();
+      const submitBtn = e.target.querySelector("button[type='submit']");
+      setButtonLoading(submitBtn, true, "Updating Division...");
+      showTopLoader();
+
       const divId = document.getElementById("edit-div-id").value;
       const payload = {
         name: document.getElementById("edit-div-name").value.trim(),
@@ -6231,33 +6439,55 @@ function setupEventListeners() {
       } catch (err) {
         console.error("Edit division error:", err);
         showBanner("Failed to update division.", "danger");
+      } finally {
+        setButtonLoading(submitBtn, false);
+        hideTopLoader();
       }
     });
   }
 
   document.getElementById("form-add-batch").addEventListener("submit", async (e) => {
     e.preventDefault();
+    const submitBtn = e.target.querySelector("button[type='submit']");
+    setButtonLoading(submitBtn, true, "Adding Batch...");
+    showTopLoader();
+
     const payload = {
       division_id: document.getElementById("batch-input-division").value,
       name: document.getElementById("batch-input-name").value.trim(),
       capacity: parseInt(document.getElementById("batch-input-capacity").value) || 25,
     };
-    const res = await fetch("/api/batches", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-    if (res.ok) {
-      closeModal("modal-add-batch");
-      document.getElementById("batch-input-name").value = "";
-      showBanner("Batch added.", "success");
-      await refreshAllData();
+
+    try {
+      const res = await fetch("/api/batches", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (res.ok) {
+        closeModal("modal-add-batch");
+        document.getElementById("batch-input-name").value = "";
+        showBanner("Batch added.", "success");
+        await refreshAllData();
+      } else {
+        const d = await res.json();
+        showBanner(d.error || "Failed to add batch.", "danger");
+      }
+    } catch (err) {
+      console.error(err);
+      showBanner("Failed to add batch.", "danger");
+    } finally {
+      setButtonLoading(submitBtn, false);
+      hideTopLoader();
     }
   });
 
   document.getElementById("form-add-room").addEventListener("submit", async (e) => {
     e.preventDefault();
+    const submitBtn = e.target.querySelector("button[type='submit']");
     const roomId = document.getElementById("room-input-id").value;
+    setButtonLoading(submitBtn, true, roomId ? "Updating Room..." : "Adding Room...");
+    showTopLoader();
 
     const floorSelect = document.getElementById("room-input-floor");
     const seqInput = document.getElementById("room-input-sequence");
@@ -6275,21 +6505,29 @@ function setupEventListeners() {
     const url = roomId ? `/api/rooms/${roomId}` : "/api/rooms";
     const method = roomId ? "PUT" : "POST";
 
-    const res = await fetch(url, {
-      method,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
+    try {
+      const res = await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
 
-    if (res.ok) {
-      closeModal("modal-add-room");
-      document.getElementById("room-input-name").value = "";
-      document.getElementById("room-input-id").value = "";
-      showBanner(roomId ? "Room updated successfully!" : "Room added successfully!", "success");
-      await refreshAllData();
-    } else {
-      const d = await res.json();
-      showBanner(d.error || "Failed to save room.", "danger");
+      if (res.ok) {
+        closeModal("modal-add-room");
+        document.getElementById("room-input-name").value = "";
+        document.getElementById("room-input-id").value = "";
+        showBanner(roomId ? "Room updated successfully!" : "Room added successfully!", "success");
+        await refreshAllData();
+      } else {
+        const d = await res.json();
+        showBanner(d.error || "Failed to save room.", "danger");
+      }
+    } catch (err) {
+      console.error(err);
+      showBanner("Failed to save room.", "danger");
+    } finally {
+      setButtonLoading(submitBtn, false);
+      hideTopLoader();
     }
   });
 
@@ -6298,7 +6536,11 @@ function setupEventListeners() {
   if (formFloor) {
     formFloor.addEventListener("submit", async (e) => {
       e.preventDefault();
+      const submitBtn = e.target.querySelector("button[type='submit']");
       const floorId = document.getElementById("floor-input-id").value;
+      setButtonLoading(submitBtn, true, floorId ? "Updating Floor..." : "Adding Floor...");
+      showTopLoader();
+
       const payload = {
         name: document.getElementById("floor-input-name").value.trim(),
         floor_number: parseInt(document.getElementById("floor-input-number").value) || 1,
@@ -6308,19 +6550,27 @@ function setupEventListeners() {
       const url = floorId ? `/api/floors/${floorId}` : "/api/floors";
       const method = floorId ? "PUT" : "POST";
 
-      const res = await fetch(url, {
-        method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+      try {
+        const res = await fetch(url, {
+          method,
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
 
-      if (res.ok) {
-        closeModal("modal-floor");
-        showBanner(floorId ? "Floor updated successfully!" : "Floor added successfully!", "success");
-        await refreshAllData();
-      } else {
-        const d = await res.json();
-        showBanner(d.error || "Failed to save floor.", "danger");
+        if (res.ok) {
+          closeModal("modal-floor");
+          showBanner(floorId ? "Floor updated successfully!" : "Floor added successfully!", "success");
+          await refreshAllData();
+        } else {
+          const d = await res.json();
+          showBanner(d.error || "Failed to save floor.", "danger");
+        }
+      } catch (err) {
+        console.error(err);
+        showBanner("Failed to save floor.", "danger");
+      } finally {
+        setButtonLoading(submitBtn, false);
+        hideTopLoader();
       }
     });
   }
@@ -6351,6 +6601,7 @@ function setupEventListeners() {
 
   window.deleteDistance = async function(id) {
     if (!confirm("Remove this custom building distance edge?")) return;
+    showTopLoader();
     try {
       const res = await fetch(`/api/spatial/distances/${id}`, { method: "DELETE" });
       if (res.ok) {
@@ -6360,6 +6611,8 @@ function setupEventListeners() {
       }
     } catch (e) {
       console.error(e);
+    } finally {
+      hideTopLoader();
     }
   };
 
@@ -6381,28 +6634,42 @@ function setupEventListeners() {
   if (formAddDistance) {
     formAddDistance.addEventListener("submit", async (e) => {
       e.preventDefault();
+      const submitBtn = e.target.querySelector("button[type='submit']");
+      setButtonLoading(submitBtn, true, "Saving Distance...");
+      showTopLoader();
+
       const from_room_id = document.getElementById("dist-input-from").value;
       const to_room_id = document.getElementById("dist-input-to").value;
       const distance_meters = parseFloat(document.getElementById("dist-input-meters").value) || 10.0;
 
       if (!from_room_id || !to_room_id || from_room_id === to_room_id) {
+        setButtonLoading(submitBtn, false);
+        hideTopLoader();
         showBanner("Please select two different rooms to connect.", "warning");
         return;
       }
 
-      const res = await fetch("/api/spatial/distances", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ from_room_id, to_room_id, distance_meters }),
-      });
+      try {
+        const res = await fetch("/api/spatial/distances", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ from_room_id, to_room_id, distance_meters }),
+        });
 
-      if (res.ok) {
-        showBanner("Room distance edge configured successfully!", "success");
-        await refreshAllData();
-        renderDistancesTable();
-      } else {
-        const d = await res.json();
-        showBanner(d.error || "Failed to configure distance.", "danger");
+        if (res.ok) {
+          showBanner("Room distance edge configured successfully!", "success");
+          await refreshAllData();
+          renderDistancesTable();
+        } else {
+          const d = await res.json();
+          showBanner(d.error || "Failed to configure distance.", "danger");
+        }
+      } catch (err) {
+        console.error(err);
+        showBanner("Failed to configure distance.", "danger");
+      } finally {
+        setButtonLoading(submitBtn, false);
+        hideTopLoader();
       }
     });
   }
@@ -6999,7 +7266,9 @@ function setupDataExportImport() {
       if (!confirmed) return;
 
       btnExecuteImport.disabled = true;
-      btnExecuteImport.textContent = "Restoring Data...";
+      setButtonLoading(btnExecuteImport, true, "Restoring Data...");
+      showTopLoader();
+      showGlobalLoader("Importing System Data...", "Validating & restoring selected datasets to database");
       showBanner("Importing data and synchronizing system state...", "info");
 
       try {
@@ -7034,8 +7303,11 @@ function setupDataExportImport() {
       } catch (err) {
         showBanner("Network or server error during import: " + err.message, "danger");
       } finally {
+        setButtonLoading(btnExecuteImport, false);
         btnExecuteImport.disabled = false;
         btnExecuteImport.textContent = "🚀 Start Import & Restore";
+        hideTopLoader();
+        hideGlobalLoader();
       }
     });
   }
@@ -7049,7 +7321,10 @@ let currentImportSection = null;
 let currentImportData = null;
 
 function exportSection(sectionType) {
-  showBanner(`Exporting ${sectionType.replace('_', ' ')} data...`, "info");
+  const displayLabel = sectionType.replace('_', ' ');
+  showBanner(`Exporting ${displayLabel} data...`, "info");
+  showGlobalLoader(`Exporting ${displayLabel.toUpperCase()}...`, "Generating schema-validated JSON export");
+  setTimeout(() => hideGlobalLoader(), 1000);
   const a = document.createElement("a");
   a.href = `/api/data/export/${sectionType}?download=1`;
   a.download = `schedula_${sectionType}_export.json`;
@@ -7219,7 +7494,9 @@ function setupModularSectionImportExport() {
       const strategy = strategyRadio ? strategyRadio.value : "update";
 
       btnConfirmExecute.disabled = true;
-      btnConfirmExecute.textContent = "Importing...";
+      setButtonLoading(btnConfirmExecute, true, "Importing Records...");
+      showTopLoader();
+      showGlobalLoader("Executing Section Import...", "Writing and synchronizing records in database");
 
       try {
         const res = await fetch("/api/data/import/execute", {
@@ -7247,8 +7524,11 @@ function setupModularSectionImportExport() {
         console.error("Error executing import:", err);
         showBanner("Network error while executing import: " + err.message, "danger");
       } finally {
+        setButtonLoading(btnConfirmExecute, false);
         btnConfirmExecute.disabled = false;
         btnConfirmExecute.textContent = "Confirm & Execute Import";
+        hideTopLoader();
+        hideGlobalLoader();
       }
     });
   }
@@ -7261,6 +7541,20 @@ function setupModularSectionImportExport() {
 let cachedAvailabilityMatrix = [];
 
 async function loadFacultyAvailability() {
+  const tbody = document.getElementById("tbody-faculty-availability");
+  if (tbody) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="7" class="table-loading-row">
+          <div class="table-loading-wrap">
+            <span class="app-spinner-ring"></span>
+            <span class="table-loading-label">Loading faculty availability records...</span>
+          </div>
+        </td>
+      </tr>
+    `;
+  }
+  showTopLoader();
   try {
     const res = await fetch("/api/faculty-availability");
     const data = await res.json();
@@ -7272,6 +7566,11 @@ async function loadFacultyAvailability() {
     }
   } catch (err) {
     console.error("Error loading faculty availability:", err);
+    if (tbody) {
+      tbody.innerHTML = `<tr><td colspan="7" class="text-center text-danger" style="padding:24px;">Failed to load faculty availability from server.</td></tr>`;
+    }
+  } finally {
+    hideTopLoader();
   }
 }
 
@@ -7303,33 +7602,58 @@ function renderFacultyAvailabilityTable() {
 
   const filterFac = document.getElementById("avail-filter-faculty")?.value || "ALL";
   const filterDay = document.getElementById("avail-filter-day")?.value || "ALL";
-  const filterStatus = document.getElementById("avail-filter-status")?.value || "ALL";
+  const filterStatus = document.getElementById("avail-filter-status")?.value || "NOT_AVAILABLE";
 
-  let filtered = cachedAvailabilityMatrix.filter(row => {
+  // Requirement: Only list faculty who are BUSY / UNAVAILABLE!
+  // Any faculty member not listed here is completely free by default.
+  let filtered = cachedAvailabilityMatrix.filter((row) => {
+    const isBusy = row.status === "NOT_AVAILABLE" || row.status === "BUSY";
+    if (filterStatus === "NOT_AVAILABLE" && !isBusy) return false;
+    if (filterStatus === "FREE" && isBusy) return false;
     if (filterFac !== "ALL" && row.faculty_id !== filterFac) return false;
     if (filterDay !== "ALL" && row.day !== filterDay) return false;
-    if (filterStatus !== "ALL" && row.status !== filterStatus) return false;
     return true;
   });
 
+  const totalBusy = cachedAvailabilityMatrix.filter((r) => r.status === "NOT_AVAILABLE" || r.status === "BUSY").length;
   if (countBadge) {
-    countBadge.textContent = `${filtered.length} slots listed (${cachedAvailabilityMatrix.filter(r => r.status === 'NOT_AVAILABLE').length} unavailable)`;
+    if (filterStatus === "NOT_AVAILABLE") {
+      countBadge.textContent = `${filtered.length} busy slot(s) listed`;
+      countBadge.className = filtered.length > 0 ? "badge badge-danger" : "badge badge-success";
+    } else {
+      countBadge.textContent = `${filtered.length} slots listed (${totalBusy} busy)`;
+      countBadge.className = "badge badge-primary";
+    }
   }
 
   if (filtered.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="7" class="text-center text-muted" style="padding:24px;">No availability records matching selected filters.</td></tr>`;
+    if (filterStatus === "NOT_AVAILABLE") {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="7" style="text-align:center; padding:36px 16px; background:#f0fdf4; border:1px solid #bbf7d0; border-radius:8px;">
+            <div style="font-size:28px; margin-bottom:8px;">✅</div>
+            <div style="font-weight:700; font-size:15px; color:#15803d;">All Faculty are 100% Free!</div>
+            <div style="font-size:13px; color:#166534; margin-top:4px; max-width:620px; margin-left:auto; margin-right:auto;">
+              No faculty members are currently marked as Busy or Unavailable. All unlisted faculty are considered available full-time for scheduling. Click <strong>+ Set Availability Rule</strong> above to mark any faculty member busy.
+            </div>
+          </td>
+        </tr>
+      `;
+    } else {
+      tbody.innerHTML = `<tr><td colspan="7" class="text-center text-muted" style="padding:24px;">No availability records matching selected filters.</td></tr>`;
+    }
     return;
   }
 
-  tbody.innerHTML = filtered.map(row => {
-    const isUnavailable = row.status === "NOT_AVAILABLE";
+  tbody.innerHTML = filtered.map((row) => {
+    const isUnavailable = row.status === "NOT_AVAILABLE" || row.status === "BUSY";
     const statusBadge = isUnavailable
-      ? `<span class="badge badge-danger" style="font-weight:700;">NOT AVAILABLE</span>`
-      : `<span class="badge badge-success" style="font-weight:700;">FREE</span>`;
+      ? `<span class="badge badge-danger" style="font-weight:700; font-size:11px;">🚫 BUSY / UNAVAILABLE</span>`
+      : `<span class="badge badge-success" style="font-weight:700; font-size:11px;">FREE</span>`;
 
     const toggleBtn = isUnavailable
       ? `<button class="btn btn-xs btn-success btn-toggle-avail" data-fac-id="${row.faculty_id}" data-day="${row.day}" data-start="${row.start_time}" data-end="${row.end_time}">Mark FREE</button>`
-      : `<button class="btn btn-xs btn-warning btn-toggle-avail" data-fac-id="${row.faculty_id}" data-day="${row.day}" data-start="${row.start_time}" data-end="${row.end_time}">Mark Unavailable</button>`;
+      : `<button class="btn btn-xs btn-warning btn-toggle-avail" data-fac-id="${row.faculty_id}" data-day="${row.day}" data-start="${row.start_time}" data-end="${row.end_time}">Mark Busy</button>`;
 
     const deleteBtn = (row.is_rule && row.rule_id)
       ? `<button class="btn btn-xs btn-outline-danger btn-delete-avail-rule" data-rule-id="${row.rule_id}" title="Remove rule" style="margin-left:4px;">✕</button>`
@@ -7338,11 +7662,11 @@ function renderFacultyAvailabilityTable() {
     return `
       <tr>
         <td><strong>${row.faculty_id}</strong></td>
-        <td>${row.faculty_name || "—"}</td>
-        <td>${row.day}</td>
-        <td><span class="badge badge-secondary">${row.time_interval || (row.start_time + '–' + row.end_time)}</span></td>
+        <td><strong>${row.faculty_name || "—"}</strong></td>
+        <td><span class="badge badge-secondary" style="font-size:11px;">${row.day}</span></td>
+        <td><span class="badge badge-info" style="font-size:11px; font-weight:700;">${row.time_interval || (row.start_time + '–' + row.end_time)}</span></td>
         <td>${statusBadge}</td>
-        <td style="font-size:12px; color:#64748b;">${row.reason || (row.is_rule ? "Rule override" : "Regular schedule")}</td>
+        <td style="font-size:12px; color:#475569;">${row.reason || (row.is_rule ? "Rule override" : "Blocked Slot")}</td>
         <td>
           <div style="display:flex; align-items:center;">
             ${toggleBtn}
@@ -7365,6 +7689,8 @@ function setupFacultyAvailability() {
         const start = toggleBtn.getAttribute("data-start");
         const end = toggleBtn.getAttribute("data-end");
 
+        setButtonLoading(toggleBtn, true, "Updating...");
+        showGlobalLoader("Updating Faculty Availability...", `Toggling availability for ${facId} on ${day}`);
         try {
           const res = await fetch("/api/faculty-availability/toggle", {
             method: "POST",
@@ -7386,6 +7712,9 @@ function setupFacultyAvailability() {
         } catch (err) {
           console.error("Error toggling availability:", err);
           showBanner("Network error while updating availability", "danger");
+        } finally {
+          hideGlobalLoader();
+          setButtonLoading(toggleBtn, false);
         }
         return;
       }
@@ -7393,6 +7722,7 @@ function setupFacultyAvailability() {
       const delBtn = e.target.closest(".btn-delete-avail-rule");
       if (delBtn) {
         const ruleId = delBtn.getAttribute("data-rule-id");
+        showGlobalLoader("Removing Availability Rule...", "Resetting faculty slot back to Free");
         try {
           const res = await fetch(`/api/faculty-availability/${ruleId}`, {
             method: "DELETE",
@@ -7407,6 +7737,8 @@ function setupFacultyAvailability() {
         } catch (err) {
           console.error("Error deleting rule:", err);
           showBanner("Network error while deleting rule", "danger");
+        } finally {
+          hideGlobalLoader();
         }
       }
     });
@@ -7440,6 +7772,7 @@ function setupFacultyAvailability() {
   if (formAdd) {
     formAdd.addEventListener("submit", async (e) => {
       e.preventDefault();
+      const submitBtn = formAdd.querySelector('button[type="submit"]');
       const facId = document.getElementById("avail-input-faculty").value;
       const day = document.getElementById("avail-input-day").value;
       const start = document.getElementById("avail-input-start").value;
@@ -7452,6 +7785,8 @@ function setupFacultyAvailability() {
         return;
       }
 
+      setButtonLoading(submitBtn, true, "Saving Rule...");
+      showGlobalLoader("Saving Availability Rule...", "Updating faculty schedule constraint");
       try {
         const res = await fetch("/api/faculty-availability", {
           method: "POST",
@@ -7466,7 +7801,7 @@ function setupFacultyAvailability() {
           }),
         });
         const data = await res.json();
-        if (data.status === "ok") {
+        if (data.status === "ok" || data.success) {
           closeModal("modal-add-availability");
           formAdd.reset();
           showBanner("Faculty availability rule saved successfully!", "success");
@@ -7477,6 +7812,9 @@ function setupFacultyAvailability() {
       } catch (err) {
         console.error("Error saving availability rule:", err);
         showBanner("Network error while saving rule", "danger");
+      } finally {
+        hideGlobalLoader();
+        setButtonLoading(submitBtn, false);
       }
     });
   }
@@ -7527,6 +7865,7 @@ async function applyBranchNameChange(name) {
     showBanner("Branch / Department name cannot be empty.", "warning");
     return;
   }
+  showGlobalLoader(`Updating Department Branch to ${name}...`, "Re-branding timetables, headers, and exports");
   try {
     const res = await fetch("/api/department/name", {
       method: "POST",
@@ -7545,6 +7884,8 @@ async function applyBranchNameChange(name) {
   } catch (err) {
     console.error("Error saving department name:", err);
     showBanner("Network error while saving department name", "danger");
+  } finally {
+    hideGlobalLoader();
   }
 }
 

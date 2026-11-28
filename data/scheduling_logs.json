@@ -1,8 +1,8 @@
 [
   {
-    "id": "log_8f607104",
-    "timestamp": "2026-11-28T18:48:32.567666",
-    "duration_seconds": 6.79,
+    "id": "log_9ee5a409",
+    "timestamp": "2026-11-28T19:11:23.872740",
+    "duration_seconds": 13.17,
     "orchestrator": "LangGraph (Python StateGraph)",
     "stats": {
       "total_requests": 132,
@@ -24,7 +24,7 @@
         "status": "Fully Scheduled",
         "entries": [
           {
-            "id": "entry_5d484c7d",
+            "id": "entry_240ae732",
             "lecture_request_id": "req_sub_sy_dsa_lab_div_sy_a_batch_sy_a1_lec1",
             "subject_id": "sub_sy_dsa_lab",
             "subject_name": "Data Structures Lab",
@@ -55,7 +55,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_8a3ffee0",
+            "id": "entry_7f50c975",
             "lecture_request_id": "req_sub_sy_dbms_lab_div_sy_a_batch_sy_a2_lec1",
             "subject_id": "sub_sy_dbms_lab",
             "subject_name": "DBMS Lab",
@@ -86,7 +86,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_34b9f455",
+            "id": "entry_72f0ef73",
             "lecture_request_id": "req_sub_sy_dsa_lab_div_sy_a_batch_sy_a2_lec1",
             "subject_id": "sub_sy_dsa_lab",
             "subject_name": "Data Structures Lab",
@@ -117,7 +117,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_aee33cd8",
+            "id": "entry_36ab0d61",
             "lecture_request_id": "req_sub_sy_dbms_lab_div_sy_a_batch_sy_a1_lec1",
             "subject_id": "sub_sy_dbms_lab",
             "subject_name": "DBMS Lab",
@@ -148,7 +148,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_499c5c0b",
+            "id": "entry_655c75aa",
             "lecture_request_id": "req_sub_sy_dsa_div_sy_a_lec1",
             "subject_id": "sub_sy_dsa",
             "subject_name": "Data Structures & Analysis",
@@ -179,7 +179,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_248ebc27",
+            "id": "entry_247983d6",
             "lecture_request_id": "req_sub_sy_oop_div_sy_a_lec1",
             "subject_id": "sub_sy_oop",
             "subject_name": "Object Oriented Programming (Java)",
@@ -210,7 +210,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_220e9011",
+            "id": "entry_ff1cf204",
             "lecture_request_id": "req_sub_sy_dsa_div_sy_a_lec2",
             "subject_id": "sub_sy_dsa",
             "subject_name": "Data Structures & Analysis",
@@ -241,7 +241,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_e13bcc42",
+            "id": "entry_a71f7a00",
             "lecture_request_id": "req_sub_sy_dsgt_div_sy_a_lec1",
             "subject_id": "sub_sy_dsgt",
             "subject_name": "Discrete Mathematics",
@@ -272,7 +272,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_416f21b8",
+            "id": "entry_68afc482",
             "lecture_request_id": "req_sub_sy_oop_div_sy_a_lec2",
             "subject_id": "sub_sy_oop",
             "subject_name": "Object Oriented Programming (Java)",
@@ -303,7 +303,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_3ebdab92",
+            "id": "entry_8a4e1288",
             "lecture_request_id": "req_sub_sy_dbms_div_sy_a_lec1",
             "subject_id": "sub_sy_dbms",
             "subject_name": "Database Management Systems",
@@ -334,7 +334,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_c66c2b66",
+            "id": "entry_08867652",
             "lecture_request_id": "req_sub_sy_dsa_div_sy_a_lec3",
             "subject_id": "sub_sy_dsa",
             "subject_name": "Data Structures & Analysis",
@@ -365,7 +365,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_013f84fd",
+            "id": "entry_b2a90ab5",
             "lecture_request_id": "req_sub_sy_dsgt_div_sy_a_lec2",
             "subject_id": "sub_sy_dsgt",
             "subject_name": "Discrete Mathematics",
@@ -396,7 +396,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_03935eab",
+            "id": "entry_c4d1c87e",
             "lecture_request_id": "req_sub_sy_oop_div_sy_a_lec3",
             "subject_id": "sub_sy_oop",
             "subject_name": "Object Oriented Programming (Java)",
@@ -427,7 +427,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_17fcd0c5",
+            "id": "entry_3a9c905e",
             "lecture_request_id": "req_sub_sy_dbms_div_sy_a_lec2",
             "subject_id": "sub_sy_dbms",
             "subject_name": "Database Management Systems",
@@ -458,7 +458,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_b4c6f5a1",
+            "id": "entry_2486bf35",
             "lecture_request_id": "req_sub_sy_dsgt_div_sy_a_lec3",
             "subject_id": "sub_sy_dsgt",
             "subject_name": "Discrete Mathematics",
@@ -489,7 +489,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_9027918e",
+            "id": "entry_d631907e",
             "lecture_request_id": "req_sub_sy_dbms_div_sy_a_lec3",
             "subject_id": "sub_sy_dbms",
             "subject_name": "Database Management Systems",
@@ -520,7 +520,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_c688dccf",
+            "id": "entry_25e26515",
             "lecture_request_id": "req_sub_sy_coa_div_sy_a_lec1",
             "subject_id": "sub_sy_coa",
             "subject_name": "Computer Organization & Architecture",
@@ -551,7 +551,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_f6950ba4",
+            "id": "entry_6da24346",
             "lecture_request_id": "req_sub_sy_coa_div_sy_a_lec2",
             "subject_id": "sub_sy_coa",
             "subject_name": "Computer Organization & Architecture",
@@ -582,7 +582,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_6daea38c",
+            "id": "entry_f4005950",
             "lecture_request_id": "req_sub_sy_coa_div_sy_a_lec3",
             "subject_id": "sub_sy_coa",
             "subject_name": "Computer Organization & Architecture",
@@ -626,7 +626,7 @@
         "status": "Fully Scheduled",
         "entries": [
           {
-            "id": "entry_fabbc795",
+            "id": "entry_0bca26a1",
             "lecture_request_id": "req_sub_sy_dsa_lab_div_sy_b_batch_sy_b1_lec1",
             "subject_id": "sub_sy_dsa_lab",
             "subject_name": "Data Structures Lab",
@@ -657,7 +657,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_56811c29",
+            "id": "entry_e617d093",
             "lecture_request_id": "req_sub_sy_dbms_lab_div_sy_b_batch_sy_b2_lec1",
             "subject_id": "sub_sy_dbms_lab",
             "subject_name": "DBMS Lab",
@@ -688,7 +688,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_fe961290",
+            "id": "entry_7a34d786",
             "lecture_request_id": "req_sub_sy_dsa_lab_div_sy_b_batch_sy_b2_lec1",
             "subject_id": "sub_sy_dsa_lab",
             "subject_name": "Data Structures Lab",
@@ -719,7 +719,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_390d5664",
+            "id": "entry_ca35c625",
             "lecture_request_id": "req_sub_sy_dbms_lab_div_sy_b_batch_sy_b1_lec1",
             "subject_id": "sub_sy_dbms_lab",
             "subject_name": "DBMS Lab",
@@ -750,7 +750,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_2b7e5645",
+            "id": "entry_ebf619a1",
             "lecture_request_id": "req_sub_sy_dsa_div_sy_b_lec1",
             "subject_id": "sub_sy_dsa",
             "subject_name": "Data Structures & Analysis",
@@ -781,7 +781,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_64172063",
+            "id": "entry_cfcffaa1",
             "lecture_request_id": "req_sub_sy_oop_div_sy_b_lec1",
             "subject_id": "sub_sy_oop",
             "subject_name": "Object Oriented Programming (Java)",
@@ -812,7 +812,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_1d230f51",
+            "id": "entry_815f10a8",
             "lecture_request_id": "req_sub_sy_dsa_div_sy_b_lec2",
             "subject_id": "sub_sy_dsa",
             "subject_name": "Data Structures & Analysis",
@@ -843,7 +843,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_f3cce026",
+            "id": "entry_5960fe81",
             "lecture_request_id": "req_sub_sy_dsgt_div_sy_b_lec1",
             "subject_id": "sub_sy_dsgt",
             "subject_name": "Discrete Mathematics",
@@ -874,7 +874,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_cdbc487e",
+            "id": "entry_2ba85891",
             "lecture_request_id": "req_sub_sy_oop_div_sy_b_lec2",
             "subject_id": "sub_sy_oop",
             "subject_name": "Object Oriented Programming (Java)",
@@ -885,8 +885,8 @@
             "batch_name": null,
             "faculty_id": "fac_09",
             "faculty_name": "Prof. Aniket Kadam",
-            "room_id": "room_201",
-            "room_name": "Classroom 201 (SY-A)",
+            "room_id": "room_202",
+            "room_name": "Classroom 202 (SY-B)",
             "fixed_room_id": null,
             "fixed_room_name": null,
             "is_elective": false,
@@ -896,16 +896,16 @@
             "floor_id": "floor_2",
             "floor_name": null,
             "cluster_id": null,
-            "day": "Wednesday",
-            "start_time": "12:15",
-            "end_time": "13:15",
+            "day": "Friday",
+            "start_time": "11:15",
+            "end_time": "12:15",
             "type": "Theory",
             "duration_minutes": 60,
             "student_capacity": 65,
             "is_manual": false
           },
           {
-            "id": "entry_ac0486eb",
+            "id": "entry_c7803305",
             "lecture_request_id": "req_sub_sy_dbms_div_sy_b_lec1",
             "subject_id": "sub_sy_dbms",
             "subject_name": "Database Management Systems",
@@ -916,8 +916,8 @@
             "batch_name": null,
             "faculty_id": "fac_04",
             "faculty_name": "Dr. Amit Verma",
-            "room_id": "room_203",
-            "room_name": "Classroom 203 (SY-C)",
+            "room_id": "room_202",
+            "room_name": "Classroom 202 (SY-B)",
             "fixed_room_id": null,
             "fixed_room_name": null,
             "is_elective": false,
@@ -927,7 +927,7 @@
             "floor_id": "floor_2",
             "floor_name": null,
             "cluster_id": null,
-            "day": "Wednesday",
+            "day": "Thursday",
             "start_time": "10:15",
             "end_time": "11:15",
             "type": "Theory",
@@ -936,7 +936,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_b9b455c1",
+            "id": "entry_08bd488f",
             "lecture_request_id": "req_sub_sy_dsa_div_sy_b_lec3",
             "subject_id": "sub_sy_dsa",
             "subject_name": "Data Structures & Analysis",
@@ -967,7 +967,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_a9fdb75c",
+            "id": "entry_634d8394",
             "lecture_request_id": "req_sub_sy_dsgt_div_sy_b_lec2",
             "subject_id": "sub_sy_dsgt",
             "subject_name": "Discrete Mathematics",
@@ -978,8 +978,8 @@
             "batch_name": null,
             "faculty_id": "fac_06",
             "faculty_name": "Prof. Rohan Joshi",
-            "room_id": "room_202",
-            "room_name": "Classroom 202 (SY-B)",
+            "room_id": "room_201",
+            "room_name": "Classroom 201 (SY-A)",
             "fixed_room_id": null,
             "fixed_room_name": null,
             "is_elective": false,
@@ -989,16 +989,16 @@
             "floor_id": "floor_2",
             "floor_name": null,
             "cluster_id": null,
-            "day": "Friday",
-            "start_time": "11:15",
-            "end_time": "12:15",
+            "day": "Wednesday",
+            "start_time": "12:15",
+            "end_time": "13:15",
             "type": "Theory",
             "duration_minutes": 60,
             "student_capacity": 65,
             "is_manual": false
           },
           {
-            "id": "entry_4eeee8d6",
+            "id": "entry_a170958f",
             "lecture_request_id": "req_sub_sy_oop_div_sy_b_lec3",
             "subject_id": "sub_sy_oop",
             "subject_name": "Object Oriented Programming (Java)",
@@ -1029,7 +1029,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_3f3aced8",
+            "id": "entry_c61889b9",
             "lecture_request_id": "req_sub_sy_dbms_div_sy_b_lec2",
             "subject_id": "sub_sy_dbms",
             "subject_name": "Database Management Systems",
@@ -1040,8 +1040,8 @@
             "batch_name": null,
             "faculty_id": "fac_04",
             "faculty_name": "Dr. Amit Verma",
-            "room_id": "room_202",
-            "room_name": "Classroom 202 (SY-B)",
+            "room_id": "room_203",
+            "room_name": "Classroom 203 (SY-C)",
             "fixed_room_id": null,
             "fixed_room_name": null,
             "is_elective": false,
@@ -1051,7 +1051,7 @@
             "floor_id": "floor_2",
             "floor_name": null,
             "cluster_id": null,
-            "day": "Thursday",
+            "day": "Wednesday",
             "start_time": "10:15",
             "end_time": "11:15",
             "type": "Theory",
@@ -1060,7 +1060,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_41ac1aff",
+            "id": "entry_388a0f14",
             "lecture_request_id": "req_sub_sy_dsgt_div_sy_b_lec3",
             "subject_id": "sub_sy_dsgt",
             "subject_name": "Discrete Mathematics",
@@ -1091,7 +1091,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_42838b1f",
+            "id": "entry_33349ac2",
             "lecture_request_id": "req_sub_sy_dbms_div_sy_b_lec3",
             "subject_id": "sub_sy_dbms",
             "subject_name": "Database Management Systems",
@@ -1102,37 +1102,6 @@
             "batch_name": null,
             "faculty_id": "fac_04",
             "faculty_name": "Dr. Amit Verma",
-            "room_id": "room_202",
-            "room_name": "Classroom 202 (SY-B)",
-            "fixed_room_id": null,
-            "fixed_room_name": null,
-            "is_elective": false,
-            "parent_subject_id": null,
-            "elective_group_id": null,
-            "elective_group_name": null,
-            "floor_id": "floor_2",
-            "floor_name": null,
-            "cluster_id": null,
-            "day": "Friday",
-            "start_time": "12:15",
-            "end_time": "13:15",
-            "type": "Theory",
-            "duration_minutes": 60,
-            "student_capacity": 65,
-            "is_manual": false
-          },
-          {
-            "id": "entry_d379ef44",
-            "lecture_request_id": "req_sub_sy_coa_div_sy_b_lec1",
-            "subject_id": "sub_sy_coa",
-            "subject_name": "Computer Organization & Architecture",
-            "year_id": "SY",
-            "division_id": "div_sy_b",
-            "division_name": "Division B",
-            "batch_id": null,
-            "batch_name": null,
-            "faculty_id": "fac_07",
-            "faculty_name": "Prof. Pooja Shah",
             "room_id": "room_203",
             "room_name": "Classroom 203 (SY-C)",
             "fixed_room_id": null,
@@ -1153,7 +1122,38 @@
             "is_manual": false
           },
           {
-            "id": "entry_c8e68d78",
+            "id": "entry_4823c4d4",
+            "lecture_request_id": "req_sub_sy_coa_div_sy_b_lec1",
+            "subject_id": "sub_sy_coa",
+            "subject_name": "Computer Organization & Architecture",
+            "year_id": "SY",
+            "division_id": "div_sy_b",
+            "division_name": "Division B",
+            "batch_id": null,
+            "batch_name": null,
+            "faculty_id": "fac_07",
+            "faculty_name": "Prof. Pooja Shah",
+            "room_id": "room_202",
+            "room_name": "Classroom 202 (SY-B)",
+            "fixed_room_id": null,
+            "fixed_room_name": null,
+            "is_elective": false,
+            "parent_subject_id": null,
+            "elective_group_id": null,
+            "elective_group_name": null,
+            "floor_id": "floor_2",
+            "floor_name": null,
+            "cluster_id": null,
+            "day": "Friday",
+            "start_time": "12:15",
+            "end_time": "13:15",
+            "type": "Theory",
+            "duration_minutes": 60,
+            "student_capacity": 65,
+            "is_manual": false
+          },
+          {
+            "id": "entry_bf65d99b",
             "lecture_request_id": "req_sub_sy_coa_div_sy_b_lec2",
             "subject_id": "sub_sy_coa",
             "subject_name": "Computer Organization & Architecture",
@@ -1184,7 +1184,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_0abf1b1f",
+            "id": "entry_46567c1e",
             "lecture_request_id": "req_sub_sy_coa_div_sy_b_lec3",
             "subject_id": "sub_sy_coa",
             "subject_name": "Computer Organization & Architecture",
@@ -1228,7 +1228,7 @@
         "status": "Fully Scheduled",
         "entries": [
           {
-            "id": "entry_f5c9d1db",
+            "id": "entry_f529839e",
             "lecture_request_id": "req_sub_sy_dsa_lab_div_sy_c_batch_sy_c1_lec1",
             "subject_id": "sub_sy_dsa_lab",
             "subject_name": "Data Structures Lab",
@@ -1259,7 +1259,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_876522e2",
+            "id": "entry_02a97611",
             "lecture_request_id": "req_sub_sy_dbms_lab_div_sy_c_batch_sy_c2_lec1",
             "subject_id": "sub_sy_dbms_lab",
             "subject_name": "DBMS Lab",
@@ -1290,7 +1290,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_a4e41b7b",
+            "id": "entry_dee297e3",
             "lecture_request_id": "req_sub_sy_dsa_lab_div_sy_c_batch_sy_c2_lec1",
             "subject_id": "sub_sy_dsa_lab",
             "subject_name": "Data Structures Lab",
@@ -1321,7 +1321,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_ca1c09bf",
+            "id": "entry_7ae8bab2",
             "lecture_request_id": "req_sub_sy_dbms_lab_div_sy_c_batch_sy_c1_lec1",
             "subject_id": "sub_sy_dbms_lab",
             "subject_name": "DBMS Lab",
@@ -1352,7 +1352,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_19cf9b65",
+            "id": "entry_f2ae5f23",
             "lecture_request_id": "req_sub_sy_oop_div_sy_c_lec1",
             "subject_id": "sub_sy_oop",
             "subject_name": "Object Oriented Programming (Java)",
@@ -1383,7 +1383,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_dbd1fead",
+            "id": "entry_92a0279c",
             "lecture_request_id": "req_sub_sy_dsa_div_sy_c_lec1",
             "subject_id": "sub_sy_dsa",
             "subject_name": "Data Structures & Analysis",
@@ -1414,7 +1414,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_81d46288",
+            "id": "entry_b1bbbc5e",
             "lecture_request_id": "req_sub_sy_dbms_div_sy_c_lec1",
             "subject_id": "sub_sy_dbms",
             "subject_name": "Database Management Systems",
@@ -1445,7 +1445,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_cd03fd2f",
+            "id": "entry_442be525",
             "lecture_request_id": "req_sub_sy_oop_div_sy_c_lec2",
             "subject_id": "sub_sy_oop",
             "subject_name": "Object Oriented Programming (Java)",
@@ -1476,7 +1476,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_8c87dbf4",
+            "id": "entry_09ed2614",
             "lecture_request_id": "req_sub_sy_dsgt_div_sy_c_lec1",
             "subject_id": "sub_sy_dsgt",
             "subject_name": "Discrete Mathematics",
@@ -1507,7 +1507,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_ea3e534c",
+            "id": "entry_139792e2",
             "lecture_request_id": "req_sub_sy_dsa_div_sy_c_lec2",
             "subject_id": "sub_sy_dsa",
             "subject_name": "Data Structures & Analysis",
@@ -1538,7 +1538,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_f2b44e7a",
+            "id": "entry_4f72bf60",
             "lecture_request_id": "req_sub_sy_dbms_div_sy_c_lec2",
             "subject_id": "sub_sy_dbms",
             "subject_name": "Database Management Systems",
@@ -1569,7 +1569,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_6ac19668",
+            "id": "entry_0ff0d5b0",
             "lecture_request_id": "req_sub_sy_oop_div_sy_c_lec3",
             "subject_id": "sub_sy_oop",
             "subject_name": "Object Oriented Programming (Java)",
@@ -1600,7 +1600,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_dbb0876b",
+            "id": "entry_e924ce3d",
             "lecture_request_id": "req_sub_sy_dsgt_div_sy_c_lec2",
             "subject_id": "sub_sy_dsgt",
             "subject_name": "Discrete Mathematics",
@@ -1631,7 +1631,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_769d6b95",
+            "id": "entry_a5c651bf",
             "lecture_request_id": "req_sub_sy_dsa_div_sy_c_lec3",
             "subject_id": "sub_sy_dsa",
             "subject_name": "Data Structures & Analysis",
@@ -1662,7 +1662,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_7fca766c",
+            "id": "entry_fd5b9734",
             "lecture_request_id": "req_sub_sy_dbms_div_sy_c_lec3",
             "subject_id": "sub_sy_dbms",
             "subject_name": "Database Management Systems",
@@ -1693,7 +1693,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_1af52153",
+            "id": "entry_1d7e1511",
             "lecture_request_id": "req_sub_sy_dsgt_div_sy_c_lec3",
             "subject_id": "sub_sy_dsgt",
             "subject_name": "Discrete Mathematics",
@@ -1724,7 +1724,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_5eb074f5",
+            "id": "entry_6d619edf",
             "lecture_request_id": "req_sub_sy_coa_div_sy_c_lec1",
             "subject_id": "sub_sy_coa",
             "subject_name": "Computer Organization & Architecture",
@@ -1735,8 +1735,8 @@
             "batch_name": null,
             "faculty_id": "fac_07",
             "faculty_name": "Prof. Pooja Shah",
-            "room_id": "room_201",
-            "room_name": "Classroom 201 (SY-A)",
+            "room_id": "room_202",
+            "room_name": "Classroom 202 (SY-B)",
             "fixed_room_id": null,
             "fixed_room_name": null,
             "is_elective": false,
@@ -1746,16 +1746,16 @@
             "floor_id": "floor_2",
             "floor_name": null,
             "cluster_id": null,
-            "day": "Tuesday",
-            "start_time": "15:45",
-            "end_time": "16:45",
+            "day": "Wednesday",
+            "start_time": "12:15",
+            "end_time": "13:15",
             "type": "Theory",
             "duration_minutes": 60,
             "student_capacity": 65,
             "is_manual": false
           },
           {
-            "id": "entry_b1c4571d",
+            "id": "entry_a18a22cd",
             "lecture_request_id": "req_sub_sy_coa_div_sy_c_lec2",
             "subject_id": "sub_sy_coa",
             "subject_name": "Computer Organization & Architecture",
@@ -1786,7 +1786,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_d90b6dd2",
+            "id": "entry_06dc1a9f",
             "lecture_request_id": "req_sub_sy_coa_div_sy_c_lec3",
             "subject_id": "sub_sy_coa",
             "subject_name": "Computer Organization & Architecture",
@@ -1797,8 +1797,8 @@
             "batch_name": null,
             "faculty_id": "fac_07",
             "faculty_name": "Prof. Pooja Shah",
-            "room_id": "room_202",
-            "room_name": "Classroom 202 (SY-B)",
+            "room_id": "room_201",
+            "room_name": "Classroom 201 (SY-A)",
             "fixed_room_id": null,
             "fixed_room_name": null,
             "is_elective": false,
@@ -1808,9 +1808,9 @@
             "floor_id": "floor_2",
             "floor_name": null,
             "cluster_id": null,
-            "day": "Wednesday",
-            "start_time": "12:15",
-            "end_time": "13:15",
+            "day": "Tuesday",
+            "start_time": "15:45",
+            "end_time": "16:45",
             "type": "Theory",
             "duration_minutes": 60,
             "student_capacity": 65,
@@ -1830,7 +1830,7 @@
         "status": "Fully Scheduled",
         "entries": [
           {
-            "id": "entry_d95a89a9",
+            "id": "entry_6f58cdd3",
             "lecture_request_id": "req_sub_ty_cn_lab_div_ty_a_batch_ty_a1_lec1",
             "subject_id": "sub_ty_cn_lab",
             "subject_name": "Computer Networks Lab",
@@ -1861,7 +1861,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_d7b457d6",
+            "id": "entry_02991e99",
             "lecture_request_id": "req_sub_ty_os_lab_div_ty_a_batch_ty_a2_lec1",
             "subject_id": "sub_ty_os_lab",
             "subject_name": "Operating Systems Lab",
@@ -1892,7 +1892,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_e3ddbece",
+            "id": "entry_3acec598",
             "lecture_request_id": "req_sub_ty_cn_lab_div_ty_a_batch_ty_a2_lec1",
             "subject_id": "sub_ty_cn_lab",
             "subject_name": "Computer Networks Lab",
@@ -1923,7 +1923,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_6062c13a",
+            "id": "entry_1bf2b854",
             "lecture_request_id": "req_sub_ty_os_lab_div_ty_a_batch_ty_a1_lec1",
             "subject_id": "sub_ty_os_lab",
             "subject_name": "Operating Systems Lab",
@@ -1954,7 +1954,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_841a122c",
+            "id": "entry_6721a028",
             "lecture_request_id": "req_sub_ty_toc_div_ty_a_lec1",
             "subject_id": "sub_ty_toc",
             "subject_name": "Theory of Computation",
@@ -1985,7 +1985,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_c37d35d1",
+            "id": "entry_d46defcb",
             "lecture_request_id": "req_sub_ty_mdm_div_ty_a_egrp_ds_1_lec1",
             "subject_id": "sub_ty_mdm",
             "subject_name": "MDM",
@@ -2016,7 +2016,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_f3053bf8",
+            "id": "entry_2d956287",
             "lecture_request_id": "req_sub_ty_mdm_div_ty_a_egrp_cyber_1_lec1",
             "subject_id": "sub_ty_mdm",
             "subject_name": "MDM",
@@ -2047,7 +2047,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_4f14e47c",
+            "id": "entry_721fce62",
             "lecture_request_id": "req_sub_ty_mdm_div_ty_a_egrp_ai_1_lec1",
             "subject_id": "sub_ty_mdm",
             "subject_name": "MDM",
@@ -2078,7 +2078,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_2690d6ce",
+            "id": "entry_fc365dd7",
             "lecture_request_id": "req_sub_ty_toc_div_ty_a_lec2",
             "subject_id": "sub_ty_toc",
             "subject_name": "Theory of Computation",
@@ -2109,7 +2109,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_8110e2c6",
+            "id": "entry_3923a325",
             "lecture_request_id": "req_sub_ty_se_div_ty_a_lec1",
             "subject_id": "sub_ty_se",
             "subject_name": "Software Engineering",
@@ -2140,7 +2140,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_7e2e17a2",
+            "id": "entry_73a31472",
             "lecture_request_id": "req_sub_ty_mdm_div_ty_a_egrp_ds_1_lec2",
             "subject_id": "sub_ty_mdm",
             "subject_name": "MDM",
@@ -2171,7 +2171,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_271f3c7f",
+            "id": "entry_4cd5859f",
             "lecture_request_id": "req_sub_ty_mdm_div_ty_a_egrp_cyber_1_lec2",
             "subject_id": "sub_ty_mdm",
             "subject_name": "MDM",
@@ -2202,7 +2202,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_7498c278",
+            "id": "entry_2592a058",
             "lecture_request_id": "req_sub_ty_mdm_div_ty_a_egrp_ai_1_lec2",
             "subject_id": "sub_ty_mdm",
             "subject_name": "MDM",
@@ -2233,7 +2233,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_b14ae8c4",
+            "id": "entry_cf51f566",
             "lecture_request_id": "req_sub_ty_toc_div_ty_a_lec3",
             "subject_id": "sub_ty_toc",
             "subject_name": "Theory of Computation",
@@ -2264,7 +2264,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_a42120c9",
+            "id": "entry_5c55fe44",
             "lecture_request_id": "req_sub_ty_se_div_ty_a_lec2",
             "subject_id": "sub_ty_se",
             "subject_name": "Software Engineering",
@@ -2295,7 +2295,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_e2d97efc",
+            "id": "entry_cb24f530",
             "lecture_request_id": "req_sub_ty_cn_div_ty_a_lec1",
             "subject_id": "sub_ty_cn",
             "subject_name": "Computer Networks",
@@ -2326,7 +2326,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_e172e9e3",
+            "id": "entry_81641be5",
             "lecture_request_id": "req_sub_ty_os_div_ty_a_lec1",
             "subject_id": "sub_ty_os",
             "subject_name": "Operating Systems",
@@ -2337,8 +2337,8 @@
             "batch_name": null,
             "faculty_id": "fac_08",
             "faculty_name": "Dr. Vikram Deshmukh",
-            "room_id": "room_301",
-            "room_name": "Classroom 301 (TY-A)",
+            "room_id": "room_302",
+            "room_name": "Classroom 302 (TY-B)",
             "fixed_room_id": null,
             "fixed_room_name": null,
             "is_elective": false,
@@ -2348,16 +2348,16 @@
             "floor_id": "floor_3",
             "floor_name": null,
             "cluster_id": null,
-            "day": "Thursday",
-            "start_time": "11:15",
-            "end_time": "12:15",
+            "day": "Tuesday",
+            "start_time": "14:45",
+            "end_time": "15:45",
             "type": "Theory",
             "duration_minutes": 60,
             "student_capacity": 65,
             "is_manual": false
           },
           {
-            "id": "entry_35de62b0",
+            "id": "entry_c90d066b",
             "lecture_request_id": "req_sub_ty_se_div_ty_a_lec3",
             "subject_id": "sub_ty_se",
             "subject_name": "Software Engineering",
@@ -2388,7 +2388,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_6f95febc",
+            "id": "entry_3e689c68",
             "lecture_request_id": "req_sub_ty_os_div_ty_a_lec2",
             "subject_id": "sub_ty_os",
             "subject_name": "Operating Systems",
@@ -2419,7 +2419,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_b1de289e",
+            "id": "entry_7357f369",
             "lecture_request_id": "req_sub_ty_cn_div_ty_a_lec2",
             "subject_id": "sub_ty_cn",
             "subject_name": "Computer Networks",
@@ -2450,7 +2450,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_b49a172b",
+            "id": "entry_641a038a",
             "lecture_request_id": "req_sub_ty_os_div_ty_a_lec3",
             "subject_id": "sub_ty_os",
             "subject_name": "Operating Systems",
@@ -2461,8 +2461,8 @@
             "batch_name": null,
             "faculty_id": "fac_08",
             "faculty_name": "Dr. Vikram Deshmukh",
-            "room_id": "room_302",
-            "room_name": "Classroom 302 (TY-B)",
+            "room_id": "room_301",
+            "room_name": "Classroom 301 (TY-A)",
             "fixed_room_id": null,
             "fixed_room_name": null,
             "is_elective": false,
@@ -2472,16 +2472,16 @@
             "floor_id": "floor_3",
             "floor_name": null,
             "cluster_id": null,
-            "day": "Tuesday",
-            "start_time": "14:45",
-            "end_time": "15:45",
+            "day": "Thursday",
+            "start_time": "11:15",
+            "end_time": "12:15",
             "type": "Theory",
             "duration_minutes": 60,
             "student_capacity": 65,
             "is_manual": false
           },
           {
-            "id": "entry_bd9f2965",
+            "id": "entry_2b57f835",
             "lecture_request_id": "req_sub_ty_cn_div_ty_a_lec3",
             "subject_id": "sub_ty_cn",
             "subject_name": "Computer Networks",
@@ -2512,7 +2512,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_2df02b2e",
+            "id": "entry_7410646d",
             "lecture_request_id": "req_sub_ty_ai_div_ty_a_lec1",
             "subject_id": "sub_ty_ai",
             "subject_name": "Artificial Intelligence",
@@ -2543,7 +2543,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_9ccec8ac",
+            "id": "entry_e9ac75fe",
             "lecture_request_id": "req_sub_ty_ai_div_ty_a_lec2",
             "subject_id": "sub_ty_ai",
             "subject_name": "Artificial Intelligence",
@@ -2574,7 +2574,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_e7e0cfa9",
+            "id": "entry_47d024e2",
             "lecture_request_id": "req_sub_ty_ai_div_ty_a_lec3",
             "subject_id": "sub_ty_ai",
             "subject_name": "Artificial Intelligence",
@@ -2618,7 +2618,7 @@
         "status": "Fully Scheduled",
         "entries": [
           {
-            "id": "entry_a7c87229",
+            "id": "entry_7cbc90ec",
             "lecture_request_id": "req_sub_ty_cn_lab_div_ty_b_batch_ty_b1_lec1",
             "subject_id": "sub_ty_cn_lab",
             "subject_name": "Computer Networks Lab",
@@ -2649,7 +2649,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_9bb560f1",
+            "id": "entry_e4f87d5e",
             "lecture_request_id": "req_sub_ty_os_lab_div_ty_b_batch_ty_b2_lec1",
             "subject_id": "sub_ty_os_lab",
             "subject_name": "Operating Systems Lab",
@@ -2680,7 +2680,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_eaa6c838",
+            "id": "entry_bedfec66",
             "lecture_request_id": "req_sub_ty_cn_lab_div_ty_b_batch_ty_b2_lec1",
             "subject_id": "sub_ty_cn_lab",
             "subject_name": "Computer Networks Lab",
@@ -2711,7 +2711,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_f3a1b849",
+            "id": "entry_222a0e1e",
             "lecture_request_id": "req_sub_ty_os_lab_div_ty_b_batch_ty_b1_lec1",
             "subject_id": "sub_ty_os_lab",
             "subject_name": "Operating Systems Lab",
@@ -2742,7 +2742,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_636361b3",
+            "id": "entry_c7339b67",
             "lecture_request_id": "req_sub_ty_toc_div_ty_b_lec1",
             "subject_id": "sub_ty_toc",
             "subject_name": "Theory of Computation",
@@ -2773,7 +2773,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_420de00c",
+            "id": "entry_389fa55a",
             "lecture_request_id": "req_sub_ty_mdm_div_ty_b_egrp_ds_1_lec1",
             "subject_id": "sub_ty_mdm",
             "subject_name": "MDM",
@@ -2804,7 +2804,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_f60d7400",
+            "id": "entry_9e01e0da",
             "lecture_request_id": "req_sub_ty_mdm_div_ty_b_egrp_cyber_1_lec1",
             "subject_id": "sub_ty_mdm",
             "subject_name": "MDM",
@@ -2835,7 +2835,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_f8831849",
+            "id": "entry_3f5ec59d",
             "lecture_request_id": "req_sub_ty_mdm_div_ty_b_egrp_ai_1_lec1",
             "subject_id": "sub_ty_mdm",
             "subject_name": "MDM",
@@ -2866,7 +2866,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_5cfdb30b",
+            "id": "entry_5d98d328",
             "lecture_request_id": "req_sub_ty_toc_div_ty_b_lec2",
             "subject_id": "sub_ty_toc",
             "subject_name": "Theory of Computation",
@@ -2897,7 +2897,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_8b6e9358",
+            "id": "entry_aa3748e4",
             "lecture_request_id": "req_sub_ty_se_div_ty_b_lec1",
             "subject_id": "sub_ty_se",
             "subject_name": "Software Engineering",
@@ -2928,7 +2928,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_5f1b5af2",
+            "id": "entry_679e5a53",
             "lecture_request_id": "req_sub_ty_mdm_div_ty_b_egrp_ds_1_lec2",
             "subject_id": "sub_ty_mdm",
             "subject_name": "MDM",
@@ -2959,7 +2959,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_c1af8686",
+            "id": "entry_9390f160",
             "lecture_request_id": "req_sub_ty_mdm_div_ty_b_egrp_cyber_1_lec2",
             "subject_id": "sub_ty_mdm",
             "subject_name": "MDM",
@@ -2990,7 +2990,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_23f6765b",
+            "id": "entry_ee298f78",
             "lecture_request_id": "req_sub_ty_mdm_div_ty_b_egrp_ai_1_lec2",
             "subject_id": "sub_ty_mdm",
             "subject_name": "MDM",
@@ -3021,7 +3021,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_cec252ca",
+            "id": "entry_b0195f1e",
             "lecture_request_id": "req_sub_ty_toc_div_ty_b_lec3",
             "subject_id": "sub_ty_toc",
             "subject_name": "Theory of Computation",
@@ -3052,7 +3052,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_e1de599d",
+            "id": "entry_aca38a04",
             "lecture_request_id": "req_sub_ty_se_div_ty_b_lec2",
             "subject_id": "sub_ty_se",
             "subject_name": "Software Engineering",
@@ -3083,7 +3083,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_354796f5",
+            "id": "entry_03543d0e",
             "lecture_request_id": "req_sub_ty_se_div_ty_b_lec3",
             "subject_id": "sub_ty_se",
             "subject_name": "Software Engineering",
@@ -3094,8 +3094,8 @@
             "batch_name": null,
             "faculty_id": "fac_01",
             "faculty_name": "Prof. Utkarsha Patil",
-            "room_id": "room_302",
-            "room_name": "Classroom 302 (TY-B)",
+            "room_id": "room_301",
+            "room_name": "Classroom 301 (TY-A)",
             "fixed_room_id": null,
             "fixed_room_name": null,
             "is_elective": false,
@@ -3105,16 +3105,16 @@
             "floor_id": "floor_3",
             "floor_name": null,
             "cluster_id": null,
-            "day": "Friday",
-            "start_time": "11:15",
-            "end_time": "12:15",
+            "day": "Monday",
+            "start_time": "14:45",
+            "end_time": "15:45",
             "type": "Theory",
             "duration_minutes": 60,
             "student_capacity": 65,
             "is_manual": false
           },
           {
-            "id": "entry_b520f843",
+            "id": "entry_4de70f94",
             "lecture_request_id": "req_sub_ty_cn_div_ty_b_lec1",
             "subject_id": "sub_ty_cn",
             "subject_name": "Computer Networks",
@@ -3145,7 +3145,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_33ac9438",
+            "id": "entry_c69686c8",
             "lecture_request_id": "req_sub_ty_os_div_ty_b_lec1",
             "subject_id": "sub_ty_os",
             "subject_name": "Operating Systems",
@@ -3167,16 +3167,16 @@
             "floor_id": "floor_3",
             "floor_name": null,
             "cluster_id": null,
-            "day": "Monday",
-            "start_time": "13:45",
-            "end_time": "14:45",
+            "day": "Wednesday",
+            "start_time": "12:15",
+            "end_time": "13:15",
             "type": "Theory",
             "duration_minutes": 60,
             "student_capacity": 65,
             "is_manual": false
           },
           {
-            "id": "entry_0be606ff",
+            "id": "entry_9bfb5dfd",
             "lecture_request_id": "req_sub_ty_cn_div_ty_b_lec2",
             "subject_id": "sub_ty_cn",
             "subject_name": "Computer Networks",
@@ -3207,7 +3207,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_269e9bdd",
+            "id": "entry_8d61694d",
             "lecture_request_id": "req_sub_ty_os_div_ty_b_lec2",
             "subject_id": "sub_ty_os",
             "subject_name": "Operating Systems",
@@ -3218,8 +3218,8 @@
             "batch_name": null,
             "faculty_id": "fac_08",
             "faculty_name": "Dr. Vikram Deshmukh",
-            "room_id": "room_301",
-            "room_name": "Classroom 301 (TY-A)",
+            "room_id": "room_302",
+            "room_name": "Classroom 302 (TY-B)",
             "fixed_room_id": null,
             "fixed_room_name": null,
             "is_elective": false,
@@ -3229,16 +3229,16 @@
             "floor_id": "floor_3",
             "floor_name": null,
             "cluster_id": null,
-            "day": "Monday",
-            "start_time": "14:45",
-            "end_time": "15:45",
+            "day": "Friday",
+            "start_time": "11:15",
+            "end_time": "12:15",
             "type": "Theory",
             "duration_minutes": 60,
             "student_capacity": 65,
             "is_manual": false
           },
           {
-            "id": "entry_9c830dd9",
+            "id": "entry_0b68fbf9",
             "lecture_request_id": "req_sub_ty_os_div_ty_b_lec3",
             "subject_id": "sub_ty_os",
             "subject_name": "Operating Systems",
@@ -3260,16 +3260,16 @@
             "floor_id": "floor_3",
             "floor_name": null,
             "cluster_id": null,
-            "day": "Wednesday",
-            "start_time": "12:15",
-            "end_time": "13:15",
+            "day": "Monday",
+            "start_time": "13:45",
+            "end_time": "14:45",
             "type": "Theory",
             "duration_minutes": 60,
             "student_capacity": 65,
             "is_manual": false
           },
           {
-            "id": "entry_30581a82",
+            "id": "entry_795c0a82",
             "lecture_request_id": "req_sub_ty_cn_div_ty_b_lec3",
             "subject_id": "sub_ty_cn",
             "subject_name": "Computer Networks",
@@ -3300,7 +3300,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_12c6c4a4",
+            "id": "entry_9dfd6293",
             "lecture_request_id": "req_sub_ty_ai_div_ty_b_lec1",
             "subject_id": "sub_ty_ai",
             "subject_name": "Artificial Intelligence",
@@ -3331,39 +3331,8 @@
             "is_manual": false
           },
           {
-            "id": "entry_8434f624",
+            "id": "entry_a2a6674c",
             "lecture_request_id": "req_sub_ty_ai_div_ty_b_lec2",
-            "subject_id": "sub_ty_ai",
-            "subject_name": "Artificial Intelligence",
-            "year_id": "TY",
-            "division_id": "div_ty_b",
-            "division_name": "Division B",
-            "batch_id": null,
-            "batch_name": null,
-            "faculty_id": "fac_10",
-            "faculty_name": "Dr. Kavita Nair",
-            "room_id": "room_301",
-            "room_name": "Classroom 301 (TY-A)",
-            "fixed_room_id": null,
-            "fixed_room_name": null,
-            "is_elective": false,
-            "parent_subject_id": null,
-            "elective_group_id": null,
-            "elective_group_name": null,
-            "floor_id": "floor_3",
-            "floor_name": null,
-            "cluster_id": null,
-            "day": "Tuesday",
-            "start_time": "09:15",
-            "end_time": "10:15",
-            "type": "Theory",
-            "duration_minutes": 60,
-            "student_capacity": 65,
-            "is_manual": false
-          },
-          {
-            "id": "entry_bc18fb86",
-            "lecture_request_id": "req_sub_ty_ai_div_ty_b_lec3",
             "subject_id": "sub_ty_ai",
             "subject_name": "Artificial Intelligence",
             "year_id": "TY",
@@ -3391,6 +3360,37 @@
             "duration_minutes": 60,
             "student_capacity": 65,
             "is_manual": false
+          },
+          {
+            "id": "entry_08a88733",
+            "lecture_request_id": "req_sub_ty_ai_div_ty_b_lec3",
+            "subject_id": "sub_ty_ai",
+            "subject_name": "Artificial Intelligence",
+            "year_id": "TY",
+            "division_id": "div_ty_b",
+            "division_name": "Division B",
+            "batch_id": null,
+            "batch_name": null,
+            "faculty_id": "fac_10",
+            "faculty_name": "Dr. Kavita Nair",
+            "room_id": "room_301",
+            "room_name": "Classroom 301 (TY-A)",
+            "fixed_room_id": null,
+            "fixed_room_name": null,
+            "is_elective": false,
+            "parent_subject_id": null,
+            "elective_group_id": null,
+            "elective_group_name": null,
+            "floor_id": "floor_3",
+            "floor_name": null,
+            "cluster_id": null,
+            "day": "Tuesday",
+            "start_time": "09:15",
+            "end_time": "10:15",
+            "type": "Theory",
+            "duration_minutes": 60,
+            "student_capacity": 65,
+            "is_manual": false
           }
         ],
         "unscheduled": []
@@ -3406,7 +3406,7 @@
         "status": "Fully Scheduled",
         "entries": [
           {
-            "id": "entry_0da68911",
+            "id": "entry_c5a8d4f0",
             "lecture_request_id": "req_sub_ty_cn_lab_div_ty_c_batch_ty_c1_lec1",
             "subject_id": "sub_ty_cn_lab",
             "subject_name": "Computer Networks Lab",
@@ -3437,7 +3437,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_e582b7b8",
+            "id": "entry_49f2df81",
             "lecture_request_id": "req_sub_ty_os_lab_div_ty_c_batch_ty_c2_lec1",
             "subject_id": "sub_ty_os_lab",
             "subject_name": "Operating Systems Lab",
@@ -3468,7 +3468,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_44d6d51f",
+            "id": "entry_df3b5bf7",
             "lecture_request_id": "req_sub_ty_cn_lab_div_ty_c_batch_ty_c2_lec1",
             "subject_id": "sub_ty_cn_lab",
             "subject_name": "Computer Networks Lab",
@@ -3499,7 +3499,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_1c82b916",
+            "id": "entry_8178867a",
             "lecture_request_id": "req_sub_ty_os_lab_div_ty_c_batch_ty_c1_lec1",
             "subject_id": "sub_ty_os_lab",
             "subject_name": "Operating Systems Lab",
@@ -3530,7 +3530,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_215b8da0",
+            "id": "entry_5de44991",
             "lecture_request_id": "req_sub_ty_toc_div_ty_c_lec1",
             "subject_id": "sub_ty_toc",
             "subject_name": "Theory of Computation",
@@ -3561,7 +3561,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_c3582c77",
+            "id": "entry_0d985124",
             "lecture_request_id": "req_sub_ty_mdm_div_ty_c_egrp_ds_1_lec1",
             "subject_id": "sub_ty_mdm",
             "subject_name": "MDM",
@@ -3592,7 +3592,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_cc1a2b32",
+            "id": "entry_ba5cfe12",
             "lecture_request_id": "req_sub_ty_mdm_div_ty_c_egrp_cyber_1_lec1",
             "subject_id": "sub_ty_mdm",
             "subject_name": "MDM",
@@ -3623,7 +3623,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_f3caca2e",
+            "id": "entry_39702ab9",
             "lecture_request_id": "req_sub_ty_mdm_div_ty_c_egrp_ai_1_lec1",
             "subject_id": "sub_ty_mdm",
             "subject_name": "MDM",
@@ -3654,7 +3654,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_84a9ffae",
+            "id": "entry_0699fef9",
             "lecture_request_id": "req_sub_ty_toc_div_ty_c_lec2",
             "subject_id": "sub_ty_toc",
             "subject_name": "Theory of Computation",
@@ -3665,8 +3665,8 @@
             "batch_name": null,
             "faculty_id": "fac_05",
             "faculty_name": "Prof. Neha Kulkarni",
-            "room_id": "room_301",
-            "room_name": "Classroom 301 (TY-A)",
+            "room_id": "room_303",
+            "room_name": "Classroom 303 (TY-C)",
             "fixed_room_id": null,
             "fixed_room_name": null,
             "is_elective": false,
@@ -3676,16 +3676,16 @@
             "floor_id": "floor_3",
             "floor_name": null,
             "cluster_id": null,
-            "day": "Friday",
-            "start_time": "11:15",
-            "end_time": "12:15",
+            "day": "Wednesday",
+            "start_time": "12:15",
+            "end_time": "13:15",
             "type": "Theory",
             "duration_minutes": 60,
             "student_capacity": 65,
             "is_manual": false
           },
           {
-            "id": "entry_89c267f8",
+            "id": "entry_6a6c1dd1",
             "lecture_request_id": "req_sub_ty_se_div_ty_c_lec1",
             "subject_id": "sub_ty_se",
             "subject_name": "Software Engineering",
@@ -3716,7 +3716,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_c8cddfc7",
+            "id": "entry_acd5446c",
             "lecture_request_id": "req_sub_ty_mdm_div_ty_c_egrp_ds_1_lec2",
             "subject_id": "sub_ty_mdm",
             "subject_name": "MDM",
@@ -3747,7 +3747,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_8d4efb9a",
+            "id": "entry_9d43e54b",
             "lecture_request_id": "req_sub_ty_mdm_div_ty_c_egrp_cyber_1_lec2",
             "subject_id": "sub_ty_mdm",
             "subject_name": "MDM",
@@ -3778,7 +3778,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_8ccc2d18",
+            "id": "entry_9bdc27dc",
             "lecture_request_id": "req_sub_ty_mdm_div_ty_c_egrp_ai_1_lec2",
             "subject_id": "sub_ty_mdm",
             "subject_name": "MDM",
@@ -3809,7 +3809,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_e14a8452",
+            "id": "entry_8dbb44ed",
             "lecture_request_id": "req_sub_ty_toc_div_ty_c_lec3",
             "subject_id": "sub_ty_toc",
             "subject_name": "Theory of Computation",
@@ -3840,7 +3840,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_2984dc20",
+            "id": "entry_05de36b9",
             "lecture_request_id": "req_sub_ty_se_div_ty_c_lec2",
             "subject_id": "sub_ty_se",
             "subject_name": "Software Engineering",
@@ -3871,7 +3871,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_2fc01b81",
+            "id": "entry_35ad3e85",
             "lecture_request_id": "req_sub_ty_os_div_ty_c_lec1",
             "subject_id": "sub_ty_os",
             "subject_name": "Operating Systems",
@@ -3902,7 +3902,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_28e39322",
+            "id": "entry_84e92b46",
             "lecture_request_id": "req_sub_ty_cn_div_ty_c_lec1",
             "subject_id": "sub_ty_cn",
             "subject_name": "Computer Networks",
@@ -3933,7 +3933,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_a285df90",
+            "id": "entry_97298104",
             "lecture_request_id": "req_sub_ty_se_div_ty_c_lec3",
             "subject_id": "sub_ty_se",
             "subject_name": "Software Engineering",
@@ -3964,7 +3964,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_63fde597",
+            "id": "entry_72eac642",
             "lecture_request_id": "req_sub_ty_os_div_ty_c_lec2",
             "subject_id": "sub_ty_os",
             "subject_name": "Operating Systems",
@@ -3995,7 +3995,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_9c08fd4b",
+            "id": "entry_c650a0de",
             "lecture_request_id": "req_sub_ty_cn_div_ty_c_lec2",
             "subject_id": "sub_ty_cn",
             "subject_name": "Computer Networks",
@@ -4026,7 +4026,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_979bfe37",
+            "id": "entry_20e6cf3a",
             "lecture_request_id": "req_sub_ty_os_div_ty_c_lec3",
             "subject_id": "sub_ty_os",
             "subject_name": "Operating Systems",
@@ -4057,7 +4057,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_5c554602",
+            "id": "entry_139e2051",
             "lecture_request_id": "req_sub_ty_cn_div_ty_c_lec3",
             "subject_id": "sub_ty_cn",
             "subject_name": "Computer Networks",
@@ -4088,7 +4088,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_12fd1557",
+            "id": "entry_c8195976",
             "lecture_request_id": "req_sub_ty_ai_div_ty_c_lec1",
             "subject_id": "sub_ty_ai",
             "subject_name": "Artificial Intelligence",
@@ -4099,8 +4099,8 @@
             "batch_name": null,
             "faculty_id": "fac_10",
             "faculty_name": "Dr. Kavita Nair",
-            "room_id": "room_303",
-            "room_name": "Classroom 303 (TY-C)",
+            "room_id": "room_301",
+            "room_name": "Classroom 301 (TY-A)",
             "fixed_room_id": null,
             "fixed_room_name": null,
             "is_elective": false,
@@ -4110,16 +4110,16 @@
             "floor_id": "floor_3",
             "floor_name": null,
             "cluster_id": null,
-            "day": "Wednesday",
-            "start_time": "12:15",
-            "end_time": "13:15",
+            "day": "Friday",
+            "start_time": "11:15",
+            "end_time": "12:15",
             "type": "Theory",
             "duration_minutes": 60,
             "student_capacity": 65,
             "is_manual": false
           },
           {
-            "id": "entry_6b981183",
+            "id": "entry_e2e66dd4",
             "lecture_request_id": "req_sub_ty_ai_div_ty_c_lec2",
             "subject_id": "sub_ty_ai",
             "subject_name": "Artificial Intelligence",
@@ -4150,7 +4150,7 @@
             "is_manual": false
           },
           {
-            "id": "entry_2f066008",
+            "id": "entry_6c116731",
             "lecture_request_id": "req_sub_ty_ai_div_ty_c_lec3",
             "subject_id": "sub_ty_ai",
             "subject_name": "Artificial Intelligence",
@@ -4193,7 +4193,7 @@
         "scheduled_count": 132,
         "unscheduled_count": 0,
         "backtracking_attempts": 0,
-        "duration_seconds": 6.79,
+        "duration_seconds": 13.17,
         "is_conflict_free": true
       },
       "FY": {
@@ -4235,34 +4235,34 @@
     },
     "execution_logs": [
       {
-        "timestamp": "2026-11-28T18:48:22.853109",
+        "timestamp": "2026-11-28T19:11:09.442482",
         "agent": "Python Rule-Based Orchestrator",
         "type": "INITIALIZATION",
         "message": "LangGraph Orchestrator initialized. Cross-year state graph activated. Triggering academic year agents (FY, SY, TY, BE)..."
       },
       {
-        "timestamp": "2026-11-28T18:48:22.856098",
+        "timestamp": "2026-11-28T19:11:09.445469",
         "agent": "FY Agent",
         "year_id": "FY",
         "type": "THINKING",
         "message": "Analyzing academic requirements: 0 division(s), 0 subject(s) configured."
       },
       {
-        "timestamp": "2026-11-28T18:48:22.856098",
+        "timestamp": "2026-11-28T19:11:09.445469",
         "agent": "FY Agent",
         "year_id": "FY",
         "type": "SUBMISSION",
         "message": "Submitted 0 demand requests to Python Rule-Based Orchestrator for conflict-free multi-year scheduling."
       },
       {
-        "timestamp": "2026-11-28T18:48:22.858114",
+        "timestamp": "2026-11-28T19:11:09.447422",
         "agent": "SY Agent",
         "year_id": "SY",
         "type": "THINKING",
         "message": "Analyzing academic requirements: 3 division(s), 7 subject(s) configured."
       },
       {
-        "timestamp": "2026-11-28T18:48:22.858114",
+        "timestamp": "2026-11-28T19:11:09.447422",
         "agent": "SY Agent",
         "year_id": "SY",
         "division": "Division A",
@@ -4270,7 +4270,7 @@
         "message": "Division 'Division A': Theory Subject 'Data Structures & Analysis' (3 lecture(s)/wk, 60 min) mapped to Classroom (strength: 65)."
       },
       {
-        "timestamp": "2026-11-28T18:48:22.858114",
+        "timestamp": "2026-11-28T19:11:09.447422",
         "agent": "SY Agent",
         "year_id": "SY",
         "division": "Division B",
@@ -4278,7 +4278,7 @@
         "message": "Division 'Division B': Theory Subject 'Data Structures & Analysis' (3 lecture(s)/wk, 60 min) mapped to Classroom (strength: 65)."
       },
       {
-        "timestamp": "2026-11-28T18:48:22.858114",
+        "timestamp": "2026-11-28T19:11:09.447422",
         "agent": "SY Agent",
         "year_id": "SY",
         "division": "Division C",
@@ -4286,7 +4286,7 @@
         "message": "Division 'Division C': Theory Subject 'Data Structures & Analysis' (3 lecture(s)/wk, 60 min) mapped to Classroom (strength: 65)."
       },
       {
-        "timestamp": "2026-11-28T18:48:22.858114",
+        "timestamp": "2026-11-28T19:11:09.447422",
         "agent": "SY Agent",
         "year_id": "SY",
         "division": "Division A",
@@ -4294,7 +4294,7 @@
         "message": "Division 'Division A': Theory Subject 'Database Management Systems' (3 lecture(s)/wk, 60 min) mapped to Classroom (strength: 65)."
       },
       {
-        "timestamp": "2026-11-28T18:48:22.858114",
+        "timestamp": "2026-11-28T19:11:09.447422",
         "agent": "SY Agent",
         "year_id": "SY",
         "division": "Division B",
@@ -4302,7 +4302,7 @@
         "message": "Division 'Division B': Theory Subject 'Database Management Systems' (3 lecture(s)/wk, 60 min) mapped to Classroom (strength: 65)."
       },
       {
-        "timestamp": "2026-11-28T18:48:22.859119",
+        "timestamp": "2026-11-28T19:11:09.447422",
         "agent": "SY Agent",
         "year_id": "SY",
         "division": "Division C",
@@ -4310,7 +4310,7 @@
         "message": "Division 'Division C': Theory Subject 'Database Management Systems' (3 lecture(s)/wk, 60 min) mapped to Classroom (strength: 65)."
       },
       {
-        "timestamp": "2026-11-28T18:48:22.859119",
+        "timestamp": "2026-11-28T19:11:09.447422",
         "agent": "SY Agent",
         "year_id": "SY",
         "division": "Division A",
@@ -4318,7 +4318,7 @@
         "message": "Division 'Division A': Theory Subject 'Discrete Mathematics' (3 lecture(s)/wk, 60 min) mapped to Classroom (strength: 65)."
       },
       {
-        "timestamp": "2026-11-28T18:48:22.859119",
+        "timestamp": "2026-11-28T19:11:09.447422",
         "agent": "SY Agent",
         "year_id": "SY",
         "division": "Division B",
@@ -4326,7 +4326,7 @@
         "message": "Division 'Division B': Theory Subject 'Discrete Mathematics' (3 lecture(s)/wk, 60 min) mapped to Classroom (strength: 65)."
       },
       {
-        "timestamp": "2026-11-28T18:48:22.859119",
+        "timestamp": "2026-11-28T19:11:09.447422",
         "agent": "SY Agent",
         "year_id": "SY",
         "division": "Division C",
@@ -4334,7 +4334,7 @@
         "message": "Division 'Division C': Theory Subject 'Discrete Mathematics' (3 lecture(s)/wk, 60 min) mapped to Classroom (strength: 65)."
       },
       {
-        "timestamp": "2026-11-28T18:48:22.859119",
+        "timestamp": "2026-11-28T19:11:09.447422",
         "agent": "SY Agent",
         "year_id": "SY",
         "division": "Division A",
@@ -4342,7 +4342,7 @@
         "message": "Division 'Division A': Theory Subject 'Computer Organization & Architecture' (3 lecture(s)/wk, 60 min) mapped to Classroom (strength: 65)."
       },
       {
-        "timestamp": "2026-11-28T18:48:22.859119",
+        "timestamp": "2026-11-28T19:11:09.447422",
         "agent": "SY Agent",
         "year_id": "SY",
         "division": "Division B",
@@ -4350,7 +4350,7 @@
         "message": "Division 'Division B': Theory Subject 'Computer Organization & Architecture' (3 lecture(s)/wk, 60 min) mapped to Classroom (strength: 65)."
       },
       {
-        "timestamp": "2026-11-28T18:48:22.859119",
+        "timestamp": "2026-11-28T19:11:09.447422",
         "agent": "SY Agent",
         "year_id": "SY",
         "division": "Division C",
@@ -4358,7 +4358,7 @@
         "message": "Division 'Division C': Theory Subject 'Computer Organization & Architecture' (3 lecture(s)/wk, 60 min) mapped to Classroom (strength: 65)."
       },
       {
-        "timestamp": "2026-11-28T18:48:22.859119",
+        "timestamp": "2026-11-28T19:11:09.447422",
         "agent": "SY Agent",
         "year_id": "SY",
         "division": "Division A",
@@ -4366,7 +4366,7 @@
         "message": "Division 'Division A': Theory Subject 'Object Oriented Programming (Java)' (3 lecture(s)/wk, 60 min) mapped to Classroom (strength: 65)."
       },
       {
-        "timestamp": "2026-11-28T18:48:22.859119",
+        "timestamp": "2026-11-28T19:11:09.447422",
         "agent": "SY Agent",
         "year_id": "SY",
         "division": "Division B",
@@ -4374,7 +4374,7 @@
         "message": "Division 'Division B': Theory Subject 'Object Oriented Programming (Java)' (3 lecture(s)/wk, 60 min) mapped to Classroom (strength: 65)."
       },
       {
-        "timestamp": "2026-11-28T18:48:22.859119",
+        "timestamp": "2026-11-28T19:11:09.447422",
         "agent": "SY Agent",
         "year_id": "SY",
         "division": "Division C",
@@ -4382,7 +4382,7 @@
         "message": "Division 'Division C': Theory Subject 'Object Oriented Programming (Java)' (3 lecture(s)/wk, 60 min) mapped to Classroom (strength: 65)."
       },
       {
-        "timestamp": "2026-11-28T18:48:22.859119",
+        "timestamp": "2026-11-28T19:11:09.447422",
         "agent": "SY Agent",
         "year_id": "SY",
         "division": "Division A",
@@ -4390,7 +4390,7 @@
         "message": "Division 'Division A': Practical Subject 'Data Structures Lab' (1 session(s) of 120 min) partitioned into 2 batches (Batch A1, Batch A2) requiring Laboratories."
       },
       {
-        "timestamp": "2026-11-28T18:48:22.859119",
+        "timestamp": "2026-11-28T19:11:09.447422",
         "agent": "SY Agent",
         "year_id": "SY",
         "division": "Division B",
@@ -4398,7 +4398,7 @@
         "message": "Division 'Division B': Practical Subject 'Data Structures Lab' (1 session(s) of 120 min) partitioned into 2 batches (Batch B1, Batch B2) requiring Laboratories."
       },
       {
-        "timestamp": "2026-11-28T18:48:22.859119",
+        "timestamp": "2026-11-28T19:11:09.447422",
         "agent": "SY Agent",
         "year_id": "SY",
         "division": "Division C",
@@ -4406,7 +4406,7 @@
         "message": "Division 'Division C': Practical Subject 'Data Structures Lab' (1 session(s) of 120 min) partitioned into 2 batches (Batch C1, Batch C2) requiring Laboratories."
       },
       {
-        "timestamp": "2026-11-28T18:48:22.859119",
+        "timestamp": "2026-11-28T19:11:09.447422",
         "agent": "SY Agent",
         "year_id": "SY",
         "division": "Division A",
@@ -4414,7 +4414,7 @@
         "message": "Division 'Division A': Practical Subject 'DBMS Lab' (1 session(s) of 120 min) partitioned into 2 batches (Batch A1, Batch A2) requiring Laboratories."
       },
       {
-        "timestamp": "2026-11-28T18:48:22.859119",
+        "timestamp": "2026-11-28T19:11:09.447422",
         "agent": "SY Agent",
         "year_id": "SY",
         "division": "Division B",
@@ -4422,7 +4422,7 @@
         "message": "Division 'Division B': Practical Subject 'DBMS Lab' (1 session(s) of 120 min) partitioned into 2 batches (Batch B1, Batch B2) requiring Laboratories."
       },
       {
-        "timestamp": "2026-11-28T18:48:22.859119",
+        "timestamp": "2026-11-28T19:11:09.447422",
         "agent": "SY Agent",
         "year_id": "SY",
         "division": "Division C",
@@ -4430,21 +4430,21 @@
         "message": "Division 'Division C': Practical Subject 'DBMS Lab' (1 session(s) of 120 min) partitioned into 2 batches (Batch C1, Batch C2) requiring Laboratories."
       },
       {
-        "timestamp": "2026-11-28T18:48:22.859119",
+        "timestamp": "2026-11-28T19:11:09.448473",
         "agent": "SY Agent",
         "year_id": "SY",
         "type": "SUBMISSION",
         "message": "Submitted 57 demand requests to Python Rule-Based Orchestrator for conflict-free multi-year scheduling."
       },
       {
-        "timestamp": "2026-11-28T18:48:22.862097",
+        "timestamp": "2026-11-28T19:11:09.450470",
         "agent": "TY Agent",
         "year_id": "TY",
         "type": "THINKING",
         "message": "Analyzing academic requirements: 3 division(s), 8 subject(s) configured."
       },
       {
-        "timestamp": "2026-11-28T18:48:22.862097",
+        "timestamp": "2026-11-28T19:11:09.450470",
         "agent": "TY Agent",
         "year_id": "TY",
         "division": "Division A",
@@ -4452,7 +4452,7 @@
         "message": "Division 'Division A': Theory Subject 'Computer Networks' (3 lecture(s)/wk, 60 min) mapped to Classroom (strength: 65)."
       },
       {
-        "timestamp": "2026-11-28T18:48:22.863098",
+        "timestamp": "2026-11-28T19:11:09.450470",
         "agent": "TY Agent",
         "year_id": "TY",
         "division": "Division B",
@@ -4460,7 +4460,7 @@
         "message": "Division 'Division B': Theory Subject 'Computer Networks' (3 lecture(s)/wk, 60 min) mapped to Classroom (strength: 65)."
       },
       {
-        "timestamp": "2026-11-28T18:48:22.863098",
+        "timestamp": "2026-11-28T19:11:09.450470",
         "agent": "TY Agent",
         "year_id": "TY",
         "division": "Division C",
@@ -4468,7 +4468,7 @@
         "message": "Division 'Division C': Theory Subject 'Computer Networks' (3 lecture(s)/wk, 60 min) mapped to Classroom (strength: 65)."
       },
       {
-        "timestamp": "2026-11-28T18:48:22.863098",
+        "timestamp": "2026-11-28T19:11:09.450470",
         "agent": "TY Agent",
         "year_id": "TY",
         "division": "Division A",
@@ -4476,7 +4476,7 @@
         "message": "Division 'Division A': Theory Subject 'Operating Systems' (3 lecture(s)/wk, 60 min) mapped to Classroom (strength: 65)."
       },
       {
-        "timestamp": "2026-11-28T18:48:22.863098",
+        "timestamp": "2026-11-28T19:11:09.450470",
         "agent": "TY Agent",
         "year_id": "TY",
         "division": "Division B",
@@ -4484,7 +4484,7 @@
         "message": "Division 'Division B': Theory Subject 'Operating Systems' (3 lecture(s)/wk, 60 min) mapped to Classroom (strength: 65)."
       },
       {
-        "timestamp": "2026-11-28T18:48:22.863098",
+        "timestamp": "2026-11-28T19:11:09.450470",
         "agent": "TY Agent",
         "year_id": "TY",
         "division": "Division C",
@@ -4492,7 +4492,7 @@
         "message": "Division 'Division C': Theory Subject 'Operating Systems' (3 lecture(s)/wk, 60 min) mapped to Classroom (strength: 65)."
       },
       {
-        "timestamp": "2026-11-28T18:48:22.863098",
+        "timestamp": "2026-11-28T19:11:09.450470",
         "agent": "TY Agent",
         "year_id": "TY",
         "division": "Division A",
@@ -4500,7 +4500,7 @@
         "message": "Division 'Division A': Theory Subject 'Software Engineering' (3 lecture(s)/wk, 60 min) mapped to Classroom (strength: 65)."
       },
       {
-        "timestamp": "2026-11-28T18:48:22.863098",
+        "timestamp": "2026-11-28T19:11:09.451429",
         "agent": "TY Agent",
         "year_id": "TY",
         "division": "Division B",
@@ -4508,7 +4508,7 @@
         "message": "Division 'Division B': Theory Subject 'Software Engineering' (3 lecture(s)/wk, 60 min) mapped to Classroom (strength: 65)."
       },
       {
-        "timestamp": "2026-11-28T18:48:22.863098",
+        "timestamp": "2026-11-28T19:11:09.451429",
         "agent": "TY Agent",
         "year_id": "TY",
         "division": "Division C",
@@ -4516,7 +4516,7 @@
         "message": "Division 'Division C': Theory Subject 'Software Engineering' (3 lecture(s)/wk, 60 min) mapped to Classroom (strength: 65)."
       },
       {
-        "timestamp": "2026-11-28T18:48:22.863098",
+        "timestamp": "2026-11-28T19:11:09.451429",
         "agent": "TY Agent",
         "year_id": "TY",
         "division": "Division A",
@@ -4524,7 +4524,7 @@
         "message": "Division 'Division A': Theory Subject 'Artificial Intelligence' (3 lecture(s)/wk, 60 min) mapped to Classroom (strength: 65)."
       },
       {
-        "timestamp": "2026-11-28T18:48:22.863098",
+        "timestamp": "2026-11-28T19:11:09.451429",
         "agent": "TY Agent",
         "year_id": "TY",
         "division": "Division B",
@@ -4532,7 +4532,7 @@
         "message": "Division 'Division B': Theory Subject 'Artificial Intelligence' (3 lecture(s)/wk, 60 min) mapped to Classroom (strength: 65)."
       },
       {
-        "timestamp": "2026-11-28T18:48:22.863098",
+        "timestamp": "2026-11-28T19:11:09.451429",
         "agent": "TY Agent",
         "year_id": "TY",
         "division": "Division C",
@@ -4540,7 +4540,7 @@
         "message": "Division 'Division C': Theory Subject 'Artificial Intelligence' (3 lecture(s)/wk, 60 min) mapped to Classroom (strength: 65)."
       },
       {
-        "timestamp": "2026-11-28T18:48:22.863098",
+        "timestamp": "2026-11-28T19:11:09.451429",
         "agent": "TY Agent",
         "year_id": "TY",
         "division": "Division A",
@@ -4548,7 +4548,7 @@
         "message": "Division 'Division A': Theory Subject 'Theory of Computation' (3 lecture(s)/wk, 60 min) mapped to Classroom (strength: 65)."
       },
       {
-        "timestamp": "2026-11-28T18:48:22.863098",
+        "timestamp": "2026-11-28T19:11:09.451429",
         "agent": "TY Agent",
         "year_id": "TY",
         "division": "Division B",
@@ -4556,7 +4556,7 @@
         "message": "Division 'Division B': Theory Subject 'Theory of Computation' (3 lecture(s)/wk, 60 min) mapped to Classroom (strength: 65)."
       },
       {
-        "timestamp": "2026-11-28T18:48:22.863098",
+        "timestamp": "2026-11-28T19:11:09.451429",
         "agent": "TY Agent",
         "year_id": "TY",
         "division": "Division C",
@@ -4564,7 +4564,7 @@
         "message": "Division 'Division C': Theory Subject 'Theory of Computation' (3 lecture(s)/wk, 60 min) mapped to Classroom (strength: 65)."
       },
       {
-        "timestamp": "2026-11-28T18:48:22.863098",
+        "timestamp": "2026-11-28T19:11:09.451429",
         "agent": "TY Agent",
         "year_id": "TY",
         "division": "Division A",
@@ -4572,7 +4572,7 @@
         "message": "Division 'Division A': Practical Subject 'Computer Networks Lab' (1 session(s) of 120 min) partitioned into 2 batches (Batch A1, Batch A2) requiring Laboratories."
       },
       {
-        "timestamp": "2026-11-28T18:48:22.863098",
+        "timestamp": "2026-11-28T19:11:09.451429",
         "agent": "TY Agent",
         "year_id": "TY",
         "division": "Division B",
@@ -4580,7 +4580,7 @@
         "message": "Division 'Division B': Practical Subject 'Computer Networks Lab' (1 session(s) of 120 min) partitioned into 2 batches (Batch B1, Batch B2) requiring Laboratories."
       },
       {
-        "timestamp": "2026-11-28T18:48:22.863098",
+        "timestamp": "2026-11-28T19:11:09.451429",
         "agent": "TY Agent",
         "year_id": "TY",
         "division": "Division C",
@@ -4588,7 +4588,7 @@
         "message": "Division 'Division C': Practical Subject 'Computer Networks Lab' (1 session(s) of 120 min) partitioned into 2 batches (Batch C1, Batch C2) requiring Laboratories."
       },
       {
-        "timestamp": "2026-11-28T18:48:22.863098",
+        "timestamp": "2026-11-28T19:11:09.451429",
         "agent": "TY Agent",
         "year_id": "TY",
         "division": "Division A",
@@ -4596,7 +4596,7 @@
         "message": "Division 'Division A': Practical Subject 'Operating Systems Lab' (1 session(s) of 120 min) partitioned into 2 batches (Batch A1, Batch A2) requiring Laboratories."
       },
       {
-        "timestamp": "2026-11-28T18:48:22.863098",
+        "timestamp": "2026-11-28T19:11:09.451429",
         "agent": "TY Agent",
         "year_id": "TY",
         "division": "Division B",
@@ -4604,7 +4604,7 @@
         "message": "Division 'Division B': Practical Subject 'Operating Systems Lab' (1 session(s) of 120 min) partitioned into 2 batches (Batch B1, Batch B2) requiring Laboratories."
       },
       {
-        "timestamp": "2026-11-28T18:48:22.863098",
+        "timestamp": "2026-11-28T19:11:09.451429",
         "agent": "TY Agent",
         "year_id": "TY",
         "division": "Division C",
@@ -4612,7 +4612,7 @@
         "message": "Division 'Division C': Practical Subject 'Operating Systems Lab' (1 session(s) of 120 min) partitioned into 2 batches (Batch C1, Batch C2) requiring Laboratories."
       },
       {
-        "timestamp": "2026-11-28T18:48:22.864098",
+        "timestamp": "2026-11-28T19:11:09.451429",
         "agent": "TY Agent",
         "year_id": "TY",
         "division": "Division A",
@@ -4620,7 +4620,7 @@
         "message": "Division 'Division A': MDM Elective 'MDM' configured with 3 elective group(s): Applied Data Science [Fixed Room: room_306], Cyber Defense [Fixed Room: room_307], AI & Cloud Systems [Fixed Room: room_308]. Scheduling fixed-room reservations across all academic years."
       },
       {
-        "timestamp": "2026-11-28T18:48:22.864098",
+        "timestamp": "2026-11-28T19:11:09.451429",
         "agent": "TY Agent",
         "year_id": "TY",
         "division": "Division B",
@@ -4628,7 +4628,7 @@
         "message": "Division 'Division B': MDM Elective 'MDM' configured with 3 elective group(s): Applied Data Science [Fixed Room: room_306], Cyber Defense [Fixed Room: room_307], AI & Cloud Systems [Fixed Room: room_308]. Scheduling fixed-room reservations across all academic years."
       },
       {
-        "timestamp": "2026-11-28T18:48:22.864098",
+        "timestamp": "2026-11-28T19:11:09.451429",
         "agent": "TY Agent",
         "year_id": "TY",
         "division": "Division C",
@@ -4636,34 +4636,34 @@
         "message": "Division 'Division C': MDM Elective 'MDM' configured with 3 elective group(s): Applied Data Science [Fixed Room: room_306], Cyber Defense [Fixed Room: room_307], AI & Cloud Systems [Fixed Room: room_308]. Scheduling fixed-room reservations across all academic years."
       },
       {
-        "timestamp": "2026-11-28T18:48:22.864098",
+        "timestamp": "2026-11-28T19:11:09.451429",
         "agent": "TY Agent",
         "year_id": "TY",
         "type": "SUBMISSION",
         "message": "Submitted 75 demand requests to Python Rule-Based Orchestrator for conflict-free multi-year scheduling."
       },
       {
-        "timestamp": "2026-11-28T18:48:22.866095",
+        "timestamp": "2026-11-28T19:11:09.454371",
         "agent": "BE Agent",
         "year_id": "BE",
         "type": "THINKING",
         "message": "Analyzing academic requirements: 0 division(s), 0 subject(s) configured."
       },
       {
-        "timestamp": "2026-11-28T18:48:22.866095",
+        "timestamp": "2026-11-28T19:11:09.454371",
         "agent": "BE Agent",
         "year_id": "BE",
         "type": "SUBMISSION",
         "message": "Submitted 0 demand requests to Python Rule-Based Orchestrator for conflict-free multi-year scheduling."
       },
       {
-        "timestamp": "2026-11-28T18:48:22.869117",
+        "timestamp": "2026-11-28T19:11:09.456376",
         "agent": "Python Rule-Based Orchestrator",
         "type": "COORDINATION",
         "message": "Aggregated 132 total discrete requests across all 4 academic years. Activating MRV heuristic priority and Future Flexibility Protection."
       },
       {
-        "timestamp": "2026-11-28T18:48:22.947044",
+        "timestamp": "2026-11-28T19:11:09.580472",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "SY",
         "division": "Division A",
@@ -4671,7 +4671,7 @@
         "message": "Assigned: SY Division A [Batch A1] - Data Structures Lab (Practical) -> Monday 09:15–11:15 | 📍 Software & Web Lab (Room 204) [MDM Fixed Room Reserved] | 👨‍🏫 Prof. Sneha Mehta."
       },
       {
-        "timestamp": "2026-11-28T18:48:22.993265",
+        "timestamp": "2026-11-28T19:11:09.716529",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "SY",
         "division": "Division A",
@@ -4679,7 +4679,7 @@
         "message": "Assigned: SY Division A [Batch A2] - Data Structures Lab (Practical) -> Tuesday 09:15–11:15 | 📍 Software & Web Lab (Room 204) [MDM Fixed Room Reserved] | 👨‍🏫 Prof. Sneha Mehta."
       },
       {
-        "timestamp": "2026-11-28T18:48:23.038550",
+        "timestamp": "2026-11-28T19:11:09.841548",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "SY",
         "division": "Division B",
@@ -4687,7 +4687,7 @@
         "message": "Assigned: SY Division B [Batch B1] - Data Structures Lab (Practical) -> Monday 11:15–13:15 | 📍 Software & Web Lab (Room 204) [MDM Fixed Room Reserved] | 👨‍🏫 Prof. Sneha Mehta."
       },
       {
-        "timestamp": "2026-11-28T18:48:23.089795",
+        "timestamp": "2026-11-28T19:11:09.966827",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "SY",
         "division": "Division B",
@@ -4695,7 +4695,7 @@
         "message": "Assigned: SY Division B [Batch B2] - Data Structures Lab (Practical) -> Tuesday 11:15–13:15 | 📍 Software & Web Lab (Room 204) [MDM Fixed Room Reserved] | 👨‍🏫 Prof. Sneha Mehta."
       },
       {
-        "timestamp": "2026-11-28T18:48:23.154612",
+        "timestamp": "2026-11-28T19:11:10.089849",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "SY",
         "division": "Division C",
@@ -4703,7 +4703,7 @@
         "message": "Assigned: SY Division C [Batch C1] - Data Structures Lab (Practical) -> Monday 13:45–15:45 | 📍 Software & Web Lab (Room 204) [MDM Fixed Room Reserved] | 👨‍🏫 Prof. Aniket Kadam."
       },
       {
-        "timestamp": "2026-11-28T18:48:23.235262",
+        "timestamp": "2026-11-28T19:11:10.203795",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "SY",
         "division": "Division C",
@@ -4711,7 +4711,7 @@
         "message": "Assigned: SY Division C [Batch C2] - Data Structures Lab (Practical) -> Tuesday 13:45–15:45 | 📍 Software & Web Lab (Room 204) [MDM Fixed Room Reserved] | 👨‍🏫 Prof. Aniket Kadam."
       },
       {
-        "timestamp": "2026-11-28T18:48:23.323548",
+        "timestamp": "2026-11-28T19:11:10.355739",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "TY",
         "division": "Division A",
@@ -4719,7 +4719,7 @@
         "message": "Assigned: TY Division A [Batch A1] - Computer Networks Lab (Practical) -> Monday 09:15–11:15 | 📍 Network & Security Lab (Room 304) [MDM Fixed Room Reserved] | 👨‍🏫 Dr. Rajesh Sharma."
       },
       {
-        "timestamp": "2026-11-28T18:48:23.396548",
+        "timestamp": "2026-11-28T19:11:10.485292",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "TY",
         "division": "Division A",
@@ -4727,7 +4727,7 @@
         "message": "Assigned: TY Division A [Batch A2] - Computer Networks Lab (Practical) -> Tuesday 09:15–11:15 | 📍 Network & Security Lab (Room 304) [MDM Fixed Room Reserved] | 👨‍🏫 Dr. Rajesh Sharma."
       },
       {
-        "timestamp": "2026-11-28T18:48:23.447549",
+        "timestamp": "2026-11-28T19:11:10.611382",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "TY",
         "division": "Division B",
@@ -4735,7 +4735,7 @@
         "message": "Assigned: TY Division B [Batch B1] - Computer Networks Lab (Practical) -> Monday 11:15–13:15 | 📍 Network & Security Lab (Room 304) [MDM Fixed Room Reserved] | 👨‍🏫 Dr. Rajesh Sharma."
       },
       {
-        "timestamp": "2026-11-28T18:48:23.506563",
+        "timestamp": "2026-11-28T19:11:10.724986",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "TY",
         "division": "Division B",
@@ -4743,7 +4743,7 @@
         "message": "Assigned: TY Division B [Batch B2] - Computer Networks Lab (Practical) -> Tuesday 11:15–13:15 | 📍 Network & Security Lab (Room 304) [MDM Fixed Room Reserved] | 👨‍🏫 Dr. Rajesh Sharma."
       },
       {
-        "timestamp": "2026-11-28T18:48:23.571388",
+        "timestamp": "2026-11-28T19:11:10.832969",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "TY",
         "division": "Division C",
@@ -4751,7 +4751,7 @@
         "message": "Assigned: TY Division C [Batch C1] - Computer Networks Lab (Practical) -> Wednesday 09:15–11:15 | 📍 Network & Security Lab (Room 304) [MDM Fixed Room Reserved] | 👨‍🏫 Dr. Rajesh Sharma."
       },
       {
-        "timestamp": "2026-11-28T18:48:23.618482",
+        "timestamp": "2026-11-28T19:11:10.953119",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "TY",
         "division": "Division C",
@@ -4759,7 +4759,7 @@
         "message": "Assigned: TY Division C [Batch C2] - Computer Networks Lab (Practical) -> Thursday 09:15–11:15 | 📍 Network & Security Lab (Room 304) [MDM Fixed Room Reserved] | 👨‍🏫 Dr. Rajesh Sharma."
       },
       {
-        "timestamp": "2026-11-28T18:48:23.664371",
+        "timestamp": "2026-11-28T19:11:11.101893",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "SY",
         "division": "Division C",
@@ -4767,7 +4767,7 @@
         "message": "Assigned: SY Division C - Object Oriented Programming (Java) (Theory) -> Wednesday 09:15–10:15 | 📍 Classroom 201 (SY-A) | 👨‍🏫 Prof. Sneha Mehta."
       },
       {
-        "timestamp": "2026-11-28T18:48:23.711478",
+        "timestamp": "2026-11-28T19:11:11.218760",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "SY",
         "division": "Division A",
@@ -4775,7 +4775,7 @@
         "message": "Assigned: SY Division A - Data Structures & Analysis (Theory) -> Wednesday 10:15–11:15 | 📍 Classroom 201 (SY-A) | 👨‍🏫 Prof. Sneha Mehta."
       },
       {
-        "timestamp": "2026-11-28T18:48:23.762367",
+        "timestamp": "2026-11-28T19:11:11.342638",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "SY",
         "division": "Division B",
@@ -4783,7 +4783,7 @@
         "message": "Assigned: SY Division B - Data Structures & Analysis (Theory) -> Wednesday 11:15–12:15 | 📍 Classroom 201 (SY-A) | 👨‍🏫 Prof. Sneha Mehta."
       },
       {
-        "timestamp": "2026-11-28T18:48:23.821970",
+        "timestamp": "2026-11-28T19:11:11.484580",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "TY",
         "division": "Division A",
@@ -4791,7 +4791,7 @@
         "message": "Assigned: TY Division A - Theory of Computation (Theory) -> Wednesday 09:15–10:15 | 📍 Classroom 301 (TY-A) | 👨‍🏫 Prof. Neha Kulkarni."
       },
       {
-        "timestamp": "2026-11-28T18:48:23.877118",
+        "timestamp": "2026-11-28T19:11:11.641477",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "TY",
         "division": "Division B",
@@ -4799,7 +4799,7 @@
         "message": "Assigned: TY Division B - Theory of Computation (Theory) -> Wednesday 10:15–11:15 | 📍 Classroom 301 (TY-A) | 👨‍🏫 Prof. Neha Kulkarni."
       },
       {
-        "timestamp": "2026-11-28T18:48:23.936447",
+        "timestamp": "2026-11-28T19:11:11.810724",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "TY",
         "division": "Division C",
@@ -4807,7 +4807,7 @@
         "message": "Assigned: TY Division C - Theory of Computation (Theory) -> Monday 09:15–10:15 | 📍 Classroom 301 (TY-A) | 👨‍🏫 Prof. Neha Kulkarni."
       },
       {
-        "timestamp": "2026-11-28T18:48:23.996717",
+        "timestamp": "2026-11-28T19:11:11.989850",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "SY",
         "division": "Division B",
@@ -4815,7 +4815,7 @@
         "message": "Assigned: SY Division B - Object Oriented Programming (Java) (Theory) -> Thursday 09:15–10:15 | 📍 Classroom 201 (SY-A) | 👨‍🏫 Prof. Aniket Kadam."
       },
       {
-        "timestamp": "2026-11-28T18:48:24.070150",
+        "timestamp": "2026-11-28T19:11:12.137194",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "SY",
         "division": "Division A",
@@ -4823,7 +4823,7 @@
         "message": "Assigned: SY Division A - Object Oriented Programming (Java) (Theory) -> Thursday 10:15–11:15 | 📍 Classroom 201 (SY-A) | 👨‍🏫 Prof. Aniket Kadam."
       },
       {
-        "timestamp": "2026-11-28T18:48:24.136798",
+        "timestamp": "2026-11-28T19:11:12.513018",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "SY",
         "division": "Division C",
@@ -4831,7 +4831,7 @@
         "message": "Assigned: SY Division C - Data Structures & Analysis (Theory) -> Thursday 11:15–12:15 | 📍 Classroom 201 (SY-A) | 👨‍🏫 Prof. Aniket Kadam."
       },
       {
-        "timestamp": "2026-11-28T18:48:24.201969",
+        "timestamp": "2026-11-28T19:11:12.663135",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "SY",
         "division": "Division C",
@@ -4839,7 +4839,7 @@
         "message": "Assigned: SY Division C - Database Management Systems (Theory) -> Friday 09:15–10:15 | 📍 Classroom 201 (SY-A) | 👨‍🏫 Prof. Aniket Kadam."
       },
       {
-        "timestamp": "2026-11-28T18:48:24.263984",
+        "timestamp": "2026-11-28T19:11:12.957734",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "TY",
         "division": "Division B",
@@ -4847,7 +4847,7 @@
         "message": "Assigned: TY Division B [Applied Data Science] - MDM (Theory) -> Thursday 09:15–10:15 | 📍 Elective Room 306 [MDM Fixed Room Reserved] | 👨‍🏫 Prof. Neha Kulkarni."
       },
       {
-        "timestamp": "2026-11-28T18:48:24.332304",
+        "timestamp": "2026-11-28T19:11:13.099165",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "TY",
         "division": "Division A",
@@ -4855,7 +4855,7 @@
         "message": "Assigned: TY Division A [Applied Data Science] - MDM (Theory) -> Thursday 10:15–11:15 | 📍 Elective Room 306 [MDM Fixed Room Reserved] | 👨‍🏫 Prof. Neha Kulkarni."
       },
       {
-        "timestamp": "2026-11-28T18:48:24.390298",
+        "timestamp": "2026-11-28T19:11:13.293168",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "TY",
         "division": "Division C",
@@ -4863,7 +4863,7 @@
         "message": "Assigned: TY Division C [Applied Data Science] - MDM (Theory) -> Tuesday 09:15–10:15 | 📍 Elective Room 306 [MDM Fixed Room Reserved] | 👨‍🏫 Prof. Neha Kulkarni."
       },
       {
-        "timestamp": "2026-11-28T18:48:24.459311",
+        "timestamp": "2026-11-28T19:11:13.439624",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "SY",
         "division": "Division C",
@@ -4871,7 +4871,7 @@
         "message": "Assigned: SY Division C - Object Oriented Programming (Java) (Theory) -> Thursday 12:15–13:15 | 📍 Classroom 201 (SY-A) | 👨‍🏫 Prof. Sneha Mehta."
       },
       {
-        "timestamp": "2026-11-28T18:48:24.528298",
+        "timestamp": "2026-11-28T19:11:13.603578",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "SY",
         "division": "Division A",
@@ -4879,7 +4879,7 @@
         "message": "Assigned: SY Division A - Data Structures & Analysis (Theory) -> Friday 09:15–10:15 | 📍 Classroom 202 (SY-B) | 👨‍🏫 Prof. Sneha Mehta."
       },
       {
-        "timestamp": "2026-11-28T18:48:24.601989",
+        "timestamp": "2026-11-28T19:11:13.743901",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "SY",
         "division": "Division B",
@@ -4887,7 +4887,7 @@
         "message": "Assigned: SY Division B - Data Structures & Analysis (Theory) -> Friday 10:15–11:15 | 📍 Classroom 202 (SY-B) | 👨‍🏫 Prof. Sneha Mehta."
       },
       {
-        "timestamp": "2026-11-28T18:48:24.674227",
+        "timestamp": "2026-11-28T19:11:13.882278",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "TY",
         "division": "Division B",
@@ -4895,7 +4895,7 @@
         "message": "Assigned: TY Division B - Theory of Computation (Theory) -> Friday 09:15–10:15 | 📍 Classroom 301 (TY-A) | 👨‍🏫 Prof. Neha Kulkarni."
       },
       {
-        "timestamp": "2026-11-28T18:48:24.748235",
+        "timestamp": "2026-11-28T19:11:14.049573",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "TY",
         "division": "Division B",
@@ -4903,7 +4903,7 @@
         "message": "Assigned: TY Division B - Software Engineering (Theory) -> Wednesday 11:15–12:15 | 📍 Classroom 301 (TY-A) | 👨‍🏫 Prof. Utkarsha Patil."
       },
       {
-        "timestamp": "2026-11-28T18:48:24.825732",
+        "timestamp": "2026-11-28T19:11:14.232564",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "TY",
         "division": "Division A",
@@ -4911,7 +4911,7 @@
         "message": "Assigned: TY Division A - Theory of Computation (Theory) -> Friday 10:15–11:15 | 📍 Classroom 301 (TY-A) | 👨‍🏫 Prof. Neha Kulkarni."
       },
       {
-        "timestamp": "2026-11-28T18:48:24.967956",
+        "timestamp": "2026-11-28T19:11:14.372342",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "TY",
         "division": "Division A",
@@ -4919,7 +4919,7 @@
         "message": "Assigned: TY Division A - Software Engineering (Theory) -> Wednesday 10:15–11:15 | 📍 Classroom 302 (TY-B) | 👨‍🏫 Prof. Utkarsha Patil."
       },
       {
-        "timestamp": "2026-11-28T18:48:25.083653",
+        "timestamp": "2026-11-28T19:11:14.523761",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "SY",
         "division": "Division C",
@@ -4927,7 +4927,7 @@
         "message": "Assigned: SY Division C - Discrete Mathematics (Theory) -> Friday 10:15–11:15 | 📍 Classroom 201 (SY-A) | 👨‍🏫 Prof. Rohan Joshi."
       },
       {
-        "timestamp": "2026-11-28T18:48:25.274572",
+        "timestamp": "2026-11-28T19:11:14.663723",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "SY",
         "division": "Division A",
@@ -4935,7 +4935,7 @@
         "message": "Assigned: SY Division A - Discrete Mathematics (Theory) -> Wednesday 09:15–10:15 | 📍 Classroom 202 (SY-B) | 👨‍🏫 Prof. Rohan Joshi."
       },
       {
-        "timestamp": "2026-11-28T18:48:25.385561",
+        "timestamp": "2026-11-28T19:11:14.797742",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "SY",
         "division": "Division B",
@@ -4943,7 +4943,7 @@
         "message": "Assigned: SY Division B - Discrete Mathematics (Theory) -> Friday 09:15–10:15 | 📍 Classroom 203 (SY-C) | 👨‍🏫 Prof. Rohan Joshi."
       },
       {
-        "timestamp": "2026-11-28T18:48:25.489563",
+        "timestamp": "2026-11-28T19:11:14.950148",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "TY",
         "division": "Division C",
@@ -4951,7 +4951,7 @@
         "message": "Assigned: TY Division C - Theory of Computation (Theory) -> Friday 11:15–12:15 | 📍 Classroom 301 (TY-A) | 👨‍🏫 Prof. Neha Kulkarni."
       },
       {
-        "timestamp": "2026-11-28T18:48:25.584177",
+        "timestamp": "2026-11-28T19:11:15.086973",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "TY",
         "division": "Division C",
@@ -4959,7 +4959,7 @@
         "message": "Assigned: TY Division C - Software Engineering (Theory) -> Monday 10:15–11:15 | 📍 Classroom 301 (TY-A) | 👨‍🏫 Prof. Utkarsha Patil."
       },
       {
-        "timestamp": "2026-11-28T18:48:25.703192",
+        "timestamp": "2026-11-28T19:11:15.236795",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "SY",
         "division": "Division B",
@@ -4967,7 +4967,7 @@
         "message": "Assigned: SY Division B - Object Oriented Programming (Java) (Theory) -> Wednesday 12:15–13:15 | 📍 Classroom 201 (SY-A) | 👨‍🏫 Prof. Aniket Kadam."
       },
       {
-        "timestamp": "2026-11-28T18:48:25.811374",
+        "timestamp": "2026-11-28T19:11:15.444972",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "SY",
         "division": "Division A",
@@ -4975,7 +4975,7 @@
         "message": "Assigned: SY Division A - Object Oriented Programming (Java) (Theory) -> Friday 10:15–11:15 | 📍 Classroom 203 (SY-C) | 👨‍🏫 Prof. Aniket Kadam."
       },
       {
-        "timestamp": "2026-11-28T18:48:25.930570",
+        "timestamp": "2026-11-28T19:11:15.598370",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "SY",
         "division": "Division C",
@@ -4983,7 +4983,7 @@
         "message": "Assigned: SY Division C - Data Structures & Analysis (Theory) -> Wednesday 10:15–11:15 | 📍 Classroom 202 (SY-B) | 👨‍🏫 Prof. Aniket Kadam."
       },
       {
-        "timestamp": "2026-11-28T18:48:26.035726",
+        "timestamp": "2026-11-28T19:11:15.734759",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "SY",
         "division": "Division C",
@@ -4991,7 +4991,7 @@
         "message": "Assigned: SY Division C - Database Management Systems (Theory) -> Wednesday 11:15–12:15 | 📍 Classroom 202 (SY-B) | 👨‍🏫 Prof. Aniket Kadam."
       },
       {
-        "timestamp": "2026-11-28T18:48:26.164567",
+        "timestamp": "2026-11-28T19:11:15.868319",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "TY",
         "division": "Division B",
@@ -4999,7 +4999,7 @@
         "message": "Assigned: TY Division B [Applied Data Science] - MDM (Theory) -> Thursday 11:15–12:15 | 📍 Elective Room 306 [MDM Fixed Room Reserved] | 👨‍🏫 Prof. Neha Kulkarni."
       },
       {
-        "timestamp": "2026-11-28T18:48:26.354771",
+        "timestamp": "2026-11-28T19:11:15.991767",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "TY",
         "division": "Division A",
@@ -5007,7 +5007,7 @@
         "message": "Assigned: TY Division A [Applied Data Science] - MDM (Theory) -> Thursday 12:15–13:15 | 📍 Elective Room 306 [MDM Fixed Room Reserved] | 👨‍🏫 Prof. Neha Kulkarni."
       },
       {
-        "timestamp": "2026-11-28T18:48:26.449781",
+        "timestamp": "2026-11-28T19:11:16.113677",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "TY",
         "division": "Division C",
@@ -5015,7 +5015,7 @@
         "message": "Assigned: TY Division C [Applied Data Science] - MDM (Theory) -> Tuesday 10:15–11:15 | 📍 Elective Room 306 [MDM Fixed Room Reserved] | 👨‍🏫 Prof. Neha Kulkarni."
       },
       {
-        "timestamp": "2026-11-28T18:48:26.559779",
+        "timestamp": "2026-11-28T19:11:16.242680",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "SY",
         "division": "Division B",
@@ -5023,7 +5023,7 @@
         "message": "Assigned: SY Division B - Database Management Systems (Theory) -> Thursday 10:15–11:15 | 📍 Classroom 202 (SY-B) | 👨‍🏫 Dr. Amit Verma."
       },
       {
-        "timestamp": "2026-11-28T18:48:26.659807",
+        "timestamp": "2026-11-28T19:11:16.372297",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "SY",
         "division": "Division A",
@@ -5031,7 +5031,7 @@
         "message": "Assigned: SY Division A - Database Management Systems (Theory) -> Thursday 09:15–10:15 | 📍 Classroom 202 (SY-B) | 👨‍🏫 Dr. Amit Verma."
       },
       {
-        "timestamp": "2026-11-28T18:48:26.731458",
+        "timestamp": "2026-11-28T19:11:16.502258",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "SY",
         "division": "Division C",
@@ -5039,7 +5039,7 @@
         "message": "Assigned: SY Division C - Object Oriented Programming (Java) (Theory) -> Friday 11:15–12:15 | 📍 Classroom 201 (SY-A) | 👨‍🏫 Prof. Sneha Mehta."
       },
       {
-        "timestamp": "2026-11-28T18:48:26.799847",
+        "timestamp": "2026-11-28T19:11:16.677438",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "SY",
         "division": "Division B",
@@ -5047,7 +5047,7 @@
         "message": "Assigned: SY Division B - Data Structures & Analysis (Theory) -> Thursday 11:15–12:15 | 📍 Classroom 202 (SY-B) | 👨‍🏫 Prof. Sneha Mehta."
       },
       {
-        "timestamp": "2026-11-28T18:48:26.908127",
+        "timestamp": "2026-11-28T19:11:16.798822",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "SY",
         "division": "Division A",
@@ -5055,7 +5055,7 @@
         "message": "Assigned: SY Division A - Data Structures & Analysis (Theory) -> Friday 12:15–13:15 | 📍 Classroom 201 (SY-A) | 👨‍🏫 Prof. Sneha Mehta."
       },
       {
-        "timestamp": "2026-11-28T18:48:27.015834",
+        "timestamp": "2026-11-28T19:11:16.925938",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "TY",
         "division": "Division B",
@@ -5063,7 +5063,7 @@
         "message": "Assigned: TY Division B - Theory of Computation (Theory) -> Friday 12:15–13:15 | 📍 Classroom 301 (TY-A) | 👨‍🏫 Prof. Neha Kulkarni."
       },
       {
-        "timestamp": "2026-11-28T18:48:27.075780",
+        "timestamp": "2026-11-28T19:11:17.033323",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "TY",
         "division": "Division B",
@@ -5071,7 +5071,7 @@
         "message": "Assigned: TY Division B - Software Engineering (Theory) -> Wednesday 09:15–10:15 | 📍 Classroom 302 (TY-B) | 👨‍🏫 Prof. Utkarsha Patil."
       },
       {
-        "timestamp": "2026-11-28T18:48:27.139119",
+        "timestamp": "2026-11-28T19:11:17.174090",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "TY",
         "division": "Division A",
@@ -5079,7 +5079,7 @@
         "message": "Assigned: TY Division A - Theory of Computation (Theory) -> Friday 13:45–14:45 | 📍 Classroom 301 (TY-A) | 👨‍🏫 Prof. Neha Kulkarni."
       },
       {
-        "timestamp": "2026-11-28T18:48:27.248379",
+        "timestamp": "2026-11-28T19:11:17.297726",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "TY",
         "division": "Division C",
@@ -5087,7 +5087,7 @@
         "message": "Assigned: TY Division C - Theory of Computation (Theory) -> Tuesday 11:15–12:15 | 📍 Classroom 301 (TY-A) | 👨‍🏫 Prof. Neha Kulkarni."
       },
       {
-        "timestamp": "2026-11-28T18:48:27.343810",
+        "timestamp": "2026-11-28T19:11:17.423025",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "TY",
         "division": "Division C",
@@ -5095,7 +5095,7 @@
         "message": "Assigned: TY Division C - Software Engineering (Theory) -> Friday 10:15–11:15 | 📍 Classroom 302 (TY-B) | 👨‍🏫 Prof. Utkarsha Patil."
       },
       {
-        "timestamp": "2026-11-28T18:48:27.457610",
+        "timestamp": "2026-11-28T19:11:17.543032",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "TY",
         "division": "Division A",
@@ -5103,7 +5103,7 @@
         "message": "Assigned: TY Division A - Software Engineering (Theory) -> Friday 09:15–10:15 | 📍 Classroom 302 (TY-B) | 👨‍🏫 Prof. Utkarsha Patil."
       },
       {
-        "timestamp": "2026-11-28T18:48:27.618078",
+        "timestamp": "2026-11-28T19:11:17.656736",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "SY",
         "division": "Division B",
@@ -5111,7 +5111,7 @@
         "message": "Assigned: SY Division B - Discrete Mathematics (Theory) -> Friday 11:15–12:15 | 📍 Classroom 202 (SY-B) | 👨‍🏫 Prof. Rohan Joshi."
       },
       {
-        "timestamp": "2026-11-28T18:48:27.738069",
+        "timestamp": "2026-11-28T19:11:17.811349",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "SY",
         "division": "Division C",
@@ -5119,7 +5119,7 @@
         "message": "Assigned: SY Division C - Discrete Mathematics (Theory) -> Monday 15:45–16:45 | 📍 Classroom 201 (SY-A) | 👨‍🏫 Prof. Rohan Joshi."
       },
       {
-        "timestamp": "2026-11-28T18:48:27.822362",
+        "timestamp": "2026-11-28T19:11:17.992168",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "SY",
         "division": "Division A",
@@ -5127,7 +5127,7 @@
         "message": "Assigned: SY Division A - Discrete Mathematics (Theory) -> Monday 14:45–15:45 | 📍 Classroom 201 (SY-A) | 👨‍🏫 Prof. Rohan Joshi."
       },
       {
-        "timestamp": "2026-11-28T18:48:27.882700",
+        "timestamp": "2026-11-28T19:11:18.108095",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "SY",
         "division": "Division A",
@@ -5135,7 +5135,7 @@
         "message": "Assigned: SY Division A - Object Oriented Programming (Java) (Theory) -> Tuesday 11:15–12:15 | 📍 Classroom 201 (SY-A) | 👨‍🏫 Prof. Aniket Kadam."
       },
       {
-        "timestamp": "2026-11-28T18:48:27.946083",
+        "timestamp": "2026-11-28T19:11:18.319180",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "SY",
         "division": "Division B",
@@ -5143,7 +5143,7 @@
         "message": "Assigned: SY Division B - Object Oriented Programming (Java) (Theory) -> Tuesday 10:15–11:15 | 📍 Classroom 201 (SY-A) | 👨‍🏫 Prof. Aniket Kadam."
       },
       {
-        "timestamp": "2026-11-28T18:48:28.002090",
+        "timestamp": "2026-11-28T19:11:18.450385",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "SY",
         "division": "Division C",
@@ -5151,7 +5151,7 @@
         "message": "Assigned: SY Division C - Data Structures & Analysis (Theory) -> Tuesday 09:15–10:15 | 📍 Classroom 201 (SY-A) | 👨‍🏫 Prof. Aniket Kadam."
       },
       {
-        "timestamp": "2026-11-28T18:48:28.054741",
+        "timestamp": "2026-11-28T19:11:18.667521",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "SY",
         "division": "Division C",
@@ -5159,7 +5159,7 @@
         "message": "Assigned: SY Division C - Database Management Systems (Theory) -> Thursday 13:45–14:45 | 📍 Classroom 201 (SY-A) | 👨‍🏫 Prof. Aniket Kadam."
       },
       {
-        "timestamp": "2026-11-28T18:48:28.106250",
+        "timestamp": "2026-11-28T19:11:18.770615",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "SY",
         "division": "Division B",
@@ -5167,7 +5167,7 @@
         "message": "Assigned: SY Division B - Database Management Systems (Theory) -> Wednesday 10:15–11:15 | 📍 Classroom 203 (SY-C) | 👨‍🏫 Dr. Amit Verma."
       },
       {
-        "timestamp": "2026-11-28T18:48:28.160513",
+        "timestamp": "2026-11-28T19:11:18.907648",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "SY",
         "division": "Division A",
@@ -5175,7 +5175,7 @@
         "message": "Assigned: SY Division A - Database Management Systems (Theory) -> Wednesday 11:15–12:15 | 📍 Classroom 203 (SY-C) | 👨‍🏫 Dr. Amit Verma."
       },
       {
-        "timestamp": "2026-11-28T18:48:28.213357",
+        "timestamp": "2026-11-28T19:11:19.140434",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "SY",
         "division": "Division B",
@@ -5183,7 +5183,7 @@
         "message": "Assigned: SY Division B - Discrete Mathematics (Theory) -> Monday 13:45–14:45 | 📍 Classroom 201 (SY-A) | 👨‍🏫 Prof. Rohan Joshi."
       },
       {
-        "timestamp": "2026-11-28T18:48:28.265317",
+        "timestamp": "2026-11-28T19:11:19.302293",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "SY",
         "division": "Division A",
@@ -5191,7 +5191,7 @@
         "message": "Assigned: SY Division A - Discrete Mathematics (Theory) -> Thursday 11:15–12:15 | 📍 Classroom 203 (SY-C) | 👨‍🏫 Prof. Rohan Joshi."
       },
       {
-        "timestamp": "2026-11-28T18:48:28.312546",
+        "timestamp": "2026-11-28T19:11:19.414729",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "TY",
         "division": "Division A",
@@ -5199,7 +5199,7 @@
         "message": "Assigned: TY Division A - Computer Networks (Theory) -> Wednesday 11:15–12:15 | 📍 Classroom 302 (TY-B) | 👨‍🏫 Dr. Rajesh Sharma."
       },
       {
-        "timestamp": "2026-11-28T18:48:28.356040",
+        "timestamp": "2026-11-28T19:11:19.584278",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "TY",
         "division": "Division A",
@@ -5207,7 +5207,7 @@
         "message": "Assigned: TY Division A - Operating Systems (Theory) -> Thursday 11:15–12:15 | 📍 Classroom 301 (TY-A) | 👨‍🏫 Dr. Vikram Deshmukh."
       },
       {
-        "timestamp": "2026-11-28T18:48:28.403415",
+        "timestamp": "2026-11-28T19:11:19.706749",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "TY",
         "division": "Division B",
@@ -5215,7 +5215,7 @@
         "message": "Assigned: TY Division B - Software Engineering (Theory) -> Friday 11:15–12:15 | 📍 Classroom 302 (TY-B) | 👨‍🏫 Prof. Utkarsha Patil."
       },
       {
-        "timestamp": "2026-11-28T18:48:28.444900",
+        "timestamp": "2026-11-28T19:11:19.830936",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "TY",
         "division": "Division B",
@@ -5223,7 +5223,7 @@
         "message": "Assigned: TY Division B - Computer Networks (Theory) -> Thursday 12:15–13:15 | 📍 Classroom 301 (TY-A) | 👨‍🏫 Dr. Rajesh Sharma."
       },
       {
-        "timestamp": "2026-11-28T18:48:28.491115",
+        "timestamp": "2026-11-28T19:11:19.957124",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "TY",
         "division": "Division B",
@@ -5231,7 +5231,7 @@
         "message": "Assigned: TY Division B - Operating Systems (Theory) -> Monday 13:45–14:45 | 📍 Classroom 301 (TY-A) | 👨‍🏫 Dr. Vikram Deshmukh."
       },
       {
-        "timestamp": "2026-11-28T18:48:28.534102",
+        "timestamp": "2026-11-28T19:11:20.066816",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "TY",
         "division": "Division C",
@@ -5239,7 +5239,7 @@
         "message": "Assigned: TY Division C - Operating Systems (Theory) -> Friday 09:15–10:15 | 📍 Classroom 303 (TY-C) | 👨‍🏫 Dr. Vikram Deshmukh."
       },
       {
-        "timestamp": "2026-11-28T18:48:28.572221",
+        "timestamp": "2026-11-28T19:11:20.187928",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "TY",
         "division": "Division C",
@@ -5247,7 +5247,7 @@
         "message": "Assigned: TY Division C - Computer Networks (Theory) -> Thursday 11:15–12:15 | 📍 Classroom 302 (TY-B) | 👨‍🏫 Dr. Rajesh Sharma."
       },
       {
-        "timestamp": "2026-11-28T18:48:28.609222",
+        "timestamp": "2026-11-28T19:11:20.300916",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "SY",
         "division": "Division C",
@@ -5255,7 +5255,7 @@
         "message": "Assigned: SY Division C - Discrete Mathematics (Theory) -> Thursday 10:15–11:15 | 📍 Classroom 203 (SY-C) | 👨‍🏫 Prof. Rohan Joshi."
       },
       {
-        "timestamp": "2026-11-28T18:48:28.646707",
+        "timestamp": "2026-11-28T19:11:20.412454",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "TY",
         "division": "Division A",
@@ -5263,7 +5263,7 @@
         "message": "Assigned: TY Division A - Software Engineering (Theory) -> Monday 11:15–12:15 | 📍 Classroom 301 (TY-A) | 👨‍🏫 Prof. Utkarsha Patil."
       },
       {
-        "timestamp": "2026-11-28T18:48:28.682942",
+        "timestamp": "2026-11-28T19:11:20.508502",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "TY",
         "division": "Division C",
@@ -5271,7 +5271,7 @@
         "message": "Assigned: TY Division C - Software Engineering (Theory) -> Monday 12:15–13:15 | 📍 Classroom 301 (TY-A) | 👨‍🏫 Prof. Utkarsha Patil."
       },
       {
-        "timestamp": "2026-11-28T18:48:28.717029",
+        "timestamp": "2026-11-28T19:11:20.600556",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "SY",
         "division": "Division B",
@@ -5279,7 +5279,7 @@
         "message": "Assigned: SY Division B - Database Management Systems (Theory) -> Wednesday 09:15–10:15 | 📍 Classroom 203 (SY-C) | 👨‍🏫 Dr. Amit Verma."
       },
       {
-        "timestamp": "2026-11-28T18:48:28.752326",
+        "timestamp": "2026-11-28T19:11:20.688580",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "SY",
         "division": "Division A",
@@ -5287,7 +5287,7 @@
         "message": "Assigned: SY Division A - Database Management Systems (Theory) -> Wednesday 12:15–13:15 | 📍 Classroom 203 (SY-C) | 👨‍🏫 Dr. Amit Verma."
       },
       {
-        "timestamp": "2026-11-28T18:48:28.786023",
+        "timestamp": "2026-11-28T19:11:20.775350",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "TY",
         "division": "Division B",
@@ -5295,7 +5295,7 @@
         "message": "Assigned: TY Division B - Computer Networks (Theory) -> Tuesday 13:45–14:45 | 📍 Classroom 301 (TY-A) | 👨‍🏫 Dr. Rajesh Sharma."
       },
       {
-        "timestamp": "2026-11-28T18:48:28.820044",
+        "timestamp": "2026-11-28T19:11:20.863354",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "TY",
         "division": "Division B",
@@ -5303,7 +5303,7 @@
         "message": "Assigned: TY Division B - Operating Systems (Theory) -> Monday 14:45–15:45 | 📍 Classroom 301 (TY-A) | 👨‍🏫 Dr. Vikram Deshmukh."
       },
       {
-        "timestamp": "2026-11-28T18:48:28.852095",
+        "timestamp": "2026-11-28T19:11:20.941724",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "TY",
         "division": "Division A",
@@ -5311,7 +5311,7 @@
         "message": "Assigned: TY Division A - Operating Systems (Theory) -> Tuesday 13:45–14:45 | 📍 Classroom 302 (TY-B) | 👨‍🏫 Dr. Vikram Deshmukh."
       },
       {
-        "timestamp": "2026-11-28T18:48:28.885124",
+        "timestamp": "2026-11-28T19:11:21.018904",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "TY",
         "division": "Division C",
@@ -5319,7 +5319,7 @@
         "message": "Assigned: TY Division C - Operating Systems (Theory) -> Wednesday 11:15–12:15 | 📍 Classroom 303 (TY-C) | 👨‍🏫 Dr. Vikram Deshmukh."
       },
       {
-        "timestamp": "2026-11-28T18:48:28.916865",
+        "timestamp": "2026-11-28T19:11:21.093808",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "TY",
         "division": "Division A",
@@ -5327,7 +5327,7 @@
         "message": "Assigned: TY Division A - Computer Networks (Theory) -> Wednesday 12:15–13:15 | 📍 Classroom 302 (TY-B) | 👨‍🏫 Dr. Rajesh Sharma."
       },
       {
-        "timestamp": "2026-11-28T18:48:28.946423",
+        "timestamp": "2026-11-28T19:11:21.164915",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "TY",
         "division": "Division C",
@@ -5335,7 +5335,7 @@
         "message": "Assigned: TY Division C - Computer Networks (Theory) -> Friday 12:15–13:15 | 📍 Classroom 302 (TY-B) | 👨‍🏫 Dr. Rajesh Sharma."
       },
       {
-        "timestamp": "2026-11-28T18:48:29.067598",
+        "timestamp": "2026-11-28T19:11:21.239080",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "TY",
         "division": "Division A",
@@ -5343,7 +5343,7 @@
         "message": "Assigned: TY Division A - Operating Systems (Theory) -> Tuesday 14:45–15:45 | 📍 Classroom 302 (TY-B) | 👨‍🏫 Dr. Vikram Deshmukh."
       },
       {
-        "timestamp": "2026-11-28T18:48:29.130153",
+        "timestamp": "2026-11-28T19:11:21.311824",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "TY",
         "division": "Division B",
@@ -5351,7 +5351,7 @@
         "message": "Assigned: TY Division B - Operating Systems (Theory) -> Wednesday 12:15–13:15 | 📍 Classroom 301 (TY-A) | 👨‍🏫 Dr. Vikram Deshmukh."
       },
       {
-        "timestamp": "2026-11-28T18:48:29.157172",
+        "timestamp": "2026-11-28T19:11:21.376223",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "TY",
         "division": "Division C",
@@ -5359,7 +5359,7 @@
         "message": "Assigned: TY Division C - Operating Systems (Theory) -> Thursday 12:15–13:15 | 📍 Classroom 302 (TY-B) | 👨‍🏫 Dr. Vikram Deshmukh."
       },
       {
-        "timestamp": "2026-11-28T18:48:29.183168",
+        "timestamp": "2026-11-28T19:11:21.440222",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "TY",
         "division": "Division A",
@@ -5367,7 +5367,7 @@
         "message": "Assigned: TY Division A - Computer Networks (Theory) -> Friday 11:15–12:15 | 📍 Classroom 303 (TY-C) | 👨‍🏫 Dr. Rajesh Sharma."
       },
       {
-        "timestamp": "2026-11-28T18:48:29.206268",
+        "timestamp": "2026-11-28T19:11:21.539845",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "TY",
         "division": "Division B",
@@ -5375,7 +5375,7 @@
         "message": "Assigned: TY Division B - Computer Networks (Theory) -> Friday 10:15–11:15 | 📍 Classroom 303 (TY-C) | 👨‍🏫 Dr. Rajesh Sharma."
       },
       {
-        "timestamp": "2026-11-28T18:48:29.229290",
+        "timestamp": "2026-11-28T19:11:21.627842",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "TY",
         "division": "Division C",
@@ -5383,7 +5383,7 @@
         "message": "Assigned: TY Division C - Computer Networks (Theory) -> Tuesday 14:45–15:45 | 📍 Classroom 301 (TY-A) | 👨‍🏫 Dr. Rajesh Sharma."
       },
       {
-        "timestamp": "2026-11-28T18:48:29.251462",
+        "timestamp": "2026-11-28T19:11:21.693744",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "SY",
         "division": "Division C",
@@ -5391,7 +5391,7 @@
         "message": "Assigned: SY Division C - Computer Organization & Architecture (Theory) -> Wednesday 12:15–13:15 | 📍 Classroom 202 (SY-B) | 👨‍🏫 Prof. Pooja Shah."
       },
       {
-        "timestamp": "2026-11-28T18:48:29.275742",
+        "timestamp": "2026-11-28T19:11:21.749295",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "TY",
         "division": "Division C",
@@ -5399,7 +5399,7 @@
         "message": "Assigned: TY Division C - Artificial Intelligence (Theory) -> Wednesday 12:15–13:15 | 📍 Classroom 303 (TY-C) | 👨‍🏫 Dr. Kavita Nair."
       },
       {
-        "timestamp": "2026-11-28T18:48:29.295887",
+        "timestamp": "2026-11-28T19:11:21.801781",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "SY",
         "division": "Division B",
@@ -5407,7 +5407,7 @@
         "message": "Assigned: SY Division B - Computer Organization & Architecture (Theory) -> Friday 12:15–13:15 | 📍 Classroom 202 (SY-B) | 👨‍🏫 Prof. Pooja Shah."
       },
       {
-        "timestamp": "2026-11-28T18:48:29.314882",
+        "timestamp": "2026-11-28T19:11:21.851784",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "TY",
         "division": "Division A",
@@ -5415,7 +5415,7 @@
         "message": "Assigned: TY Division A - Artificial Intelligence (Theory) -> Monday 12:15–13:15 | 📍 Classroom 302 (TY-B) | 👨‍🏫 Dr. Kavita Nair."
       },
       {
-        "timestamp": "2026-11-28T18:48:29.332885",
+        "timestamp": "2026-11-28T19:11:21.897993",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "TY",
         "division": "Division B",
@@ -5423,7 +5423,7 @@
         "message": "Assigned: TY Division B - Artificial Intelligence (Theory) -> Tuesday 10:15–11:15 | 📍 Classroom 301 (TY-A) | 👨‍🏫 Dr. Kavita Nair."
       },
       {
-        "timestamp": "2026-11-28T18:48:29.356880",
+        "timestamp": "2026-11-28T19:11:21.944997",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "SY",
         "division": "Division A",
@@ -5431,7 +5431,7 @@
         "message": "Assigned: SY Division A - Computer Organization & Architecture (Theory) -> Friday 11:15–12:15 | 📍 Classroom 203 (SY-C) | 👨‍🏫 Prof. Pooja Shah."
       },
       {
-        "timestamp": "2026-11-28T18:48:29.382206",
+        "timestamp": "2026-11-28T19:11:21.986445",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "SY",
         "division": "Division C",
@@ -5439,7 +5439,7 @@
         "message": "Assigned: SY Division C - Computer Organization & Architecture (Theory) -> Monday 09:15–10:15 | 📍 Classroom 201 (SY-A) | 👨‍🏫 Prof. Pooja Shah."
       },
       {
-        "timestamp": "2026-11-28T18:48:29.398130",
+        "timestamp": "2026-11-28T19:11:22.027445",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "SY",
         "division": "Division B",
@@ -5447,7 +5447,7 @@
         "message": "Assigned: SY Division B - Computer Organization & Architecture (Theory) -> Monday 10:15–11:15 | 📍 Classroom 201 (SY-A) | 👨‍🏫 Prof. Pooja Shah."
       },
       {
-        "timestamp": "2026-11-28T18:48:29.413178",
+        "timestamp": "2026-11-28T19:11:22.067339",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "TY",
         "division": "Division A",
@@ -5455,7 +5455,7 @@
         "message": "Assigned: TY Division A - Artificial Intelligence (Theory) -> Thursday 09:15–10:15 | 📍 Classroom 301 (TY-A) | 👨‍🏫 Dr. Kavita Nair."
       },
       {
-        "timestamp": "2026-11-28T18:48:29.427176",
+        "timestamp": "2026-11-28T19:11:22.106451",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "TY",
         "division": "Division B",
@@ -5463,7 +5463,7 @@
         "message": "Assigned: TY Division B - Artificial Intelligence (Theory) -> Thursday 10:15–11:15 | 📍 Classroom 301 (TY-A) | 👨‍🏫 Dr. Kavita Nair."
       },
       {
-        "timestamp": "2026-11-28T18:48:29.440183",
+        "timestamp": "2026-11-28T19:11:22.141289",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "TY",
         "division": "Division C",
@@ -5471,7 +5471,7 @@
         "message": "Assigned: TY Division C - Artificial Intelligence (Theory) -> Monday 11:15–12:15 | 📍 Classroom 302 (TY-B) | 👨‍🏫 Dr. Kavita Nair."
       },
       {
-        "timestamp": "2026-11-28T18:48:29.452186",
+        "timestamp": "2026-11-28T19:11:22.172306",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "SY",
         "division": "Division A",
@@ -5479,7 +5479,7 @@
         "message": "Assigned: SY Division A - Computer Organization & Architecture (Theory) -> Monday 11:15–12:15 | 📍 Classroom 201 (SY-A) | 👨‍🏫 Prof. Pooja Shah."
       },
       {
-        "timestamp": "2026-11-28T18:48:29.462085",
+        "timestamp": "2026-11-28T19:11:22.203309",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "SY",
         "division": "Division C",
@@ -5487,7 +5487,7 @@
         "message": "Assigned: SY Division C - Computer Organization & Architecture (Theory) -> Tuesday 15:45–16:45 | 📍 Classroom 201 (SY-A) | 👨‍🏫 Prof. Pooja Shah."
       },
       {
-        "timestamp": "2026-11-28T18:48:29.471774",
+        "timestamp": "2026-11-28T19:11:22.229752",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "SY",
         "division": "Division B",
@@ -5495,7 +5495,7 @@
         "message": "Assigned: SY Division B - Computer Organization & Architecture (Theory) -> Tuesday 14:45–15:45 | 📍 Classroom 201 (SY-A) | 👨‍🏫 Prof. Pooja Shah."
       },
       {
-        "timestamp": "2026-11-28T18:48:29.480233",
+        "timestamp": "2026-11-28T19:11:22.251308",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "SY",
         "division": "Division A",
@@ -5503,7 +5503,7 @@
         "message": "Assigned: SY Division A - Computer Organization & Architecture (Theory) -> Tuesday 12:15–13:15 | 📍 Classroom 201 (SY-A) | 👨‍🏫 Prof. Pooja Shah."
       },
       {
-        "timestamp": "2026-11-28T18:48:29.487227",
+        "timestamp": "2026-11-28T19:11:22.270438",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "TY",
         "division": "Division A",
@@ -5511,7 +5511,7 @@
         "message": "Assigned: TY Division A - Artificial Intelligence (Theory) -> Friday 12:15–13:15 | 📍 Classroom 303 (TY-C) | 👨‍🏫 Dr. Kavita Nair."
       },
       {
-        "timestamp": "2026-11-28T18:48:29.494232",
+        "timestamp": "2026-11-28T19:11:22.291486",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "TY",
         "division": "Division B",
@@ -5519,7 +5519,7 @@
         "message": "Assigned: TY Division B - Artificial Intelligence (Theory) -> Tuesday 09:15–10:15 | 📍 Classroom 301 (TY-A) | 👨‍🏫 Dr. Kavita Nair."
       },
       {
-        "timestamp": "2026-11-28T18:48:29.499352",
+        "timestamp": "2026-11-28T19:11:22.305485",
         "agent": "Python Rule-Based Orchestrator",
         "year_id": "TY",
         "division": "Division C",
@@ -5527,34 +5527,42 @@
         "message": "Assigned: TY Division C - Artificial Intelligence (Theory) -> Tuesday 12:15–13:15 | 📍 Classroom 301 (TY-A) | 👨‍🏫 Dr. Kavita Nair."
       },
       {
-        "timestamp": "2026-11-28T18:48:29.510228",
+        "timestamp": "2026-11-28T19:11:22.336497",
         "type": "NORMALIZATION_START",
         "initial_score": -4286.36,
         "temperature": 1.0,
         "message": "Starting Simulated Annealing Timetable Normalization. Initial Balance Score: -4286.4, Cooling Rate: 0.9."
       },
       {
-        "timestamp": "2026-11-28T18:48:29.573289",
-        "iteration": 13,
-        "temperature": 0.282,
-        "score": -4181.4,
+        "timestamp": "2026-11-28T19:11:22.410590",
+        "iteration": 6,
+        "temperature": 0.59,
+        "score": -4241.4,
         "type": "IMPROVEMENT",
-        "message": "Iter #13 (T=0.282): Swapped 'Database Management Systems' (Wednesday) with 'Computer Organization & Architecture' (Friday). Balance Score: -4181.4 (+105.0)."
+        "message": "Iter #6 (T=0.590): Swapped 'Discrete Mathematics' (Friday) with 'Object Oriented Programming (Java)' (Wednesday). Balance Score: -4241.4 (+45.0)."
       },
       {
-        "timestamp": "2026-11-28T18:48:29.635670",
+        "timestamp": "2026-11-28T19:11:22.510848",
+        "iteration": 15,
+        "temperature": 0.229,
+        "score": -4151.4,
+        "type": "IMPROVEMENT",
+        "message": "Iter #15 (T=0.229): Swapped 'Software Engineering' (Friday) with 'Operating Systems' (Monday). Balance Score: -4151.4 (+100.0)."
+      },
+      {
+        "timestamp": "2026-11-28T19:11:22.597620",
         "type": "NORMALIZATION_COMPLETE",
         "initial_score": -4286.4,
-        "final_score": -4181.4,
+        "final_score": -4151.4,
         "iterations": 24,
-        "accepted_swaps": 4,
-        "message": "Simulated Annealing Normalization complete. Score improved from -4286.4 to -4181.4 (4 accepted transitions, 0 hard conflicts)."
+        "accepted_swaps": 7,
+        "message": "Simulated Annealing Normalization complete. Score improved from -4286.4 to -4151.4 (7 accepted transitions, 0 hard conflicts)."
       },
       {
-        "timestamp": "2026-11-28T18:48:29.640700",
+        "timestamp": "2026-11-28T19:11:22.608643",
         "agent": "Python Rule-Based Orchestrator",
         "type": "ORCHESTRATOR_FINISH",
-        "message": "LangGraph Workflow completed in 6.79s. Scheduled: 132/132 (0 unscheduled, 0 backtracks). Hard conflicts: 0."
+        "message": "LangGraph Workflow completed in 13.17s. Scheduled: 132/132 (0 unscheduled, 0 backtracks). Hard conflicts: 0."
       }
     ],
     "unscheduled_lectures": []

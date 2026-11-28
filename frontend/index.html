@@ -788,15 +788,15 @@
               </select>
             </div>
             <div style="display:flex; align-items:center; gap:8px;">
-              <label for="avail-filter-status" style="font-weight:600; font-size:13px; margin:0;">Status:</label>
+              <label for="avail-filter-status" style="font-weight:600; font-size:13px; margin:0;">Status Filter:</label>
               <select id="avail-filter-status" class="form-control form-control-sm">
-                <option value="ALL">All Statuses</option>
-                <option value="FREE">Free Only</option>
-                <option value="NOT_AVAILABLE">Unavailable Only</option>
+                <option value="NOT_AVAILABLE" selected>🚫 Busy / Unavailable Only (Active Roster)</option>
+                <option value="ALL">Show All (Including Free Slots)</option>
+                <option value="FREE">Free Slots Only</option>
               </select>
             </div>
             <div style="margin-left:auto; display:flex; align-items:center; gap:10px;">
-              <span class="badge badge-success" style="padding:4px 8px;">Default: Unset slots = FREE</span>
+              <span class="badge badge-success" style="padding:4px 8px; font-weight:700;">Default: Unlisted Faculty = 100% FREE</span>
               <button id="btn-refresh-availability" class="btn btn-sm btn-outline" type="button">🔄 Refresh</button>
             </div>
           </div>
@@ -806,10 +806,10 @@
         <div class="card">
           <div class="card-header" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;">
             <div>
-              <h3 style="margin:0;">Dynamic Faculty Availability Schedule</h3>
-              <p class="text-muted" style="margin:0; font-size:12px;">Click 'Toggle' on any slot to switch status between FREE and NOT AVAILABLE in real-time</p>
+              <h3 style="margin:0;">Busy Faculty & Blocked Availability Roster</h3>
+              <p class="text-muted" style="margin:0; font-size:12px;">Only faculty members with busy / unavailable time slots are listed below. All unlisted faculty are considered completely FREE by default.</p>
             </div>
-            <span id="avail-record-count" class="badge badge-primary">0 slots listed</span>
+            <span id="avail-record-count" class="badge badge-danger">0 busy slots listed</span>
           </div>
           <div class="table-responsive" style="max-height: 560px; overflow-y:auto;">
             <table class="data-table" id="table-faculty-availability">
@@ -2648,9 +2648,23 @@
     </div>
   </aside>
 
+  <!-- Global Top Progress Bar -->
+  <div id="global-top-progress-bar"></div>
+
+  <!-- Global Action Loader Overlay -->
+  <div id="global-loader-overlay">
+    <div class="global-loader-card">
+      <div class="app-spinner-ring"></div>
+      <div>
+        <div class="global-loader-text" id="global-loader-msg">Processing...</div>
+        <div class="global-loader-subtext" id="global-loader-sub">Please wait a moment</div>
+      </div>
+    </div>
+  </div>
+
   <!-- Export Libraries: html2canvas & jsPDF for pristine PNG & Landscape PDF exports -->
   <script src="/vendor/html2canvas.min.js"></script>
   <script src="/vendor/jspdf.umd.min.js"></script>
-  <script src="/app.js?v=3.3"></script>
+  <script src="/app.js?v=3.4"></script>
 </body>
 </html>
