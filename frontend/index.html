@@ -157,7 +157,7 @@
       <section id="tab-dashboard" class="tab-pane active">
         <div class="pane-header">
           <div style="display:flex; align-items:baseline; gap:8px; flex-wrap:wrap;">
-            <h2>CMPN Scheduling Overview</h2>
+            <h2><span class="brand-department-name">CMPN</span> Scheduling Overview</h2>
             <span class="text-muted" style="font-size:11px;">• Multi-year synchronized scheduling metrics</span>
           </div>
           <div class="header-actions">
@@ -177,6 +177,37 @@
             <button id="btn-reset-all-data" class="btn btn-danger" title="Wipe all faculty, subjects, rooms, divisions & start fresh">
               🗑️ Reset All Data
             </button>
+          </div>
+        </div>
+
+        <!-- Branch / Department Quick Switcher Widget -->
+        <div class="card mb-3 branch-switcher-card" style="background: linear-gradient(135deg, #f0f7ff 0%, #f8fafc 100%); border: 1px solid #bfdbfe; border-radius: 8px; padding: 12px 18px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+            <div style="display:flex; align-items:center; gap:12px;">
+              <span style="font-size:24px;">🏛️</span>
+              <div>
+                <div style="font-size:14px; font-weight:700; color:#1e3a8a; display:flex; align-items:center; gap:8px;">
+                  <span>Department / Branch:</span>
+                  <span class="brand-department-name badge badge-primary" style="font-size:13px; font-weight:800; padding:3px 10px; letter-spacing:0.5px;">CMPN</span>
+                </div>
+                <div style="font-size:12px; color:#64748b; margin-top:2px;">
+                  Switch branch preset (IT, CMPN, EXTC, AI&DS, MECH) or type custom branch name. All headers, timetables, and exports update instantly.
+                </div>
+              </div>
+            </div>
+            <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+              <div class="btn-group" id="dash-branch-preset-group" style="display:flex; gap:4px;">
+                <button type="button" class="btn btn-sm btn-outline-primary btn-dash-branch" data-branch="IT">IT</button>
+                <button type="button" class="btn btn-sm btn-outline-primary btn-dash-branch" data-branch="CMPN">CMPN</button>
+                <button type="button" class="btn btn-sm btn-outline-primary btn-dash-branch" data-branch="EXTC">EXTC</button>
+                <button type="button" class="btn btn-sm btn-outline-primary btn-dash-branch" data-branch="AI&DS">AI&DS</button>
+                <button type="button" class="btn btn-sm btn-outline-primary btn-dash-branch" data-branch="MECH">MECH</button>
+              </div>
+              <div style="display:flex; align-items:center; gap:6px;">
+                <input type="text" id="dash-input-branch" class="form-control form-control-sm" placeholder="Custom branch..." style="width:130px;">
+                <button type="button" id="dash-btn-apply-branch" class="btn btn-sm btn-primary" style="font-weight:700;">Apply</button>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -1752,6 +1783,7 @@
     <div class="modal-box modal-sm">
       <div class="modal-header">
         <h3>+ Add Division</h3>
+        <button type="button" class="btn btn-outline btn-page-help" data-tab-help="tab-divisions" style="display:none;" title="Help"></button>
         <button class="modal-close">&times;</button>
       </div>
       <form id="form-add-division">
@@ -2086,7 +2118,7 @@
               <label>Division:</label>
               <select id="edit-division" class="form-control" required></select>
             </div>
-            <div class="form-group col">
+            <div class="form-group col" id="edit-batch-group">
               <label>Batch (Optional):</label>
               <select id="edit-batch" class="form-control">
                 <option value="">None (Full Division)</option>
@@ -2121,7 +2153,7 @@
             </div>
           </div>
 
-          <div class="form-row">
+          <div class="form-row" id="edit-single-fac-room-row">
             <div class="form-group col">
               <label>Faculty:</label>
               <select id="edit-faculty" class="form-control" required></select>
@@ -2129,6 +2161,20 @@
             <div class="form-group col">
               <label>Room / Lab:</label>
               <select id="edit-room" class="form-control" required></select>
+            </div>
+          </div>
+
+          <!-- Parallel Practical Batches Section (Visible for Practical subjects) -->
+          <div id="edit-parallel-batches-section" class="card mt-2 mb-3 hidden" style="background:#f8fafc; border:1px solid #cbd5e1; border-radius:6px; padding:12px 14px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; flex-wrap:wrap; gap:6px;">
+              <div style="font-weight:700; font-size:13px; color:#1e293b; display:flex; align-items:center; gap:6px;">
+                <span>🧪 Parallel Practical Batches Allocation</span>
+                <span class="badge badge-info" style="font-size:10px;">Simultaneous Labs</span>
+              </div>
+              <small class="text-muted" style="font-size:11px;">All batches run simultaneously in this slot with separate labs & faculty</small>
+            </div>
+            <div id="edit-parallel-batches-list" style="display:flex; flex-direction:column; gap:10px;">
+              <!-- Dynamically populated for each batch (e.g. A1, A2) -->
             </div>
           </div>
 

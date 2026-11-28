@@ -24,11 +24,13 @@ def department_test_data():
         {"id": "fac_01", "name": "Dr. Sharma (Shared FY & TY)"},
         {"id": "fac_02", "name": "Prof. Mehta (Shared SY & BE)"},
         {"id": "fac_03", "name": "Dr. Verma"},
+        {"id": "fac_04", "name": "Prof. Kulkarni"},
     ]
     rooms = [
         {"id": "room_101", "name": "Room 101", "type": "Classroom", "available_days": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]},
         {"id": "room_102", "name": "Room 102", "type": "Classroom", "available_days": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]},
         {"id": "lab_01", "name": "Computer Lab 1", "type": "Laboratory", "available_days": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]},
+        {"id": "lab_02", "name": "Computer Lab 2", "type": "Laboratory", "available_days": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]},
     ]
     subjects = [
         {
@@ -75,7 +77,7 @@ def department_test_data():
             "weekly_lectures": 1,
             "duration_minutes": 120,
             "type": "Practical",
-            "eligible_faculty_ids": ["fac_03"],
+            "eligible_faculty_ids": ["fac_03", "fac_04"],
             "required_room_type": "Laboratory",
             "lab_batch_required": True,
         },
@@ -174,7 +176,7 @@ def test_multi_year_synchronized_scheduling_all_four_years(department_test_data)
     assert "agent_summaries" in log
     assert "division_breakdown" in log
 
-    logged_agents = {l["agent"] for l in log["execution_logs"]}
+    logged_agents = {l.get("agent") for l in log["execution_logs"] if l.get("agent")}
     assert "Python Rule-Based Orchestrator" in logged_agents
     assert any("Agent" in a for a in logged_agents)
 
@@ -191,6 +193,8 @@ def test_future_flexibility_and_mrv_priority(department_test_data):
     and that flexibility protection evaluates candidate placements.
     """
     d = department_test_data
+    print("D ROOMS:", d["rooms"])
+    print("D FACULTY:", d["faculty"])
     coordinator = SchedulingCoordinator(
         faculty_data=d["faculty"],
         rooms_data=d["rooms"],
@@ -273,6 +277,8 @@ def test_multi_faculty_eligible_one_division_same_faculty_only():
     )
 
     result = coordinator.run_scheduling()
+
+    print("SCHEDULED TY ENTRIES:", [e for e in result["timetable_entries"] if e.get("year_id") == "TY"])
     assert result["success"] is True
     entries = result["timetable_entries"]
     assert len(entries) == 6  # 3 for Div A + 3 for Div B

@@ -593,7 +593,10 @@ class SchedulingCoordinator:
                 req for req in unscheduled_requests
                 if any(u["id"] == req.id for u in repair_res["unscheduled_requests"])
             ]
-            execution_logs.extend(repair_res.get("repair_logs", []))
+            for rl in repair_res.get("repair_logs", []):
+                if "agent" not in rl:
+                    rl["agent"] = "Timetable Self-Repair"
+                execution_logs.append(rl)
 
         # 4b. Timetable Balancing & Normalization with Simulated Annealing Cooling
         normalizer = TimetableNormalizationEngine(
@@ -610,13 +613,19 @@ class SchedulingCoordinator:
         norm_res = normalizer.normalize(scheduled_entries)
         if norm_res["success"]:
             scheduled_entries = norm_res["entries"]
-            execution_logs.extend(norm_res.get("logs", []))
+            for nl in norm_res.get("logs", []):
+                if "agent" not in nl:
+                    nl["agent"] = "Normalization Engine"
+                execution_logs.append(nl)
 
         # 4c. Post-scheduling daily spread rebalancing
         min_lec = int(self.settings.get("min_lectures_per_division_per_day", 3))
         if self.settings.get("enforce_min_division_daily_limit") and min_lec > 0:
             rebalance_logs = self._rebalance_daily_spread(scheduled_entries, min_lec)
-            execution_logs.extend(rebalance_logs)
+            for rbl in rebalance_logs:
+                if "agent" not in rbl:
+                    rbl["agent"] = "Spread Rebalancer"
+                execution_logs.append(rbl)
 
         # 4d. Independent validation & Spatial Metrics
         validation_report = self.validator.validate_all(scheduled_entries)

@@ -963,7 +963,10 @@ def validate_and_finalize_node(state: SchedulingState) -> Dict[str, Any]:
         repair_res = repairer.repair(scheduled_entries, unscheduled)
         scheduled_entries = repair_res["entries"]
         unscheduled = repair_res["unscheduled_requests"]
-        exec_logs.extend(repair_res.get("repair_logs", []))
+        for rl in repair_res.get("repair_logs", []):
+            if "agent" not in rl:
+                rl["agent"] = "Timetable Self-Repair"
+            exec_logs.append(rl)
 
     # Phase B: Timetable Balancing & Normalization with Simulated Annealing Cooling
     normalizer = TimetableNormalizationEngine(

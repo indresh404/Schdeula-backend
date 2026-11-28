@@ -2308,39 +2308,40 @@ async function exportTimetable(format = "png") {
   const filters = state.filters || { year: "ALL", division: "ALL", faculty: "ALL", room: "ALL", day: "ALL" };
 
   // 1. Prepare Title & Metadata based on filters
-  let viewTitle = "ALL YEARS – COMPLETE DEPARTMENT TIMETABLE";
+  const currentDept = (state.settings && state.settings.department_name) || window.currentDepartmentName || "CMPN";
+  let viewTitle = `ALL YEARS – COMPLETE ${currentDept} TIMETABLE`;
   let viewSubtitle = "Academic Schedule • All Academic Years (FY · SY · TY · BE)";
-  let fileSlug = "Timetable_All_Years";
+  let fileSlug = `Timetable_${currentDept}_All_Years`;
 
   if (filters.faculty !== "ALL") {
     const facObj = (state.faculty || []).find((f) => f.id === filters.faculty);
     const facName = facObj ? facObj.name : "Faculty";
-    viewTitle = `CMPN DEPARTMENT — FACULTY SCHEDULE: ${facName}`;
+    viewTitle = `${currentDept} DEPARTMENT — FACULTY SCHEDULE: ${facName}`;
     viewSubtitle = `Faculty Member: ${facName} • Cross-Year Timetable`;
     fileSlug = `Timetable_Faculty_${facName.replace(/\s+/g, "_")}`;
   } else if (filters.room !== "ALL") {
     const rmObj = (state.rooms || []).find((r) => r.id === filters.room);
     const rmName = rmObj ? rmObj.name : "Room";
     const rmType = rmObj ? rmObj.type : "Classroom/Lab";
-    viewTitle = `CMPN DEPARTMENT — ROOM OCCUPANCY: ${rmName}`;
+    viewTitle = `${currentDept} DEPARTMENT — ROOM OCCUPANCY: ${rmName}`;
     viewSubtitle = `Venue: ${rmName} (${rmType}) • Department-Wide Schedule`;
     fileSlug = `Timetable_Room_${rmName.replace(/\s+/g, "_")}`;
   } else if (filters.year !== "ALL") {
     if (filters.division !== "ALL") {
       const divObj = (state.divisions || []).find((d) => d.id === filters.division);
       const divName = divObj ? divObj.name : filters.division;
-      viewTitle = `CMPN DEPARTMENT — ${filters.year} DIVISION ${divName}`;
+      viewTitle = `${currentDept} DEPARTMENT — ${filters.year} DIVISION ${divName}`;
       viewSubtitle = `Academic Schedule • Year: ${filters.year} • Division: ${divName}`;
       fileSlug = `Timetable_${filters.year}_Div_${divName.replace(/\s+/g, "_")}`;
     } else {
-      viewTitle = `CMPN DEPARTMENT — ${filters.year} ALL DIVISIONS`;
+      viewTitle = `${currentDept} DEPARTMENT — ${filters.year} ALL DIVISIONS`;
       viewSubtitle = `Academic Schedule • Year: ${filters.year} • All Divisions Schedule`;
       fileSlug = `Timetable_${filters.year}_All_Divisions`;
     }
   } else if (filters.division !== "ALL") {
     const divObj = (state.divisions || []).find((d) => d.id === filters.division);
     const divName = divObj ? divObj.name : filters.division;
-    viewTitle = `CMPN DEPARTMENT — DIVISION ${divName}`;
+    viewTitle = `${currentDept} DEPARTMENT — DIVISION ${divName}`;
     viewSubtitle = `Academic Schedule • Division: ${divName}`;
     fileSlug = `Timetable_Div_${divName.replace(/\s+/g, "_")}`;
   }
@@ -2410,7 +2411,7 @@ async function exportTimetable(format = "png") {
   // Footer
   const footerHtml = `
     <div style="margin-top: 18px; display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: #64748b; border-top: 1px solid #e2e8f0; padding-top: 10px;">
-      <span><strong>Schedula CMPN</strong> • Intelligent Multi-Year Timetable Engine</span>
+      <span><strong>Schedula ${currentDept}</strong> • Intelligent Multi-Year Timetable Engine</span>
       <span>Color Legend: <span style="color:#2563eb; font-weight:600;">■ Theory</span> &nbsp;•&nbsp; <span style="color:#059669; font-weight:600;">■ Practical (Batches)</span> &nbsp;•&nbsp; <span style="color:#7c3aed; font-weight:600;">■ Elective / MDM</span></span>
       <span>Status: <strong>Approved Official Academic Timetable</strong></span>
     </div>
@@ -2751,6 +2752,61 @@ function updateEditSubjects(yearId, divId, selectedSubId) {
   }
 }
 
+function renderEditParallelBatches(divBatches, selectedSub, divId) {
+  const container = document.getElementById("edit-parallel-batches-list");
+  if (!container) return;
+
+  const pracSubjects = (state.subjects || []).filter(
+    (s) => (s.division_ids || []).includes(divId) && (s.type === "Practical" || s.type === "Lab")
+  );
+  const subjectsToUse = pracSubjects.length > 0 ? pracSubjects : [selectedSub];
+
+  const labs = (state.rooms || []).filter((r) => (r.type || "").toLowerCase().includes("lab"));
+  const roomsToUse = labs.length > 0 ? labs : (state.rooms || []);
+
+  container.innerHTML = divBatches.map((b, idx) => {
+    // Determine assigned faculty for this batch
+    const assignedFacId = getAssignedFacultyForDivisionAndSubject(divId, selectedSub.id, b.id) ||
+      (selectedSub.eligible_faculty_ids && selectedSub.eligible_faculty_ids[idx % selectedSub.eligible_faculty_ids.length]) ||
+      (state.faculty[idx % state.faculty.length] ? state.faculty[idx % state.faculty.length].id : "");
+
+    // Distinct lab room suggestion for each batch
+    const defaultRoomId = roomsToUse[idx % roomsToUse.length] ? roomsToUse[idx % roomsToUse.length].id : "";
+
+    const subOpts = subjectsToUse.map(
+      (s) => `<option value="${s.id}" ${s.id === selectedSub.id ? "selected" : ""}>${s.name} (${s.code || "Lab"})</option>`
+    ).join("");
+
+    const facOpts = (state.faculty || []).map(
+      (f) => `<option value="${f.id}" ${f.id === assignedFacId ? "selected" : ""}>${f.name}</option>`
+    ).join("");
+
+    const roomOpts = roomsToUse.map(
+      (r) => `<option value="${r.id}" ${r.id === defaultRoomId ? "selected" : ""}>${r.name} (${r.type})</option>`
+    ).join("");
+
+    return `
+      <div class="edit-parallel-batch-row" data-batch-id="${b.id}" data-batch-name="${b.name}" style="background:#ffffff; border:1px solid #e2e8f0; border-radius:6px; padding:10px 12px; display:grid; grid-template-columns: 90px 1.2fr 1fr 1fr; gap:10px; align-items:center;">
+        <div>
+          <span class="badge badge-primary" style="font-size:12px; font-weight:700; width:100%; text-align:center; display:block; padding:5px 0;">${b.name}</span>
+        </div>
+        <div>
+          <label style="font-size:10px; font-weight:700; color:#475569; margin-bottom:2px; display:block;">LAB SUBJECT:</label>
+          <select class="form-control form-control-sm parallel-batch-sub" style="font-size:11px;">${subOpts}</select>
+        </div>
+        <div>
+          <label style="font-size:10px; font-weight:700; color:#475569; margin-bottom:2px; display:block;">FACULTY:</label>
+          <select class="form-control form-control-sm parallel-batch-fac" style="font-size:11px;">${facOpts}</select>
+        </div>
+        <div>
+          <label style="font-size:10px; font-weight:700; color:#475569; margin-bottom:2px; display:block;">DESIGNATED LAB:</label>
+          <select class="form-control form-control-sm parallel-batch-room" style="font-size:11px;">${roomOpts}</select>
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
 function syncEditSubjectSelection() {
   const subSelect = document.getElementById("edit-subject");
   const newBox = document.getElementById("edit-new-subject-box");
@@ -2758,11 +2814,17 @@ function syncEditSubjectSelection() {
   const batchSelect = document.getElementById("edit-batch");
   const facSelect = document.getElementById("edit-faculty");
   const roomSelect = document.getElementById("edit-room");
+  const batchGroup = document.getElementById("edit-batch-group");
+  const singleFacRoomRow = document.getElementById("edit-single-fac-room-row");
+  const parallelSection = document.getElementById("edit-parallel-batches-section");
   if (!subSelect) return;
 
   const val = subSelect.value;
   if (val === "__NEW__") {
     if (newBox) newBox.classList.remove("hidden");
+    if (parallelSection) parallelSection.classList.add("hidden");
+    if (batchGroup) batchGroup.classList.remove("hidden");
+    if (singleFacRoomRow) singleFacRoomRow.classList.remove("hidden");
     return;
   }
 
@@ -2773,25 +2835,41 @@ function syncEditSubjectSelection() {
   const divId = divSelect ? divSelect.value : null;
   const batchId = batchSelect ? batchSelect.value : null;
 
-  // Auto-map assigned faculty so user does not have to manual map again
-  const assignedFacId = getAssignedFacultyForDivisionAndSubject(divId, sub.id, batchId);
-  if (assignedFacId && facSelect) {
-    facSelect.value = assignedFacId;
+  // Check if subject is Practical/Lab and division has multiple batches
+  const divBatches = (state.batches || []).filter((b) => b.division_id === divId);
+  const isPractical = sub.type === "Practical" || sub.type === "Lab";
+
+  if (isPractical && divBatches.length > 1) {
+    if (parallelSection) parallelSection.classList.remove("hidden");
+    if (batchGroup) batchGroup.classList.add("hidden");
+    if (singleFacRoomRow) singleFacRoomRow.classList.add("hidden");
+    renderEditParallelBatches(divBatches, sub, divId);
+  } else {
+    if (parallelSection) parallelSection.classList.add("hidden");
+    if (batchGroup) batchGroup.classList.remove("hidden");
+    if (singleFacRoomRow) singleFacRoomRow.classList.remove("hidden");
+
+    // Auto-map assigned faculty so user does not have to manual map again
+    const assignedFacId = getAssignedFacultyForDivisionAndSubject(divId, sub.id, batchId);
+    if (assignedFacId && facSelect) {
+      facSelect.value = assignedFacId;
+    }
+
+    // Auto-map suggested room (Lab for practical, Classroom for theory)
+    const suggestedRoomId = getSuggestedRoomForSubjectAndDivision(sub, divId);
+    if (suggestedRoomId && roomSelect) {
+      roomSelect.value = suggestedRoomId;
+    }
   }
 
-  // Auto-map suggested room (Lab for practical, Classroom for theory)
-  const suggestedRoomId = getSuggestedRoomForSubjectAndDivision(sub, divId);
-  if (suggestedRoomId && roomSelect) {
-    roomSelect.value = suggestedRoomId;
-  }
-
-  // Auto-sync duration to end time
+  // Auto-sync duration to end time (default to 120m for practical, 60m for theory if not set)
+  const duration = sub.duration_minutes || (isPractical ? 120 : 60);
   const startEl = document.getElementById("edit-start-time");
   const endEl = document.getElementById("edit-end-time");
-  if (startEl && endEl && startEl.value && sub.duration_minutes) {
+  if (startEl && endEl && startEl.value && duration) {
     const [h, m] = startEl.value.split(":").map(Number);
     if (!isNaN(h) && !isNaN(m)) {
-      const totalMin = h * 60 + m + sub.duration_minutes;
+      const totalMin = h * 60 + m + duration;
       const eh = String(Math.floor(totalMin / 60)).padStart(2, "0");
       const em = String(totalMin % 60).padStart(2, "0");
       endEl.value = `${eh}:${em}`;
@@ -2877,14 +2955,70 @@ async function handleSaveLectureEdit(e) {
   const roomId = document.getElementById("edit-room").value;
   const room = state.rooms.find((r) => r.id === roomId);
 
+  const parallelSection = document.getElementById("edit-parallel-batches-section");
+  const isParallelActive = parallelSection && !parallelSection.classList.contains("hidden");
+
+  let parallelBatches = null;
+  if (isParallelActive) {
+    const rows = document.querySelectorAll(".edit-parallel-batch-row");
+    if (rows.length > 1) {
+      parallelBatches = [];
+      const usedFaculty = new Set();
+      const usedRooms = new Set();
+      let clashMsg = "";
+
+      rows.forEach((row) => {
+        const bId = row.getAttribute("data-batch-id");
+        const bName = row.getAttribute("data-batch-name");
+        const bSubId = row.querySelector(".parallel-batch-sub")?.value || subId;
+        const bFacId = row.querySelector(".parallel-batch-fac")?.value;
+        const bRoomId = row.querySelector(".parallel-batch-room")?.value;
+        const bSubObj = state.subjects.find((s) => s.id === bSubId);
+        const bFacObj = state.faculty.find((f) => f.id === bFacId);
+        const bRoomObj = state.rooms.find((r) => r.id === bRoomId);
+
+        if (usedFaculty.has(bFacId)) {
+          clashMsg = `Faculty conflict: ${bFacObj ? bFacObj.name : "Faculty"} cannot be assigned to two batches simultaneously.`;
+        }
+        if (usedRooms.has(bRoomId)) {
+          clashMsg = `Room conflict: ${bRoomObj ? bRoomObj.name : "Lab"} cannot host two batches simultaneously. Select distinct labs.`;
+        }
+        usedFaculty.add(bFacId);
+        usedRooms.add(bRoomId);
+
+        parallelBatches.push({
+          batch_id: bId,
+          batch_name: bName,
+          subject_id: bSubId,
+          subject_name: bSubObj ? bSubObj.name : "",
+          faculty_id: bFacId,
+          faculty_name: bFacObj ? bFacObj.name : "",
+          room_id: bRoomId,
+          room_name: bRoomObj ? bRoomObj.name : "",
+        });
+      });
+
+      if (clashMsg) {
+        showBanner(clashMsg, "warning");
+        const clashBox = document.getElementById("edit-clash-box");
+        const clashMsgList = document.getElementById("edit-clash-messages");
+        if (clashBox && clashMsgList) {
+          clashBox.classList.remove("hidden");
+          clashMsgList.innerHTML = `<li>${clashMsg}</li>`;
+        }
+        return;
+      }
+    }
+  }
+
   const payload = {
     subject_id: subId,
     subject_name: sub ? sub.name : "",
     year_id: yearId,
     division_id: divId,
     division_name: div ? div.name : "",
-    batch_id: batchId,
-    batch_name: batch ? batch.name : null,
+    batch_id: isParallelActive ? null : batchId,
+    batch_name: isParallelActive ? null : (batch ? batch.name : null),
     faculty_id: facId,
     faculty_name: fac ? fac.name : "",
     room_id: roomId,
@@ -2895,8 +3029,23 @@ async function handleSaveLectureEdit(e) {
     type: sub ? sub.type : "Theory",
   };
 
-  const url = isNew ? "/api/timetable/entry" : `/api/timetable/entry/${entryId}`;
-  const method = isNew ? "POST" : "PUT";
+  if (parallelBatches && parallelBatches.length > 1) {
+    payload.parallel_batches = parallelBatches;
+    payload.type = "Practical";
+    const sTime = document.getElementById("edit-start-time").value;
+    const eTime = document.getElementById("edit-end-time").value;
+    if (sTime && eTime) {
+      const [sh, sm] = sTime.split(":").map(Number);
+      const [eh, em] = eTime.split(":").map(Number);
+      payload.duration_minutes = (eh * 60 + em) - (sh * 60 + sm);
+    }
+  }
+
+  const url = (isNew || (parallelBatches && parallelBatches.length > 1)) ? "/api/timetable/entry" : `/api/timetable/entry/${entryId}`;
+  const method = (isNew || (parallelBatches && parallelBatches.length > 1)) ? "POST" : "PUT";
+  if (!isNew && parallelBatches && parallelBatches.length > 1) {
+    payload.replace_entry_id = entryId;
+  }
 
   try {
     const res = await fetch(url, {
@@ -7339,42 +7488,98 @@ function setupFacultyAvailability() {
 
 function updateDepartmentNameUI(deptName) {
   if (!deptName) return;
+  window.currentDepartmentName = deptName;
+  if (state.settings) {
+    state.settings.department_name = deptName;
+  }
+
   document.querySelectorAll(".brand-department-name").forEach((el) => {
     el.textContent = deptName;
   });
+
   const inputEl = document.getElementById("set-department-name");
   if (inputEl && inputEl !== document.activeElement) {
     inputEl.value = deptName;
   }
+
+  const dashInput = document.getElementById("dash-input-branch");
+  if (dashInput && dashInput !== document.activeElement) {
+    dashInput.value = deptName;
+  }
+
+  // Highlight active preset button
+  document.querySelectorAll(".btn-dash-branch").forEach((btn) => {
+    const b = btn.getAttribute("data-branch");
+    if (b && b.toUpperCase() === deptName.toUpperCase()) {
+      btn.classList.add("btn-primary");
+      btn.classList.remove("btn-outline-primary");
+    } else {
+      btn.classList.remove("btn-primary");
+      btn.classList.add("btn-outline-primary");
+    }
+  });
+
   document.title = `${deptName} Intelligent Timetable Scheduling Prototype`;
+}
+
+async function applyBranchNameChange(name) {
+  if (!name) {
+    showBanner("Branch / Department name cannot be empty.", "warning");
+    return;
+  }
+  try {
+    const res = await fetch("/api/department/name", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ department_name: name }),
+    });
+    const data = await res.json();
+    if (data.status === "ok") {
+      updateDepartmentNameUI(data.department_name);
+      showBanner(`Department branch updated to ${data.department_name} successfully!`, "success");
+      // Re-render timetable grid title if on timetable tab
+      renderTimetableGrid();
+    } else {
+      showBanner(data.message || "Failed to update department name", "danger");
+    }
+  } catch (err) {
+    console.error("Error saving department name:", err);
+    showBanner("Network error while saving department name", "danger");
+  }
 }
 
 function setupDepartmentNameConfig() {
   const btnSave = document.getElementById("btn-save-dept-name");
   const inputEl = document.getElementById("set-department-name");
   if (btnSave && inputEl) {
-    btnSave.addEventListener("click", async () => {
-      const name = inputEl.value.trim();
-      if (!name) {
-        showBanner("Department name cannot be empty.", "warning");
-        return;
+    btnSave.addEventListener("click", () => {
+      applyBranchNameChange(inputEl.value.trim());
+    });
+    inputEl.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        applyBranchNameChange(inputEl.value.trim());
       }
-      try {
-        const res = await fetch("/api/department/name", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ department_name: name }),
-        });
-        const data = await res.json();
-        if (data.status === "ok") {
-          updateDepartmentNameUI(data.department_name);
-          showBanner(`Department name updated to ${data.department_name} successfully!`, "success");
-        } else {
-          showBanner(data.message || "Failed to update department name", "danger");
-        }
-      } catch (err) {
-        console.error("Error saving department name:", err);
-        showBanner("Network error while saving department name", "danger");
+    });
+  }
+
+  // Dashboard preset buttons (IT, CMPN, EXTC, AI&DS, MECH)
+  document.querySelectorAll(".btn-dash-branch").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const branch = btn.getAttribute("data-branch");
+      if (branch) applyBranchNameChange(branch);
+    });
+  });
+
+  // Dashboard custom branch input & apply button
+  const dashApply = document.getElementById("dash-btn-apply-branch");
+  const dashInput = document.getElementById("dash-input-branch");
+  if (dashApply && dashInput) {
+    dashApply.addEventListener("click", () => {
+      applyBranchNameChange(dashInput.value.trim());
+    });
+    dashInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        applyBranchNameChange(dashInput.value.trim());
       }
     });
   }
@@ -8107,14 +8312,27 @@ function renderInsightsClashes(reports) {
     const dismissBtn = isWarning
       ? `<button class="insight-dismiss-btn" title="Dismiss this warning" onclick="event.stopPropagation(); this.closest('.insight-clash-card').remove(); _updateInsightDismissBadge();">✕</button>`
       : "";
+
+    // Extract Academic Year to display in warning and clash cards
+    const divObj = (r.division_id && state.divisions) ? state.divisions.find((d) => d.id === r.division_id) : null;
+    const year = r.academic_year || r.year || (divObj ? divObj.year_id : "");
+    const yearBadge = year
+      ? `<span class="badge badge-info" style="font-size:10px; font-weight:700; margin-right:6px; letter-spacing:0.5px;">${year}</span>`
+      : "";
+
+    let formattedMsg = r.message || "";
+    if (year && formattedMsg.includes("Division '") && !formattedMsg.includes(`${year} - `)) {
+      formattedMsg = formattedMsg.replace(/Division '([^']+)'/, `Division '${year} - $1'`);
+    }
+
     return `
       <div class="insight-clash-card ${isWarning ? 'warning-type' : ''}" data-entry-id="${entryId}" onclick="focusTimetableEntry('${entryId}')">
         <div class="insight-card-header">
-          <span class="insight-card-title">${r.type || 'Clash Detected'}</span>
+          <span class="insight-card-title">${yearBadge}${r.type || 'Clash Detected'}</span>
           <span class="insight-card-time">${r.day || ''} ${r.slot || ''}</span>
           ${dismissBtn}
         </div>
-        <div class="insight-card-desc">${r.message}</div>
+        <div class="insight-card-desc">${formattedMsg}</div>
         <div class="insight-card-hint">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 16 16 12 12 8"></polyline><line x1="8" y1="12" x2="16" y2="12"></line></svg>
           <span>${isWarning ? 'Click to navigate & highlight slot (soft warning — can be dismissed)' : 'Click to navigate & highlight slot'}</span>

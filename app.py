@@ -1293,6 +1293,7 @@ def department_name_api():
         except Exception:
             pass
         return jsonify({
+            "status": "ok",
             "success": True,
             "department_name": new_name,
             "message": f"Department name updated to '{new_name}'."
@@ -2131,9 +2132,10 @@ def clear_timetable():
 
 
 @app.route("/api/timetable/entry", methods=["POST"])
+@app.route("/api/timetable/parallel-practical", methods=["POST"])
 @require_role(["main_admin", "academic_admin"])
 def add_timetable_entry():
-    """Manual addition of a timetable entry with real-time clash check & suggestions."""
+    """Manual addition of a timetable entry with real-time clash check & suggestions. Supports multi-batch parallel practical sessions."""
     data = request.json or {}
     faculty = store.read("faculty.json") or []
     rooms = store.read("rooms.json") or []
@@ -2144,7 +2146,123 @@ def add_timetable_entry():
 
     divisions = store.read("divisions.json") or []
     batches = store.read("batches.json") or []
+    faculty_avail = store.read("faculty_availability.json") or []
     div = next((d for d in divisions if d["id"] == data.get("division_id")), None)
+
+    parallel_batches = data.get("parallel_batches")
+    # If parallel_batches is provided and has multiple batches, allocate all batches simultaneously
+    if parallel_batches and isinstance(parallel_batches, list) and len(parallel_batches) > 1:
+        group_id = f"pgrp_{uuid.uuid4().hex[:8]}"
+        candidates = []
+        for pb in parallel_batches:
+            b_id = pb.get("batch_id")
+            batch_obj = next((b for b in batches if b["id"] == b_id), None)
+            fac_id = pb.get("faculty_id")
+            fac_obj = next((f for f in faculty if f["id"] == fac_id), None)
+            r_id = pb.get("room_id")
+            r_obj = next((r for r in rooms if r["id"] == r_id), None)
+            s_id = pb.get("subject_id") or data.get("subject_id")
+            sub_obj = next((s for s in subjects if s["id"] == s_id), None)
+
+            cand = {
+                "id": store.generate_id("manual"),
+                "lecture_request_id": f"manual_lab_{uuid.uuid4().hex[:6]}",
+                "parallel_group_id": group_id,
+                "subject_id": s_id,
+                "subject_name": pb.get("subject_name") or (sub_obj["name"] if sub_obj else ""),
+                "year_id": data.get("year_id") or (div.get("year_id") if div else "TY"),
+                "division_id": data.get("division_id"),
+                "division_name": data.get("division_name") or (div.get("name") if div else ""),
+                "batch_id": b_id,
+                "batch_name": pb.get("batch_name") or (batch_obj["name"] if batch_obj else b_id),
+                "faculty_id": fac_id,
+                "faculty_name": pb.get("faculty_name") or (fac_obj["name"] if fac_obj else fac_id),
+                "room_id": r_id,
+                "room_name": pb.get("room_name") or (r_obj["name"] if r_obj else r_id),
+                "day": data.get("day"),
+                "start_time": data.get("start_time"),
+                "end_time": data.get("end_time"),
+                "type": "Practical",
+                "duration_minutes": int(data.get("duration_minutes", 120)),
+                "student_capacity": int(pb.get("student_capacity") or (batch_obj.get("capacity") if batch_obj else 25)),
+                "is_manual": True,
+            }
+            candidates.append(cand)
+
+        # 1. Internal conflict check: cannot share same room
+        room_ids = [c["room_id"] for c in candidates if c.get("room_id")]
+        if len(room_ids) != len(set(room_ids)):
+            return jsonify({
+                "error": "RoomClash",
+                "message": "Two parallel batches cannot be assigned to the same laboratory room simultaneously.",
+                "conflicts": ["Room conflict: Distinct lab rooms are required for each parallel practical batch."]
+            }), 400
+
+        # 2. Internal conflict check: cannot share same faculty
+        fac_ids = [c["faculty_id"] for c in candidates if c.get("faculty_id")]
+        if len(fac_ids) != len(set(fac_ids)):
+            return jsonify({
+                "error": "FacultyClash",
+                "message": "Two parallel batches cannot be taught by the same faculty member simultaneously.",
+                "conflicts": ["Faculty conflict: Distinct faculty members are required for each parallel practical batch."]
+            }), 400
+
+        # 3. Validate against existing entries (excluding any existing entry being replaced)
+        replace_entry_id = data.get("replace_entry_id") or data.get("entry_id")
+        active_entries = [e for e in existing_entries if e.get("id") != replace_entry_id]
+
+        validator = ConstraintValidator(
+            faculty, rooms, subjects, settings,
+            batches_list=batches,
+            faculty_availability=faculty_avail,
+            divisions_list=divisions
+        )
+        report = validator.validate_all(active_entries + candidates)
+        cand_ids = set(c["id"] for c in candidates)
+        hard_timing_clashes = [
+            c for c in report.get("hard_conflicts", [])
+            if any(cid in c.get("entry_ids", [c.get("entry_id")]) for cid in cand_ids)
+            or (c.get("type") in ["WORKLOAD_LIMIT", "WORKLOAD_HOURS_LIMIT"] and c.get("faculty_id") in fac_ids)
+        ]
+
+        confirm_override = bool(data.get("confirm_override", False))
+        if hard_timing_clashes and not confirm_override:
+            return jsonify({
+                "error": "ClashDetected",
+                "message": "Parallel lab entries rejected due to scheduling clash with other lectures.",
+                "requires_confirmation": True,
+                "requires_override_confirmation": True,
+                "conflicts": [c["message"] for c in hard_timing_clashes],
+            }), 409
+
+        for c in candidates:
+            if confirm_override:
+                c["manual_override"] = True
+                c["confirmed_clash_override"] = True
+            active_entries.append(c)
+
+        timetable["entries"] = active_entries
+        store.write("timetable.json", timetable)
+        try:
+            sqlite_store.save_timetable(timetable)
+        except Exception:
+            pass
+
+        record_audit_log(
+            action="PARALLEL_LAB_SCHEDULED",
+            details=f"Admin scheduled parallel practical labs for division '{data.get('division_name')}' batches [{', '.join(c['batch_name'] for c in candidates)}] on {data.get('day')} {data.get('start_time')}.",
+            user=get_current_user(),
+            metadata={"candidates": candidates}
+        )
+
+        return jsonify({
+            "message": f"Parallel practical scheduled successfully for {len(candidates)} batches!",
+            "success": True,
+            "status": "ok",
+            "entries": candidates,
+            "entry": candidates[0]
+        }), 201
+
     batch = next((b for b in batches if b["id"] == data.get("batch_id")), None) if data.get("batch_id") else None
     student_cap = int(batch.get("capacity", 25)) if batch else (int(div.get("capacity", 70)) if div else 0)
 
@@ -2171,7 +2289,12 @@ def add_timetable_entry():
         "is_manual": True,
     }
 
-    validator = ConstraintValidator(faculty, rooms, subjects, settings)
+    validator = ConstraintValidator(
+        faculty, rooms, subjects, settings,
+        batches_list=batches,
+        faculty_availability=faculty_avail,
+        divisions_list=divisions
+    )
     is_valid, conflicts, suggestions = validator.validate_single_edit(
         candidate_entry=candidate,
         existing_entries=existing_entries,

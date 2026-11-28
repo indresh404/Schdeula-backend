@@ -18,12 +18,15 @@ class ConstraintValidator:
         settings: Dict[str, Any],
         batches_list: Optional[List[Dict[str, Any]]] = None,
         faculty_availability: Optional[List[Dict[str, Any]]] = None,
+        divisions_list: Optional[List[Dict[str, Any]]] = None,
     ):
         self.faculty_map = {f["id"]: f for f in faculty_list}
         self.room_map = {r["id"]: r for r in rooms_list}
         self.subject_map = {s["id"]: s for s in subjects_list}
         self.settings = settings
         self.batches_list = batches_list or []
+        self.divisions_list = divisions_list or []
+        self.division_map = {d["id"]: d for d in self.divisions_list if "id" in d}
         self.faculty_availability_list = faculty_availability or []
         self.faculty_availability: Dict[str, List[Dict[str, Any]]] = {}
         for rec in self.faculty_availability_list:
@@ -45,6 +48,19 @@ class ConstraintValidator:
         """
         hard_conflicts = []
         soft_warnings = []
+
+        # Populate division map from entries if available
+        for e in timetable_entries:
+            d_id = e.get("division_id")
+            if d_id and d_id not in self.division_map:
+                y = e.get("academic_year") or e.get("year_id") or e.get("year")
+                if y:
+                    self.division_map[d_id] = {
+                        "id": d_id,
+                        "name": e.get("division_name") or d_id,
+                        "academic_year": y,
+                        "year_id": y,
+                    }
 
         # Faculty workload tracking
         faculty_daily_hours: Dict[str, Dict[str, float]] = {}
@@ -387,11 +403,16 @@ class ConstraintValidator:
         if enforce_min_div_daily and min_div_daily > 0:
             for div_id, days in div_sessions_by_day.items():
                 div_name = div_id
+                div_obj = self.division_map.get(div_id) or {}
+                div_year = div_obj.get("academic_year") or div_obj.get("year_id") or ""
                 for d in self.working_days:
                     sessions = days.get(d, [])
                     if not sessions:
                         continue
                     div_name = sessions[0].get("division_name", div_id)
+                    if not div_year:
+                        div_year = sessions[0].get("academic_year") or sessions[0].get("year_id") or sessions[0].get("year") or ""
+                    year_prefix = f"{div_year} - " if div_year else ""
                     seen_slots = set()
                     periods = 0
                     for s in sessions:
@@ -405,8 +426,10 @@ class ConstraintValidator:
                             "type": "MIN_DIVISION_DAILY_LECTURES",
                             "severity": "warning",
                             "division_id": div_id,
+                            "academic_year": div_year,
+                            "year": div_year,
                             "day": d,
-                            "message": f"Division '{div_name}' has only {periods} lecture(s) on {d}, below the configured minimum of {min_div_daily}.",
+                            "message": f"Division '{year_prefix}{div_name}' has only {periods} lecture(s) on {d}, below the configured minimum of {min_div_daily}.",
                         })
 
         # Check Maximum 1 Lab Session Per Day Per Division & Batch (Strict Rule: at a day only one lab allowed)
@@ -431,13 +454,18 @@ class ConstraintValidator:
 
         for d_id, days in div_daily_lab_slots.items():
             div_name = div_names.get(d_id, d_id)
+            div_obj = self.division_map.get(d_id) or {}
+            div_year = div_obj.get("academic_year") or div_obj.get("year_id") or ""
+            year_prefix = f"{div_year} - " if div_year else ""
             for d, slots in days.items():
                 if len(slots) > 1:
                     hard_conflicts.append({
                         "type": "MAX_DAILY_LABS_EXCEEDED",
                         "division_id": d_id,
+                        "academic_year": div_year,
+                        "year": div_year,
                         "day": d,
-                        "message": f"Division '{div_name}' has {len(slots)} lab sessions scheduled on {d}. At most 1 lab session is allowed per day.",
+                        "message": f"Division '{year_prefix}{div_name}' has {len(slots)} lab sessions scheduled on {d}. At most 1 lab session is allowed per day.",
                     })
 
         for b_id, days in batch_daily_lab_count.items():
@@ -481,6 +509,12 @@ class ConstraintValidator:
 
         for (d_id, d), pract_list in div_day_practicals.items():
             div_name = div_names.get(d_id, d_id)
+            div_obj = self.division_map.get(d_id) or {}
+            div_year = div_obj.get("academic_year") or div_obj.get("year_id") or ""
+            if not div_year and pract_list:
+                div_year = pract_list[0].get("academic_year") or pract_list[0].get("year_id") or pract_list[0].get("year") or ""
+            year_prefix = f"{div_year} - " if div_year else ""
+
             # 1. Staggered time check: all batches must start and end at identical times
             unique_timing_slots = set((p.get("start_time"), p.get("end_time")) for p in pract_list)
             if len(unique_timing_slots) > 1:
@@ -488,8 +522,10 @@ class ConstraintValidator:
                 hard_conflicts.append({
                     "type": "UNPAIRED_PARALLEL_LAB",
                     "division_id": d_id,
+                    "academic_year": div_year,
+                    "year": div_year,
                     "day": d,
-                    "message": f"Division '{div_name}' has staggered practical lab sessions on {d} at multiple timings ({slots_str}). All lab batches must run strictly in parallel at identical time slots.",
+                    "message": f"Division '{year_prefix}{div_name}' has staggered practical lab sessions on {d} at multiple timings ({slots_str}). All lab batches must run strictly in parallel at identical time slots.",
                 })
 
             # 2. Missing batch check: if division has known batches, every batch must be scheduled in this slot
@@ -504,8 +540,10 @@ class ConstraintValidator:
                     hard_conflicts.append({
                         "type": "UNPAIRED_PARALLEL_LAB",
                         "division_id": d_id,
+                        "academic_year": div_year,
+                        "year": div_year,
                         "day": d,
-                        "message": f"Division '{div_name}' has practical lab at {d} {first_st}–{first_et}, but sibling batch(es) [{missing_names}] are not scheduled for a parallel practical lab.",
+                        "message": f"Division '{year_prefix}{div_name}' has practical lab at {d} {first_st}–{first_et}, but sibling batch(es) [{missing_names}] are not scheduled for a parallel practical lab.",
                     })
 
         return {
@@ -514,6 +552,7 @@ class ConstraintValidator:
             "hard_conflicts_count": len(hard_conflicts),
             "hard_conflicts": hard_conflicts,
             "soft_warnings": soft_warnings,
+            "soft_conflicts": soft_warnings,
         }
 
     def validate_single_edit(

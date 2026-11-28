@@ -128,7 +128,7 @@ def test_langgraph_orchestration_all_four_years(department_test_data, tmp_path):
     # 3. Multi-agent thinking & orchestrator execution logs
     logs = result_state.get("execution_logs", [])
     assert len(logs) > 0
-    logged_agents = {l["agent"] for l in logs}
+    logged_agents = {l.get("agent") for l in logs if l.get("agent")}
     assert "Python Rule-Based Orchestrator" in logged_agents
     assert any("Agent" in a for a in logged_agents)
 

@@ -23,11 +23,13 @@ def department_test_data():
         {"id": "fac_01", "name": "Dr. Sharma (Shared FY & TY)"},
         {"id": "fac_02", "name": "Prof. Mehta (Shared SY & BE)"},
         {"id": "fac_03", "name": "Dr. Verma"},
+        {"id": "fac_04", "name": "Prof. Kulkarni"},
     ]
     rooms = [
         {"id": "room_101", "name": "Room 101", "type": "Classroom", "available_days": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]},
         {"id": "room_102", "name": "Room 102", "type": "Classroom", "available_days": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]},
         {"id": "lab_01", "name": "Computer Lab 1", "type": "Laboratory", "available_days": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]},
+        {"id": "lab_02", "name": "Computer Lab 2", "type": "Laboratory", "available_days": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]},
     ]
     subjects = [
         {
@@ -74,7 +76,7 @@ def department_test_data():
             "weekly_lectures": 1,
             "duration_minutes": 120,
             "type": "Practical",
-            "eligible_faculty_ids": ["fac_03"],
+            "eligible_faculty_ids": ["fac_03", "fac_04"],
             "required_room_type": "Laboratory",
             "lab_batch_required": True,
         },

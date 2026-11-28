@@ -21,18 +21,9 @@
   "max_lectures_per_division_per_day": 6,
   "min_lectures_per_division_per_day": 3,
   "enforce_min_division_daily_limit": true,
-  "max_labs_per_division_per_day": 1,
-  "max_labs_per_batch_per_day": 1,
   "max_lectures_per_faculty_per_day": 5,
   "max_consecutive_faculty_lectures": 4,
   "max_consecutive_division_lectures": 4,
   "max_weekly_faculty_workload": 25,
-  "max_daily_faculty_workload": 6,
-  "enforce_workload_limits": true,
-  "enforce_faculty_daily_limit": true,
-  "enforce_faculty_daily_hours": true,
-  "enforce_faculty_weekly_hours": true,
-  "enforce_faculty_consecutive": true,
-  "enforce_division_daily_limit": true,
-  "enforce_division_consecutive": false
+  "max_daily_faculty_workload": 6
 }
