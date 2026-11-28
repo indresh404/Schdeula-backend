@@ -21,6 +21,8 @@
   "max_lectures_per_division_per_day": 6,
   "min_lectures_per_division_per_day": 3,
   "enforce_min_division_daily_limit": true,
+  "max_labs_per_division_per_day": 1,
+  "max_labs_per_batch_per_day": 1,
   "max_lectures_per_faculty_per_day": 5,
   "max_consecutive_faculty_lectures": 4,
   "max_consecutive_division_lectures": 4,

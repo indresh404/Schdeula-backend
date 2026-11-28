@@ -383,6 +383,48 @@ class ConstraintValidator:
                             "message": f"Division '{div_name}' has only {periods} lecture(s) on {d}, below the configured minimum of {min_div_daily}.",
                         })
 
+        # Check Maximum 1 Lab Session Per Day Per Division & Batch (Strict Rule: at a day only one lab allowed)
+        div_daily_lab_slots: Dict[str, Dict[str, Set[Tuple[str, str]]]] = {}
+        batch_daily_lab_count: Dict[str, Dict[str, int]] = {}
+        div_names: Dict[str, str] = {}
+        batch_names: Dict[str, str] = {}
+
+        for e in timetable_entries:
+            if e.get("type") == "Practical":
+                d_id = e.get("division_id")
+                b_id = e.get("batch_id")
+                day = e.get("day")
+                slot = (e.get("start_time"), e.get("end_time"))
+                if d_id and day:
+                    div_daily_lab_slots.setdefault(d_id, {}).setdefault(day, set()).add(slot)
+                    div_names[d_id] = e.get("division_name") or d_id
+                if b_id and day:
+                    batch_daily_lab_count.setdefault(b_id, {}).setdefault(day, 0)
+                    batch_daily_lab_count[b_id][day] += 1
+                    batch_names[b_id] = e.get("batch_name") or b_id
+
+        for d_id, days in div_daily_lab_slots.items():
+            div_name = div_names.get(d_id, d_id)
+            for d, slots in days.items():
+                if len(slots) > 1:
+                    hard_conflicts.append({
+                        "type": "MAX_DAILY_LABS_EXCEEDED",
+                        "division_id": d_id,
+                        "day": d,
+                        "message": f"Division '{div_name}' has {len(slots)} lab sessions scheduled on {d}. At most 1 lab session is allowed per day.",
+                    })
+
+        for b_id, days in batch_daily_lab_count.items():
+            batch_name = batch_names.get(b_id, b_id)
+            for d, count in days.items():
+                if count > 1:
+                    hard_conflicts.append({
+                        "type": "MAX_DAILY_LABS_EXCEEDED",
+                        "batch_id": b_id,
+                        "day": d,
+                        "message": f"Batch '{batch_name}' has {count} lab sessions scheduled on {d}. At most 1 lab session is allowed per day.",
+                    })
+
         return {
             "is_valid": len(hard_conflicts) == 0,
             "total_entries": len(timetable_entries),

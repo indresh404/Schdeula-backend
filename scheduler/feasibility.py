@@ -88,6 +88,9 @@ class FeasibilityEngine:
         self.batch_occupancy: Dict[str, Dict[str, List[Tuple[str, str, str]]]] = {}
         # Track division daily lecture count
         self.division_daily_count: Dict[str, Dict[str, int]] = {}
+        # Track daily practical lab counts (at most 1 lab per day per division and batch)
+        self.division_lab_count: Dict[str, Dict[str, int]] = {}
+        self.batch_lab_count: Dict[str, Dict[str, int]] = {}
         # Track division elective occupancy: division_id -> day -> list of (start_time, end_time, entry_id, parent_subject_id)
         self.division_elective_occupancy: Dict[str, Dict[str, List[Tuple[str, str, str, str]]]] = {}
         # Track batch to division mapping (support 1 batch -> multiple divisions, e.g. shared elective groups)
@@ -131,6 +134,12 @@ class FeasibilityEngine:
         }
         self.batch_occupancy = {
             b["id"]: {day: [] for day in self.working_days} for b in batches
+        }
+        self.division_lab_count = {
+            d["id"]: {day: 0 for day in self.working_days} for d in divisions
+        }
+        self.batch_lab_count = {
+            b["id"]: {day: 0 for day in self.working_days} for b in batches
         }
         self.division_subject_faculty.clear()
         self.division_subject_entries.clear()
@@ -303,8 +312,11 @@ class FeasibilityEngine:
                 if not already_counted:
                     lab_hours = max(1, (time_to_minutes(end_time) - time_to_minutes(start_time)) // 60)
                     self.division_daily_count[division_id][day] += lab_hours
+                    self.division_lab_count[division_id][day] = self.division_lab_count[division_id].get(day, 0) + 1
                 self.batch_to_division[batch_id] = division_id
                 self.batch_to_divisions.setdefault(batch_id, set()).add(division_id)
+            if batch_id:
+                self.batch_lab_count[batch_id][day] = self.batch_lab_count[batch_id].get(day, 0) + 1
             if subject_id and faculty_id:
                 key = (batch_id, subject_id)
                 self.batch_subject_faculty[key] = faculty_id
@@ -361,6 +373,15 @@ class FeasibilityEngine:
                     if eid == entry_id or (s == start_time and e == end_time):
                         intervals.pop(i)
                         break
+            if batch_id and batch_id in self.batch_lab_count and day in self.batch_lab_count[batch_id]:
+                self.batch_lab_count[batch_id][day] = max(0, self.batch_lab_count[batch_id][day] - 1)
+            if division_id and division_id in self.division_lab_count and day in self.division_lab_count[division_id]:
+                has_other_lab = any(
+                    self.batch_lab_count.get(b, {}).get(day, 0) > 0
+                    for b in self.regular_batches_by_division.get(division_id, [])
+                )
+                if not has_other_lab:
+                    self.division_lab_count[division_id][day] = 0
             if subject_id:
                 key = (batch_id, subject_id)
                 if key in self.batch_subject_entries and entry_id in self.batch_subject_entries[key]:
@@ -409,6 +430,13 @@ class FeasibilityEngine:
             return []
 
         for day in self.working_days:
+            # Strictly enforce: at most 1 lab per day per division and per batch
+            if request.type == "Practical":
+                if self.division_lab_count.get(request.division_id, {}).get(day, 0) >= 1:
+                    continue
+                if request.batch_id and self.batch_lab_count.get(request.batch_id, {}).get(day, 0) >= 1:
+                    continue
+
             for start_t, end_t in candidate_intervals:
                 # 1. Division / Batch / Elective availability
                 is_req_elec = bool(getattr(request, "is_elective", False) or request.type == "Elective")
