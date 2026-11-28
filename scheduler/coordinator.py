@@ -97,7 +97,7 @@ class SchedulingCoordinator:
         )
         self.flexibility_engine = FlexibilityEngine(self.rooms_data, spatial_engine=self.spatial_engine)
         self.validator = ConstraintValidator(
-            self.faculty_data, self.rooms_data, self.subjects_data, self.settings
+            self.faculty_data, self.rooms_data, self.subjects_data, self.settings, batches_list=self.batches_data
         )
         self.backtracking_solver = BacktrackingSolver(max_backtracks=300)
 
@@ -181,7 +181,7 @@ class SchedulingCoordinator:
 
         # 3. Constraint-based scheduling loop with MRV, Priority, Flexibility, and Backtracking
         pending_requests = list(all_requests)
-        assignment_stack: List[Tuple[LectureRequest, Dict[str, Any], List[Dict[str, Any]]]] = []
+        assignment_stack: List[Any] = []
 
         # Pre-generate candidate intervals
         candidate_intervals_60 = self.feasibility_engine.generate_candidate_time_intervals(60)
@@ -253,17 +253,15 @@ class SchedulingCoordinator:
                     if compatible_placements:
                         valid_placements = compatible_placements
 
-            # If chosen request is a Practical lab with batches, ensure candidate placements accommodate sibling batch simultaneously
+            # If chosen request is a Practical lab with batches, ensure candidate placements accommodate ALL sibling batches simultaneously
             if chosen_req.type == "Practical" and chosen_req.batch_id:
                 div_id = chosen_req.division_id
                 chosen_b_id = chosen_req.batch_id
-                sibling_batch_reqs = [
-                    r for r in pending_requests
-                    if r.type == "Practical" and
-                    r.division_id == div_id and
-                    r.batch_id != chosen_b_id
+                div_batches = [
+                    b for b in self.batches_data
+                    if b.get("division_id") == div_id and b.get("id") != chosen_b_id
                 ]
-                if sibling_batch_reqs:
+                if div_batches:
                     compatible_lab_placements = []
                     for cand in valid_placements:
                         c_day = cand["day"]
@@ -271,35 +269,81 @@ class SchedulingCoordinator:
                         c_et = cand["end_time"]
                         used_rooms = {cand["room_id"]}
                         used_fac = {cand["faculty_id"]}
-                        can_accommodate_sibling = False
-                        for s_req in sibling_batch_reqs:
-                            avail_labs = [
-                                rm["id"] for rm in self.rooms_data
-                                if rm.get("type") == "Laboratory" and
-                                rm["id"] not in used_rooms and
-                                self.room_manager.is_available(rm["id"], c_day, c_st, c_et)[0]
+                        all_siblings_accommodated = True
+
+                        for oth_b in div_batches:
+                            oth_b_id = oth_b["id"]
+                            # Matching pending practical requests for this sibling batch
+                            # Prefer a complementary subject (different subject from chosen_req)
+                            diff_sub_reqs = [
+                                r for r in pending_requests
+                                if r.type == "Practical" and
+                                r.division_id == div_id and
+                                r.batch_id == oth_b_id and
+                                r.subject_id != chosen_req.subject_id
                             ]
-                            avail_fac = [
-                                f for f in s_req.eligible_faculty_ids
-                                if f not in used_fac and
-                                self.faculty_manager.is_available(f, c_day, c_st, c_et)[0]
+                            same_sub_reqs = [
+                                r for r in pending_requests
+                                if r.type == "Practical" and
+                                r.division_id == div_id and
+                                r.batch_id == oth_b_id and
+                                r.subject_id == chosen_req.subject_id
                             ]
-                            if avail_labs and avail_fac:
-                                can_accommodate_sibling = True
+                            candidate_b_reqs = diff_sub_reqs + same_sub_reqs
+
+                            found_for_batch = False
+                            for s_req in candidate_b_reqs:
+                                avail_labs = [
+                                    rm["id"] for rm in self.rooms_data
+                                    if rm.get("type") == "Laboratory" and
+                                    rm["id"] not in used_rooms and
+                                    self.room_manager.is_available(rm["id"], c_day, c_st, c_et)[0]
+                                ]
+                                if getattr(s_req, "fixed_room_id", None):
+                                    fixed_match = [r for r in avail_labs if r == s_req.fixed_room_id]
+                                    if fixed_match:
+                                        avail_labs = fixed_match
+                                avail_fac = [
+                                    f for f in s_req.eligible_faculty_ids
+                                    if f not in used_fac and
+                                    self.faculty_manager.is_available(f, c_day, c_st, c_et)[0]
+                                ]
+                                if avail_labs and avail_fac:
+                                    used_rooms.add(avail_labs[0])
+                                    used_fac.add(avail_fac[0])
+                                    found_for_batch = True
+                                    break
+
+                            if not found_for_batch:
+                                all_siblings_accommodated = False
                                 break
-                        if can_accommodate_sibling:
+
+                        if all_siblings_accommodated:
                             compatible_lab_placements.append(cand)
-                    if compatible_lab_placements:
-                        valid_placements = compatible_lab_placements
+
+                    # STRICT INVARIANT: Only slots that can host ALL sibling batches in parallel are valid!
+                    valid_placements = compatible_lab_placements
 
             # Step C: If 0 valid placements, attempt backtracking
             if not valid_placements:
                 if self.backtracking_solver.can_backtrack() and assignment_stack:
                     self.backtracking_solver.record_backtrack()
                     # Backtrack: pop last assignment
-                    last_req, last_entry, remaining_choices = assignment_stack.pop()
+                    popped = assignment_stack.pop()
+                    last_req = popped[0]
+                    last_entry = popped[1]
+                    remaining_choices = popped[2]
+                    last_sibs = popped[3] if len(popped) > 3 else []
+                    last_elecs = popped[4] if len(popped) > 4 else []
+
                     self._undo_assignment(last_req, last_entry, scheduled_entries)
                     pending_requests.append(last_req)
+                    for s_req, s_entry in last_sibs:
+                        self._undo_assignment(s_req, s_entry, scheduled_entries)
+                        pending_requests.append(s_req)
+                    for e_req, e_entry in last_elecs:
+                        self._undo_assignment(e_req, e_entry, scheduled_entries)
+                        pending_requests.append(e_req)
 
                     execution_logs.append({
                         "timestamp": datetime.datetime.now().isoformat(),
@@ -315,7 +359,7 @@ class SchedulingCoordinator:
                         next_choice = remaining_choices.pop(0)
                         self._apply_assignment(last_req, next_choice, scheduled_entries)
                         pending_requests.remove(last_req)
-                        assignment_stack.append((last_req, next_choice, remaining_choices))
+                        assignment_stack.append((last_req, next_choice, remaining_choices, [], []))
                     continue
                 else:
                     # Cannot backtrack further; record as unscheduled with diagnosis
@@ -360,7 +404,8 @@ class SchedulingCoordinator:
             self._apply_assignment(chosen_req, best_placement, scheduled_entries)
             pending_requests.remove(chosen_req)
 
-            # Synchronize concurrent practical batches for this division so both batches start in parallel
+            # Synchronize concurrent practical batches for this division so all batches start strictly in parallel
+            co_scheduled_siblings: List[Tuple[LectureRequest, Dict[str, Any]]] = []
             if chosen_req.type == "Practical" and chosen_req.batch_id:
                 div_id = chosen_req.division_id
                 chosen_b_id = chosen_req.batch_id
@@ -373,44 +418,80 @@ class SchedulingCoordinator:
                     if b.get("division_id") == div_id and b.get("id") != chosen_b_id
                 ]
 
+                placed_siblings = []
+                sibling_assign_success = True
+
                 for oth_b in div_batches:
                     oth_b_id = oth_b["id"]
-                    matching_reqs = [
+                    diff_sub_reqs = [
                         r for r in pending_requests
                         if r.type == "Practical" and
                         r.division_id == div_id and
-                        r.batch_id == oth_b_id
+                        r.batch_id == oth_b_id and
+                        r.subject_id != chosen_req.subject_id
                     ]
+                    same_sub_reqs = [
+                        r for r in pending_requests
+                        if r.type == "Practical" and
+                        r.division_id == div_id and
+                        r.batch_id == oth_b_id and
+                        r.subject_id == chosen_req.subject_id
+                    ]
+                    candidate_b_reqs = diff_sub_reqs + same_sub_reqs
 
-                    for b_req in matching_reqs:
+                    assigned_this_batch = False
+                    for b_req in candidate_b_reqs:
                         avail_rooms = [
                             r for r in self.rooms_data
                             if r.get("type") == "Laboratory" and
                             r["id"] != best_placement["room_id"] and
+                            not any(ps[1]["room_id"] == r["id"] for ps in placed_siblings) and
                             self.room_manager.is_available(r.get("id"), day, s_t, e_t)[0]
                         ]
+                        if getattr(b_req, "fixed_room_id", None):
+                            fixed_match = [r for r in avail_rooms if r.get("id") == b_req.fixed_room_id]
+                            if fixed_match:
+                                avail_rooms = fixed_match
 
                         avail_fac = [
                             f_id for f_id in b_req.eligible_faculty_ids
                             if f_id != best_placement["faculty_id"] and
+                            not any(ps[1]["faculty_id"] == f_id for ps in placed_siblings) and
                             self.faculty_manager.is_available(f_id, day, s_t, e_t)[0]
                         ]
 
                         if avail_rooms and avail_fac:
                             chosen_room = avail_rooms[0]
                             chosen_f_id = avail_fac[0]
-
-                            self._apply_assignment(b_req, {
+                            placement = {
                                 "day": day,
                                 "start_time": s_t,
                                 "end_time": e_t,
                                 "faculty_id": chosen_f_id,
                                 "room_id": chosen_room["id"],
-                            }, scheduled_entries)
-                            pending_requests.remove(b_req)
+                            }
+                            placed_siblings.append((b_req, placement))
+                            assigned_this_batch = True
                             break
 
+                    if not assigned_this_batch:
+                        sibling_assign_success = False
+                        break
+
+                if sibling_assign_success and len(placed_siblings) == len(div_batches):
+                    # Commit all sibling assignments
+                    for s_req, s_placement in placed_siblings:
+                        self._apply_assignment(s_req, s_placement, scheduled_entries)
+                        pending_requests.remove(s_req)
+                        co_scheduled_siblings.append((s_req, s_placement))
+                else:
+                    # Could not assign all siblings simultaneously: rollback chosen_req!
+                    self._undo_assignment(chosen_req, best_placement, scheduled_entries)
+                    pending_requests.append(chosen_req)
+                    continue
+
             # Synchronize concurrent MDM elective tracks for this division so all tracks run at the exact same timing
+            co_scheduled_electives: List[Tuple[LectureRequest, Dict[str, Any]]] = []
             if sibling_electives:
                 day = best_placement["day"]
                 s_t = best_placement["start_time"]
@@ -442,17 +523,19 @@ class SchedulingCoordinator:
                     if avail_rooms and avail_fac:
                         chosen_room = avail_rooms[0]
                         chosen_f_id = avail_fac[0]
-                        self._apply_assignment(s_req, {
+                        e_placement = {
                             "day": day,
                             "start_time": s_t,
                             "end_time": e_t,
                             "faculty_id": chosen_f_id,
                             "room_id": chosen_room["id"],
-                        }, scheduled_entries)
+                        }
+                        self._apply_assignment(s_req, e_placement, scheduled_entries)
                         if s_req in pending_requests:
                             pending_requests.remove(s_req)
+                        co_scheduled_electives.append((s_req, e_placement))
 
-            assignment_stack.append((chosen_req, best_placement, remaining_options))
+            assignment_stack.append((chosen_req, best_placement, remaining_options, co_scheduled_siblings, co_scheduled_electives))
 
             fac_obj = self.faculty_manager.get_faculty(best_placement["faculty_id"])
             fac_name = fac_obj.get("name", best_placement["faculty_id"]) if fac_obj else best_placement["faculty_id"]

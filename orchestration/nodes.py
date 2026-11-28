@@ -97,7 +97,7 @@ def build_managers(state: SchedulingState) -> Tuple[
     
     spatial_engine = SpatialEngine(floors_data, rooms_data, building_distances_data, divisions=divisions_data) if (floors_data or rooms_data) else None
     fl = FlexibilityEngine(rooms_data, spatial_engine=spatial_engine)
-    cv = ConstraintValidator(faculty_data, rooms_data, subjects_data, settings_data)
+    cv = ConstraintValidator(faculty_data, rooms_data, subjects_data, settings_data, batches_list=batches_data)
 
     # Compute resource metrics for PriorityEngine
     faculty_demand = {}
@@ -318,6 +318,74 @@ def evaluate_feasibility_and_priority_node(state: SchedulingState) -> Dict[str, 
     chosen_priority, chosen_req_dict = request_priorities[0]
     valid_placements = request_feasibility[chosen_req_dict["id"]]
 
+    # Ensure practical requests with batches only pick slots where all sibling batches can run in parallel
+    if chosen_req_dict.get("type") == "Practical" and chosen_req_dict.get("batch_id"):
+        c_div = chosen_req_dict.get("division_id")
+        c_bid = chosen_req_dict.get("batch_id")
+        div_batches = [
+            b for b in state.get("batches_data", [])
+            if b.get("division_id") == c_div and b.get("id") != c_bid
+        ]
+        if div_batches and valid_placements:
+            compatible_lab_placements = []
+            for cand in valid_placements:
+                c_day = cand["day"]
+                c_st = cand["start_time"]
+                c_et = cand["end_time"]
+                used_rooms = {cand["room_id"]}
+                used_fac = {cand["faculty_id"]}
+                all_sibs_ok = True
+
+                for oth_b in div_batches:
+                    oth_bid = oth_b["id"]
+                    diff_sub = [
+                        r for r in pending_list
+                        if r.get("type") == "Practical" and
+                        r.get("division_id") == c_div and
+                        r.get("batch_id") == oth_bid and
+                        r.get("subject_id") != chosen_req_dict.get("subject_id")
+                    ]
+                    same_sub = [
+                        r for r in pending_list
+                        if r.get("type") == "Practical" and
+                        r.get("division_id") == c_div and
+                        r.get("batch_id") == oth_bid and
+                        r.get("subject_id") == chosen_req_dict.get("subject_id")
+                    ]
+                    cand_sib_reqs = diff_sub + same_sub
+
+                    found_for_b = False
+                    for s_req in cand_sib_reqs:
+                        avail_labs = [
+                            r_obj["id"] for r_obj in state.get("rooms_data", [])
+                            if r_obj.get("type") == "Laboratory" and
+                            r_obj["id"] not in used_rooms and
+                            rm.is_available(r_obj["id"], c_day, c_st, c_et)[0]
+                        ]
+                        if s_req.get("fixed_room_id"):
+                            fixed_match = [r for r in avail_labs if r == s_req.get("fixed_room_id")]
+                            if fixed_match:
+                                avail_labs = fixed_match
+                        avail_fac = [
+                            f for f in s_req.get("eligible_faculty_ids", [])
+                            if f not in used_fac and
+                            fm.is_available(f, c_day, c_st, c_et)[0]
+                        ]
+                        if avail_labs and avail_fac:
+                            used_rooms.add(avail_labs[0])
+                            used_fac.add(avail_fac[0])
+                            found_for_b = True
+                            break
+
+                    if not found_for_b:
+                        all_sibs_ok = False
+                        break
+
+                if all_sibs_ok:
+                    compatible_lab_placements.append(cand)
+
+            valid_placements = compatible_lab_placements
+
     ranked_candidates = []
     if valid_placements:
         chosen_req_obj = dict_to_req(chosen_req_dict)
@@ -492,12 +560,21 @@ def schedule_step_node(state: SchedulingState) -> Dict[str, Any]:
 
         for oth_b in div_batches:
             oth_b_id = oth_b["id"]
-            matching_reqs = [
+            diff_sub = [
                 r for r in pending_requests
                 if r.get("type") == "Practical" and
                 r.get("division_id") == div_id and
-                r.get("batch_id") == oth_b_id
+                r.get("batch_id") == oth_b_id and
+                r.get("subject_id") != chosen_req.get("subject_id")
             ]
+            same_sub = [
+                r for r in pending_requests
+                if r.get("type") == "Practical" and
+                r.get("division_id") == div_id and
+                r.get("batch_id") == oth_b_id and
+                r.get("subject_id") == chosen_req.get("subject_id")
+            ]
+            matching_reqs = diff_sub + same_sub
 
             for b_req in matching_reqs:
                 used_room_ids = {entry["room_id"]}.union({se["room_id"] for se in sibling_entries})

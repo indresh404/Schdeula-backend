@@ -250,3 +250,51 @@ def test_labs_vs_mdm_distinction(client):
         assert l.get("batch_name") is not None, "Lab must belong to a practical batch"
 
 
+def test_parallel_lab_batches_strict_synchronization(client):
+    """Verify that whenever any batch has a practical lab, ALL sibling batches of that division run simultaneously in parallel."""
+    tt_data = store.read("timetable.json") or {"entries": []}
+    entries = tt_data.get("entries", [])
+    if len(entries) < 10:
+        res = client.post("/api/timetable/generate")
+        entries = res.get_json()["timetable_entries"]
+
+    batches_data = store.read("batches.json") or []
+    div_batches_map = {}
+    for b in batches_data:
+        d_id = b.get("division_id")
+        if d_id:
+            div_batches_map.setdefault(d_id, set()).add(b["id"])
+
+    # Group practicals by (division_id, day)
+    from collections import defaultdict
+    div_day_practicals = defaultdict(list)
+    for e in entries:
+        if e.get("type") == "Practical" and e.get("division_id") and e.get("day"):
+            div_day_practicals[(e["division_id"], e["day"])].append(e)
+
+    assert len(div_day_practicals) > 0, "Must have scheduled practical sessions"
+
+    for (div_id, day), pract_list in div_day_practicals.items():
+        # 1. At most 1 lab timing slot per day
+        slots = set((p["start_time"], p["end_time"]) for p in pract_list)
+        assert len(slots) == 1, f"Division {div_id} has multiple lab timings on {day}: {slots}"
+
+        st, et = list(slots)[0]
+
+        # 2. If division has batches, verify all batches are scheduled in this slot
+        expected_batches = div_batches_map.get(div_id, set())
+        if len(expected_batches) > 1:
+            scheduled_batches = set(p["batch_id"] for p in pract_list if p.get("batch_id"))
+            missing = expected_batches - scheduled_batches
+            assert len(missing) == 0, f"Division {div_id} at {day} {st}–{et} is missing parallel lab for batches: {missing}"
+
+            # 3. All batches in distinct rooms
+            rooms = [p["room_id"] for p in pract_list]
+            assert len(rooms) == len(set(rooms)), f"Division {div_id} batches must use distinct lab rooms at {day} {st}"
+
+            # 4. All batches taught by distinct faculty
+            facs = [p["faculty_id"] for p in pract_list]
+            assert len(facs) == len(set(facs)), f"Division {div_id} batches must have distinct faculty at {day} {st}"
+
+
+

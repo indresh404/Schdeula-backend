@@ -4077,15 +4077,31 @@ function setupEventListeners() {
           agent: "TY Elective Coordinator",
           message: `Placing MDM Theory: ${siblings.length} parallel tracks (Data Science, Cyber, Cloud) -> ${entry.day} ${entry.start_time}–${entry.end_time}`
         });
+      } else if (entry.type === "Practical" || entry.batch_name) {
+        // Collect all parallel practical batch sessions for this division and slot so both batches appear together
+        const siblingLabs = sortedEntries.filter(e => 
+          !processedIds.has(e.id) &&
+          (e.type === "Practical" || e.batch_name) &&
+          e.day === entry.day &&
+          e.start_time === entry.start_time &&
+          e.division_id === entry.division_id
+        );
+        siblingLabs.forEach(s => processedIds.add(s.id));
+        const batchDetails = siblingLabs.map(s => `${s.batch_name || 'Batch'} (${s.subject_name})`).join(" & ");
+        placementUnits.push({
+          type: "ADD",
+          entries: siblingLabs,
+          agent: `${entry.year_id} Practical Coordinator`,
+          message: `Placing Parallel Labs: [${entry.year_id} ${entry.division_name || ''}] ${batchDetails} -> ${entry.day} ${entry.start_time}–${entry.end_time}`
+        });
       } else {
         processedIds.add(entry.id);
         const agentName = entry.year_id === "FY" ? "FY Agent" : entry.year_id === "SY" ? "SY Agent" : entry.year_id === "TY" ? "TY Agent" : "BE Agent";
-        const labTag = (entry.type === "Practical" || entry.batch_name) ? ` [Lab Batch ${entry.batch_name || 'B'}]` : "";
         placementUnits.push({
           type: "ADD",
           entries: [entry],
           agent: agentName,
-          message: `Placing [${entry.year_id} ${entry.division_name || ''}] ${entry.subject_name}${labTag} -> ${entry.day} ${entry.start_time}–${entry.end_time} | 📍 ${entry.room_name || ''}`
+          message: `Placing [${entry.year_id} ${entry.division_name || ''}] ${entry.subject_name} -> ${entry.day} ${entry.start_time}–${entry.end_time} | 📍 ${entry.room_name || ''}`
         });
       }
     }

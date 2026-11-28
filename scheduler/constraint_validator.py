@@ -16,11 +16,13 @@ class ConstraintValidator:
         rooms_list: List[Dict[str, Any]],
         subjects_list: List[Dict[str, Any]],
         settings: Dict[str, Any],
+        batches_list: Optional[List[Dict[str, Any]]] = None,
     ):
         self.faculty_map = {f["id"]: f for f in faculty_list}
         self.room_map = {r["id"]: r for r in rooms_list}
         self.subject_map = {s["id"]: s for s in subjects_list}
         self.settings = settings
+        self.batches_list = batches_list or []
 
         self.working_days = set(self.settings.get("working_days", []))
         self.day_start = time_to_minutes(self.settings.get("day_start_time", "09:00"))
@@ -423,6 +425,63 @@ class ConstraintValidator:
                         "batch_id": b_id,
                         "day": d,
                         "message": f"Batch '{batch_name}' has {count} lab sessions scheduled on {d}. At most 1 lab session is allowed per day.",
+                    })
+
+        # Check Strict Parallel Labs For All Batches in a Division
+        # Rule: Whenever any batch has a practical lab, ALL sibling batches of that division must have
+        # a practical lab running simultaneously in parallel at the EXACT same start_time and end_time (not ahead).
+        div_to_practical_batches: Dict[str, Set[str]] = {}
+        if self.batches_list:
+            for b in self.batches_list:
+                d_id = b.get("division_id")
+                b_id = b.get("id")
+                if d_id and b_id:
+                    div_to_practical_batches.setdefault(d_id, set()).add(b_id)
+                    batch_names[b_id] = b.get("name", b_id)
+
+        # Collect regular laboratory batches from practical entries only (ignoring elective tracks)
+        for e in timetable_entries:
+            if e.get("type") == "Practical":
+                d_id = e.get("division_id")
+                b_id = e.get("batch_id")
+                if d_id and b_id:
+                    div_to_practical_batches.setdefault(d_id, set()).add(b_id)
+                    if not batch_names.get(b_id):
+                        batch_names[b_id] = e.get("batch_name", b_id)
+
+        # Group practical entries by (division_id, day)
+        div_day_practicals: Dict[Tuple[str, str], List[Dict[str, Any]]] = {}
+        for e in timetable_entries:
+            if e.get("type") == "Practical" and e.get("division_id") and e.get("day"):
+                div_day_practicals.setdefault((e["division_id"], e["day"]), []).append(e)
+
+        for (d_id, d), pract_list in div_day_practicals.items():
+            div_name = div_names.get(d_id, d_id)
+            # 1. Staggered time check: all batches must start and end at identical times
+            unique_timing_slots = set((p.get("start_time"), p.get("end_time")) for p in pract_list)
+            if len(unique_timing_slots) > 1:
+                slots_str = ", ".join(f"{st}–{et}" for st, et in sorted(unique_timing_slots))
+                hard_conflicts.append({
+                    "type": "UNPAIRED_PARALLEL_LAB",
+                    "division_id": d_id,
+                    "day": d,
+                    "message": f"Division '{div_name}' has staggered practical lab sessions on {d} at multiple timings ({slots_str}). All lab batches must run strictly in parallel at identical time slots.",
+                })
+
+            # 2. Missing batch check: if division has known batches, every batch must be scheduled in this slot
+            expected_batches = div_to_practical_batches.get(d_id, set())
+            if len(expected_batches) > 1:
+                scheduled_batches = set(p.get("batch_id") for p in pract_list if p.get("batch_id"))
+                missing_batches = expected_batches - scheduled_batches
+                if missing_batches:
+                    first_st = pract_list[0].get("start_time")
+                    first_et = pract_list[0].get("end_time")
+                    missing_names = ", ".join(batch_names.get(mb, mb) for mb in sorted(missing_batches))
+                    hard_conflicts.append({
+                        "type": "UNPAIRED_PARALLEL_LAB",
+                        "division_id": d_id,
+                        "day": d,
+                        "message": f"Division '{div_name}' has practical lab at {d} {first_st}–{first_et}, but sibling batch(es) [{missing_names}] are not scheduled for a parallel practical lab.",
                     })
 
         return {
