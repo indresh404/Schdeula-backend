@@ -1,0 +1,66 @@
+# ─────────────────────────────────────────────────────────────────
+#  .dockerignore — keep the Docker build context lean & fast
+# ─────────────────────────────────────────────────────────────────
+
+# Python artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+*.egg
+dist/
+build/
+.eggs/
+
+# Virtual environment (we install inside the image)
+venv/
+.venv/
+env/
+.env/
+
+# Git history (not needed in image)
+.git/
+.gitignore
+.gitattributes
+
+# Test & CI
+.pytest_cache/
+tests/
+*.log
+*.coverage
+htmlcov/
+.tox/
+
+# Docker & deployment meta (avoid recursive COPY)
+Dockerfile
+docker-compose.yml
+docker-compose*.yml
+.dockerignore
+*.bat
+*.sh
+start.bat
+run.bat
+Procfile
+render.yaml
+
+# Large / generated data files (the volume seeds from the image)
+data/checkpoints.db
+data/schedula.db
+data/backups/
+data/audit_logs.json
+data/scheduling_logs.json
+data/draft_timetable.json
+
+# IDE & OS
+.vscode/
+.idea/
+*.iml
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Archives
+*.zip
+*.tar.gz
+*.rar
