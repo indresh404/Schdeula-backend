@@ -483,11 +483,7 @@ async function refreshAllData() {
     state.assignments = await asgnRes.json();
     state.settings = await settingsRes.json();
     const newTt = await ttRes.json();
-    if (newTt && Array.isArray(newTt.entries) && newTt.entries.length > 0) {
-      state.timetable = newTt;
-    } else if (!state.timetable || !state.timetable.entries || state.timetable.entries.length === 0) {
-      state.timetable = newTt || { entries: [] };
-    }
+    state.timetable = newTt || { entries: [] };
     state.floors = await floorsRes.json();
     state.roomsByFloor = await roomsByFloorRes.json();
     state.distances = await distancesRes.json();
@@ -4744,10 +4740,29 @@ function setupEventListeners() {
       "Reset Timetable",
       "Are you sure you want to clear all generated timetable entries? This action will back up existing data before clearing.",
       async () => {
-        const res = await fetch("/api/timetable/clear", { method: "POST" });
-        if (res.ok) {
-          showBanner("Timetable reset successfully.", "success");
-          await refreshAllData();
+        try {
+          const res = await fetch("/api/timetable/clear", { method: "POST" });
+          const data = await res.json();
+          if (res.ok) {
+            state.timetable = {
+              entries: [],
+              last_generated: null,
+              validation_report: { is_valid: true, hard_conflicts: [], soft_warnings: [] }
+            };
+            state.animatingEntryIds = { added: null, updated: null, removed: null };
+            state.latestAddedEntryId = null;
+            renderTimetableGrid();
+            if (typeof loadTimetableInsights === "function") {
+              loadTimetableInsights();
+            }
+            showBanner(data.message || "Timetable reset successfully. All slots are now empty.", "success");
+            await refreshAllData();
+          } else {
+            showBanner(data.error || "Failed to reset timetable.", "danger");
+          }
+        } catch (err) {
+          console.error("Clear timetable error:", err);
+          showBanner("Network error while resetting timetable.", "danger");
         }
       }
     );

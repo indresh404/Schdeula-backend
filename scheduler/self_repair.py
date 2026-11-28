@@ -579,6 +579,21 @@ class TimetableSelfRepair:
                 if div_busy:
                     continue
 
+                # STRICT PARALLEL INVARIANT: Sibling practical batches must run strictly in parallel at the SAME slot
+                if batch_id:
+                    existing_div_labs = [
+                        e for e in existing_entries
+                        if e["id"] != entry["id"] and e.get("division_id") == div_id and e.get("day") == day and
+                        (e.get("type") == "Practical" or e.get("batch_id"))
+                    ]
+                    if existing_div_labs:
+                        matching_slot = any(
+                            e.get("start_time") == c_s and e.get("end_time") == c_e
+                            for e in existing_div_labs
+                        )
+                        if not matching_slot:
+                            continue
+
                 # 3. Room candidate
                 target_room = None
                 if curr_room_id:

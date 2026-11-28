@@ -1280,21 +1280,9 @@ def update_settings():
 # ---------------------------------------------------------
 @app.route("/api/timetable", methods=["GET"])
 def get_timetable():
-    timetable = store.read("timetable.json") or {"entries": [], "last_generated": None}
-    if not timetable.get("entries"):
-        try:
-            db_tt = sqlite_store.get_timetable()
-            if db_tt and db_tt.get("entries"):
-                timetable = db_tt
-                store.write("timetable.json", timetable)
-            else:
-                draft_tt = store.read("draft_timetable.json")
-                if draft_tt and draft_tt.get("entries"):
-                    timetable = draft_tt
-                    store.write("timetable.json", timetable)
-                    sqlite_store.save_timetable(timetable)
-        except Exception:
-            pass
+    timetable = store.read("timetable.json")
+    if timetable is None:
+        timetable = {"entries": [], "last_generated": None}
 
     faculty = store.read("faculty.json") or []
     rooms = store.read("rooms.json") or []
@@ -1877,16 +1865,26 @@ def resume_timetable():
 
 
 @app.route("/api/timetable/clear", methods=["POST"])
-@require_role(["main_admin"])
+@require_role(["main_admin", "academic_admin"])
 def clear_timetable():
     backup_mgr.create_backup(label="pre_clear")
-    empty_timetable = {"entries": [], "last_generated": None}
+    empty_timetable = {"entries": [], "last_generated": None, "cleared": True}
     store.write("timetable.json", empty_timetable)
+    try:
+        import os
+        if os.path.exists("data/draft_timetable.json"):
+            os.remove("data/draft_timetable.json")
+    except Exception:
+        pass
     try:
         sqlite_store.save_timetable(empty_timetable)
     except Exception as e:
         app.logger.warning(f"SQLite clear warning: {e}")
-    return jsonify({"message": "Timetable cleared successfully."})
+    return jsonify({
+        "success": True,
+        "message": "Timetable cleared successfully. All lecture slots have been reset.",
+        "entries": []
+    })
 
 
 @app.route("/api/timetable/entry", methods=["POST"])
@@ -2466,11 +2464,21 @@ def find_conflict_free_slot_for_entry(
 
             # Check division busy
             if div_id:
-                div_busy = any(
-                    e["id"] != entry_to_move["id"] and e.get("division_id") == div_id and e.get("day") == day and
-                    intervals_overlap(c_s, c_e, e.get("start_time"), e.get("end_time"))
-                    for e in existing_entries
-                )
+                if batch_id:
+                    # Practical batch: conflict with full-division lecture or with same batch
+                    div_busy = any(
+                        e["id"] != entry_to_move["id"] and e.get("division_id") == div_id and e.get("day") == day and
+                        intervals_overlap(c_s, c_e, e.get("start_time"), e.get("end_time")) and
+                        (not e.get("batch_id") or e.get("batch_id") == batch_id)
+                        for e in existing_entries
+                    )
+                else:
+                    # Full-division theory: conflict with any session in division
+                    div_busy = any(
+                        e["id"] != entry_to_move["id"] and e.get("division_id") == div_id and e.get("day") == day and
+                        intervals_overlap(c_s, c_e, e.get("start_time"), e.get("end_time"))
+                        for e in existing_entries
+                    )
                 if div_busy:
                     continue
 
@@ -2483,6 +2491,20 @@ def find_conflict_free_slot_for_entry(
                 )
                 if batch_busy:
                     continue
+
+                # STRICT PARALLEL INVARIANT: Sibling practical batches must run strictly in parallel at the SAME slot
+                existing_div_labs = [
+                    e for e in existing_entries
+                    if e["id"] != entry_to_move["id"] and e.get("division_id") == div_id and e.get("day") == day and
+                    (e.get("type") == "Practical" or e.get("batch_id"))
+                ]
+                if existing_div_labs:
+                    matching_slot = any(
+                        e.get("start_time") == c_s and e.get("end_time") == c_e
+                        for e in existing_div_labs
+                    )
+                    if not matching_slot:
+                        continue
 
             # Check faculty busy
             if fac_id:
