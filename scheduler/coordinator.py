@@ -253,6 +253,45 @@ class SchedulingCoordinator:
                     if compatible_placements:
                         valid_placements = compatible_placements
 
+            # If chosen request is a Practical lab with batches, ensure candidate placements accommodate sibling batch simultaneously
+            if chosen_req.type == "Practical" and chosen_req.batch_id:
+                div_id = chosen_req.division_id
+                chosen_b_id = chosen_req.batch_id
+                sibling_batch_reqs = [
+                    r for r in pending_requests
+                    if r.type == "Practical" and
+                    r.division_id == div_id and
+                    r.batch_id != chosen_b_id
+                ]
+                if sibling_batch_reqs:
+                    compatible_lab_placements = []
+                    for cand in valid_placements:
+                        c_day = cand["day"]
+                        c_st = cand["start_time"]
+                        c_et = cand["end_time"]
+                        used_rooms = {cand["room_id"]}
+                        used_fac = {cand["faculty_id"]}
+                        can_accommodate_sibling = False
+                        for s_req in sibling_batch_reqs:
+                            avail_labs = [
+                                rm["id"] for rm in self.rooms_data
+                                if rm.get("type") == "Laboratory" and
+                                rm["id"] not in used_rooms and
+                                self.room_manager.is_available(rm["id"], c_day, c_st, c_et)[0]
+                            ]
+                            avail_fac = [
+                                f for f in s_req.eligible_faculty_ids
+                                if f not in used_fac and
+                                self.faculty_manager.is_available(f, c_day, c_st, c_et)[0]
+                            ]
+                            if avail_labs and avail_fac:
+                                can_accommodate_sibling = True
+                                break
+                        if can_accommodate_sibling:
+                            compatible_lab_placements.append(cand)
+                    if compatible_lab_placements:
+                        valid_placements = compatible_lab_placements
+
             # Step C: If 0 valid placements, attempt backtracking
             if not valid_placements:
                 if self.backtracking_solver.can_backtrack() and assignment_stack:
@@ -321,7 +360,7 @@ class SchedulingCoordinator:
             self._apply_assignment(chosen_req, best_placement, scheduled_entries)
             pending_requests.remove(chosen_req)
 
-            # Synchronize concurrent practical batches for this division so no batch is left free
+            # Synchronize concurrent practical batches for this division so both batches start in parallel
             if chosen_req.type == "Practical" and chosen_req.batch_id:
                 div_id = chosen_req.division_id
                 chosen_b_id = chosen_req.batch_id
@@ -347,66 +386,29 @@ class SchedulingCoordinator:
                         avail_rooms = [
                             r for r in self.rooms_data
                             if r.get("type") == "Laboratory" and
+                            r["id"] != best_placement["room_id"] and
                             self.room_manager.is_available(r.get("id"), day, s_t, e_t)[0]
                         ]
 
-                        if getattr(b_req, "fixed_room_id", None):
-                            req_f = b_req.fixed_room_id
-                            f_matches = [r for r in avail_rooms if r.get("id") == req_f]
-                            if f_matches:
-                                avail_rooms = f_matches
-
                         avail_fac = [
                             f_id for f_id in b_req.eligible_faculty_ids
-                            if self.faculty_manager.is_available(f_id, day, s_t, e_t)[0]
+                            if f_id != best_placement["faculty_id"] and
+                            self.faculty_manager.is_available(f_id, day, s_t, e_t)[0]
                         ]
 
-                        # If no faculty or room available at the same slot, try next available slot
-                        # from the standard candidate intervals so the sibling batch is not left free
-                        if not avail_fac or not avail_rooms:
-                            fallback_placed = False
-                            working_days = self.settings.get("working_days", [])
-                            for fb_day in working_days:
-                                for fb_st, fb_et in candidate_intervals_120:
-                                    fb_rooms = [
-                                        r for r in self.rooms_data
-                                        if r.get("type") == "Laboratory" and
-                                        self.room_manager.is_available(r.get("id"), fb_day, fb_st, fb_et)[0]
-                                    ]
-                                    fb_fac = [
-                                        f_id for f_id in b_req.eligible_faculty_ids
-                                        if self.faculty_manager.is_available(f_id, fb_day, fb_st, fb_et)[0]
-                                    ]
-                                    if fb_rooms and fb_fac:
-                                        self._apply_assignment(b_req, {
-                                            "day": fb_day,
-                                            "start_time": fb_st,
-                                            "end_time": fb_et,
-                                            "faculty_id": fb_fac[0],
-                                            "room_id": fb_rooms[0]["id"],
-                                        }, scheduled_entries)
-                                        if b_req in pending_requests:
-                                            pending_requests.remove(b_req)
-                                        fallback_placed = True
-                                        break
-                                if fallback_placed:
-                                    break
-                            if fallback_placed:
-                                break
-                            continue
+                        if avail_rooms and avail_fac:
+                            chosen_room = avail_rooms[0]
+                            chosen_f_id = avail_fac[0]
 
-                        chosen_room = avail_rooms[0]
-                        chosen_f_id = avail_fac[0]
-
-                        self._apply_assignment(b_req, {
-                            "day": day,
-                            "start_time": s_t,
-                            "end_time": e_t,
-                            "faculty_id": chosen_f_id,
-                            "room_id": chosen_room["id"],
-                        }, scheduled_entries)
-                        pending_requests.remove(b_req)
-                        break
+                            self._apply_assignment(b_req, {
+                                "day": day,
+                                "start_time": s_t,
+                                "end_time": e_t,
+                                "faculty_id": chosen_f_id,
+                                "room_id": chosen_room["id"],
+                            }, scheduled_entries)
+                            pending_requests.remove(b_req)
+                            break
 
             # Synchronize concurrent MDM elective tracks for this division so all tracks run at the exact same timing
             if sibling_electives:
@@ -782,6 +784,21 @@ class SchedulingCoordinator:
                 ):
                     start_m += 60
                     continue
+                # Faculty workload limits on target day
+                if fac_id:
+                    fac_day_entries = [
+                        e for e in scheduled_entries
+                        if e.get("day") == def_day and e.get("id") != eid and e.get("faculty_id") == fac_id
+                    ]
+                    fac_day_hours = sum(e.get("duration_minutes", 60) / 60.0 for e in fac_day_entries) + (dur / 60.0)
+                    fac_day_count = len(fac_day_entries) + 1
+                    max_h = float(self.settings.get("max_daily_faculty_workload", 6.0))
+                    max_lec = int(self.settings.get("max_lectures_per_faculty_per_day", 5))
+                    if (self.settings.get("enforce_faculty_daily_hours", True) and max_h > 0 and fac_day_hours > max_h) or \
+                       (self.settings.get("enforce_faculty_daily_limit", True) and max_lec > 0 and fac_day_count > max_lec):
+                        start_m += 60
+                        continue
+
                 return slot_st  # Valid slot found
             return None
 
@@ -839,6 +856,15 @@ class SchedulingCoordinator:
                             cand["day"] = def_day
                             cand["start_time"] = new_st
                             cand["end_time"] = new_et
+
+                            # Strict check: revert if this move created any hard conflict
+                            val_check = self.validator.validate_all(scheduled_entries)
+                            if not val_check["is_valid"]:
+                                cand["day"] = old_day
+                                cand["start_time"] = old_st
+                                cand["end_time"] = old_et
+                                continue
+
                             logs.append({
                                 "timestamp": datetime.datetime.now().isoformat(),
                                 "agent": "Daily Spread Rebalancer",

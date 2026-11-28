@@ -1278,6 +1278,15 @@ def update_settings():
 @app.route("/api/timetable", methods=["GET"])
 def get_timetable():
     timetable = store.read("timetable.json") or {"entries": [], "last_generated": None}
+    if not timetable.get("entries"):
+        try:
+            db_tt = sqlite_store.get_timetable()
+            if db_tt and db_tt.get("entries"):
+                timetable = db_tt
+                store.write("timetable.json", timetable)
+        except Exception:
+            pass
+
     faculty = store.read("faculty.json") or []
     rooms = store.read("rooms.json") or []
     subjects = store.read("subjects.json") or []
@@ -3026,6 +3035,16 @@ def swap_timetable():
 
     timetable = store.read("timetable.json") or {"entries": []}
     entries = timetable.get("entries", [])
+    if not entries:
+        # Fallback to SQLite store if timetable.json is empty
+        try:
+            db_tt = sqlite_store.get_timetable()
+            if db_tt and db_tt.get("entries"):
+                timetable = db_tt
+                entries = timetable.get("entries", [])
+                store.write("timetable.json", timetable)
+        except Exception:
+            pass
 
     source_entry = next((e for e in entries if e["id"] == source_entry_id), None)
     if not source_entry:

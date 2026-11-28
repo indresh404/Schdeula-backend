@@ -2040,6 +2040,7 @@ window.handleDragEnd = function (e) {
   if (draggingEl) draggingEl.classList.remove("dragging");
   document.querySelectorAll(".tt-cell.drag-over, .tt-slot-bg.drag-over, .tt-slot-cell.drag-over").forEach((c) => c.classList.remove("drag-over"));
   state.draggedEntryId = null;
+  window.suppressClickUntil = Date.now() + 500;
 };
 
 window.handleCellDragOver = function (e) {

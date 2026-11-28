@@ -133,9 +133,10 @@ class ConstraintValidator:
                         "message": f"Room '{room.get('name')}' capacity ({room.get('capacity')} seats) cannot accommodate required class strength ({student_cap} students).",
                     })
 
-            # Check Elective Fixed Room Requirement (Scheduler must always use assigned room)
+            # Check Elective Fixed Room Requirement (Scheduler must always use assigned room for Electives ONLY)
+            is_elec = bool(e1.get("is_elective") or e1.get("type") == "Elective")
             fixed_r = e1.get("fixed_room_id")
-            if fixed_r and r1 and r1 != fixed_r:
+            if is_elec and fixed_r and r1 and r1 != fixed_r:
                 req_room_name = self.room_map.get(fixed_r, {}).get("name", fixed_r)
                 actual_room_name = self.room_map.get(r1, {}).get("name", r1)
                 hard_conflicts.append({
