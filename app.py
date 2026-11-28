@@ -1276,6 +1276,246 @@ def update_settings():
 
 
 # ---------------------------------------------------------
+# Department Name Configuration API
+# ---------------------------------------------------------
+@app.route("/api/department/name", methods=["GET", "POST"])
+def department_name_api():
+    settings = store.read("settings.json") or {}
+    if request.method == "POST":
+        data = request.json or {}
+        new_name = (data.get("department_name") or data.get("name") or "").strip()
+        if not new_name:
+            return jsonify({"error": "Department name cannot be empty."}), 400
+        settings["department_name"] = new_name
+        store.write("settings.json", settings)
+        try:
+            sqlite_store.save_settings(settings)
+        except Exception:
+            pass
+        return jsonify({
+            "success": True,
+            "department_name": new_name,
+            "message": f"Department name updated to '{new_name}'."
+        })
+    return jsonify({"department_name": settings.get("department_name", "CMPN")})
+
+
+# ---------------------------------------------------------
+# Faculty Availability API
+# ---------------------------------------------------------
+@app.route("/api/faculty-availability", methods=["GET", "POST"])
+def faculty_availability_api():
+    from storage.import_export import generate_faculty_availability_matrix
+    if request.method == "POST":
+        data = request.json or {}
+        rules = store.read("faculty_availability.json") or []
+        rule_id = data.get("id") or f"avail_{uuid.uuid4().hex[:8]}"
+
+        faculty_list = store.read("faculty.json") or []
+        fac_obj = next((f for f in faculty_list if f["id"] == data.get("faculty_id")), None)
+        fac_name = fac_obj["name"] if fac_obj else data.get("faculty_name", data.get("faculty_id"))
+
+        new_rule = {
+            "id": rule_id,
+            "faculty_id": data.get("faculty_id"),
+            "faculty_name": fac_name,
+            "day": data.get("day"),
+            "start_time": data.get("start_time"),
+            "end_time": data.get("end_time"),
+            "status": data.get("status", "NOT_AVAILABLE"),
+            "reason": data.get("reason", ""),
+        }
+
+        existing_idx = next((i for i, r in enumerate(rules) if r.get("id") == rule_id), -1)
+        if existing_idx >= 0:
+            rules[existing_idx] = new_rule
+        else:
+            rules.append(new_rule)
+
+        store.write("faculty_availability.json", rules)
+        try:
+            sqlite_store.save_faculty_availability(rules)
+        except Exception:
+            pass
+
+        return jsonify({
+            "success": True,
+            "message": f"Availability rule saved for {fac_name}.",
+            "rule": new_rule,
+            "rules": rules
+        })
+
+    # GET
+    faculty_list = store.read("faculty.json") or []
+    settings = store.read("settings.json") or {}
+    rules = store.read("faculty_availability.json") or []
+    slot_matrix = generate_faculty_availability_matrix(faculty_list, settings, rules)
+    return jsonify({
+        "status": "ok",
+        "success": True,
+        "rules": rules,
+        "matrix": slot_matrix,
+        "slot_matrix": slot_matrix,
+        "total_rules": len(rules),
+        "count": len(slot_matrix)
+    })
+
+
+@app.route("/api/faculty-availability/<rule_id>", methods=["DELETE"])
+@require_role(["main_admin", "academic_admin"])
+def delete_faculty_availability_rule(rule_id):
+    rules = store.read("faculty_availability.json") or []
+    initial_len = len(rules)
+    rules = [r for r in rules if r.get("id") != rule_id]
+    if len(rules) == initial_len:
+        return jsonify({"error": f"Rule with ID '{rule_id}' not found."}), 404
+    store.write("faculty_availability.json", rules)
+    try:
+        sqlite_store.save_faculty_availability(rules)
+    except Exception:
+        pass
+    return jsonify({"success": True, "message": "Availability rule deleted successfully.", "rules": rules})
+
+
+@app.route("/api/faculty-availability/toggle", methods=["POST"])
+@require_role(["main_admin", "academic_admin"])
+def toggle_faculty_availability_slot():
+    """Toggles a slot status between FREE and NOT_AVAILABLE for a faculty member."""
+    data = request.json or {}
+    fac_id = data.get("faculty_id")
+    day = data.get("day")
+    start_t = data.get("start_time")
+    end_t = data.get("end_time")
+    reason = data.get("reason", "")
+
+    if not fac_id or not day or not start_t or not end_t:
+        return jsonify({"error": "Missing required slot parameters."}), 400
+
+    rules = store.read("faculty_availability.json") or []
+    faculty_list = store.read("faculty.json") or []
+    fac_obj = next((f for f in faculty_list if f["id"] == fac_id), None)
+    fac_name = fac_obj["name"] if fac_obj else fac_id
+
+    existing = next((
+        r for r in rules
+        if r.get("faculty_id") == fac_id and r.get("day") == day and
+        r.get("start_time") == start_t and r.get("end_time") == end_t
+    ), None)
+
+    if existing:
+        rules = [r for r in rules if r.get("id") != existing["id"]]
+        msg = f"Slot {day} {start_t}–{end_t} for '{fac_name}' is now FREE."
+        new_status = "FREE"
+    else:
+        new_rule = {
+            "id": f"avail_{uuid.uuid4().hex[:8]}",
+            "faculty_id": fac_id,
+            "faculty_name": fac_name,
+            "day": day,
+            "start_time": start_t,
+            "end_time": end_t,
+            "status": "NOT_AVAILABLE",
+            "reason": reason or "Unavailable slot",
+        }
+        rules.append(new_rule)
+        msg = f"Slot {day} {start_t}–{end_t} for '{fac_name}' marked NOT AVAILABLE."
+        new_status = "NOT_AVAILABLE"
+
+    store.write("faculty_availability.json", rules)
+    try:
+        sqlite_store.save_faculty_availability(rules)
+    except Exception:
+        pass
+
+    return jsonify({
+        "success": True,
+        "message": msg,
+        "status": new_status,
+        "rules": rules
+    })
+
+
+# ---------------------------------------------------------
+# Modular Import & Export APIs for Each Section
+# ---------------------------------------------------------
+@app.route("/api/export/<section_type>", methods=["GET"])
+@app.route("/api/data/export/<section_type>", methods=["GET"])
+def export_section_endpoint(section_type):
+    from storage.import_export import export_section_data, get_current_department_name
+    try:
+        payload = export_section_data(section_type, store, sqlite_store)
+        dept = get_current_department_name(store)
+        date_str = datetime.datetime.now().strftime("%Y%m%d_%H%M")
+        clean_sec = section_type.lower().replace("-", "_")
+        filename = f"{dept}_{clean_sec}_export_{date_str}.json"
+
+        download = request.args.get("download", "1")
+        if download in ["1", "true", "yes"]:
+            response = make_response(json.dumps(payload, indent=2))
+            response.headers["Content-Type"] = "application/json"
+            response.headers["Content-Disposition"] = f"attachment; filename={filename}"
+            return response
+        return jsonify(payload)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+
+@app.route("/api/import/<section_type>/preview", methods=["POST"])
+@app.route("/api/data/import/preview", methods=["POST"])
+def preview_import_endpoint(section_type=None):
+    from storage.import_export import preview_import_data
+    sec = section_type or request.args.get("section") or (request.json or {}).get("section") or "all"
+    content = None
+    if "file" in request.files:
+        f = request.files["file"]
+        content = f.read().decode("utf-8")
+    elif request.json and "content" in request.json:
+        content = request.json["content"]
+    elif request.json and "data" in request.json and ("section" in request.json or "strategy" in request.json):
+        content = request.json["data"]
+    elif request.json:
+        content = request.json
+
+    preview_res = preview_import_data(sec, content, store, sqlite_store)
+    if isinstance(preview_res, dict):
+        preview_res["status"] = "ok" if preview_res.get("valid", True) else "error"
+        if "new_records" not in preview_res and "new_records_count" in preview_res:
+            preview_res["new_records"] = preview_res["new_records_count"]
+        if "duplicate_records" not in preview_res and "duplicate_records_count" in preview_res:
+            preview_res["duplicate_records"] = preview_res["duplicate_records_count"]
+        if "sample_records" not in preview_res and "preview_sample" in preview_res:
+            preview_res["sample_records"] = preview_res["preview_sample"]
+        if "missing_dependencies" not in preview_res:
+            preview_res["missing_dependencies"] = preview_res.get("missing_references", []) + preview_res.get("warnings", [])
+
+    return jsonify(preview_res)
+
+
+@app.route("/api/import/<section_type>", methods=["POST"])
+@app.route("/api/data/import/execute", methods=["POST"])
+@require_role(["main_admin", "academic_admin"])
+def execute_import_endpoint(section_type=None):
+    from storage.import_export import execute_import_data
+    sec = section_type or request.args.get("section") or (request.json or {}).get("section") or "all"
+    strategy = (request.json or {}).get("strategy", "update")
+    if request.json and "data" in request.json and ("section" in request.json or "strategy" in request.json):
+        content = request.json["data"]
+    else:
+        content = (request.json or {}).get("content") or request.json
+
+    if "file" in request.files:
+        f = request.files["file"]
+        content = json.loads(f.read().decode("utf-8"))
+
+    res = execute_import_data(sec, content, strategy, store, sqlite_store, backup_mgr)
+    if isinstance(res, dict):
+        res["status"] = "ok" if res.get("success", True) else "error"
+        if "added_count" not in res and "imported_count" in res:
+            res["added_count"] = res["imported_count"]
+    return jsonify(res)
+
+
+# ---------------------------------------------------------
 # Timetable Generation, Validation & Editing API
 # ---------------------------------------------------------
 @app.route("/api/timetable", methods=["GET"])
@@ -1289,8 +1529,9 @@ def get_timetable():
     subjects = store.read("subjects.json") or []
     settings = store.read("settings.json") or {}
     batches = store.read("batches.json") or []
+    faculty_avail = store.read("faculty_availability.json") or []
 
-    validator = ConstraintValidator(faculty, rooms, subjects, settings, batches_list=batches)
+    validator = ConstraintValidator(faculty, rooms, subjects, settings, batches_list=batches, faculty_availability=faculty_avail)
     val_report = validator.validate_all(timetable.get("entries", []))
 
     return jsonify({
@@ -1505,6 +1746,7 @@ def generate_timetable_stream():
             settings_data=settings,
             floors_data=floors,
             building_distances_data=building_graph,
+            faculty_availability_data=store.read("faculty_availability.json") or [],
         )
         coord_res = coordinator.run_scheduling()
         draft_entries = coord_res.get("timetable_entries") or coord_res.get("entries") or []
@@ -1514,7 +1756,8 @@ def generate_timetable_stream():
         yield f"event: progress\ndata: {json.dumps({'event': 'SCHEDULING_PROGRESS', 'message': f'Allocated {len(draft_entries)} candidate lecture & lab sessions.', 'progress': 68, 'partial_count': len(draft_entries), 'current_entries_count': len(draft_entries), 'backtracking_attempts': backtrack_cnt})}\n\n"
 
         # 3. Automatic Clash Detection & Self-Repair Loop
-        validator = ConstraintValidator(faculty, rooms, subjects, settings)
+        faculty_avail = store.read("faculty_availability.json") or []
+        validator = ConstraintValidator(faculty, rooms, subjects, settings, faculty_availability=faculty_avail)
         val_check = validator.validate_all(draft_entries)
 
         if not val_check["is_valid"] or unscheduled:

@@ -31,9 +31,20 @@ class FacultyManager:
     Prevents faculty clashes across years.
     """
 
-    def __init__(self, faculty_list: List[Dict[str, Any]], settings: Dict[str, Any]):
+    def __init__(
+        self,
+        faculty_list: List[Dict[str, Any]],
+        settings: Dict[str, Any],
+        faculty_availability_list: Optional[List[Dict[str, Any]]] = None,
+    ):
         self.settings = settings
         self.faculty_map = {f["id"]: f for f in faculty_list}
+        self.faculty_availability_list = faculty_availability_list or []
+        self.faculty_availability: Dict[str, List[Dict[str, Any]]] = {}
+        for rec in self.faculty_availability_list:
+            f_id = rec.get("faculty_id")
+            if f_id:
+                self.faculty_availability.setdefault(f_id, []).append(rec)
 
         # Schedule occupancy: faculty_id -> day -> list of (start_time, end_time, entry_id)
         self.occupancy: Dict[str, Dict[str, List[Tuple[str, str, str]]]] = {
@@ -90,6 +101,18 @@ class FacultyManager:
 
         if day not in self.occupancy[faculty_id]:
             return False, f"'{day}' is not an active working day for faculty."
+
+        # Check explicit unavailable slots configured for this faculty
+        if faculty_id in self.faculty_availability:
+            for rule in self.faculty_availability[faculty_id]:
+                if rule.get("day") == day and rule.get("status", "NOT_AVAILABLE") == "NOT_AVAILABLE":
+                    r_start = rule.get("start_time")
+                    r_end = rule.get("end_time")
+                    if r_start and r_end and intervals_overlap(start_time, end_time, r_start, r_end):
+                        fac_name = self.faculty_map[faculty_id]["name"]
+                        reason = rule.get("reason")
+                        reason_msg = f" ({reason})" if reason else ""
+                        return False, f"Faculty '{fac_name}' is marked NOT AVAILABLE on {day} at {r_start}-{r_end}{reason_msg}."
 
         # Check existing overlaps
         for occ_start, occ_end, entry_id in self.occupancy[faculty_id][day]:

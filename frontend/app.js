@@ -44,6 +44,9 @@ document.addEventListener("DOMContentLoaded", async () => {
   setupModals();
   setupEventListeners();
   setupDataExportImport();
+  setupModularSectionImportExport();
+  setupFacultyAvailability();
+  setupDepartmentNameConfig();
   setupInteractiveHelpTour();
   initTimetableInsightsPanel();
 
@@ -72,6 +75,9 @@ function setupNavigation() {
 
       if (tabId === "tab-timetable") {
         renderTimetableGrid();
+      }
+      if (tabId === "tab-faculty-availability") {
+        loadFacultyAvailability();
       }
     });
   });
@@ -502,6 +508,21 @@ async function refreshAllData() {
     renderTimetableGrid();
     if (typeof loadTimetableInsights === "function") {
       loadTimetableInsights();
+    }
+
+    // Load department name dynamically
+    try {
+      const deptRes = await fetch("/api/department/name");
+      const deptData = await deptRes.json();
+      if (deptData && deptData.department_name) {
+        updateDepartmentNameUI(deptData.department_name);
+      }
+    } catch (e) {
+      console.warn("Could not fetch department name:", e);
+    }
+
+    if (typeof loadFacultyAvailability === "function") {
+      loadFacultyAvailability();
     }
   } catch (err) {
     console.error("Error loading data:", err);
@@ -6872,6 +6893,494 @@ function setupDataExportImport() {
 }
 
 // =============================================================================
+// MODULAR SECTION IMPORT & EXPORT (Faculty, Availability, Subjects, Teaching, Rooms)
+// =============================================================================
+
+let currentImportSection = null;
+let currentImportData = null;
+
+function exportSection(sectionType) {
+  showBanner(`Exporting ${sectionType.replace('_', ' ')} data...`, "info");
+  const a = document.createElement("a");
+  a.href = `/api/data/export/${sectionType}?download=1`;
+  a.download = `schedula_${sectionType}_export.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+}
+
+function setupModularSectionImportExport() {
+  // Export buttons
+  const exportBtnMap = {
+    "btn-export-faculty": "faculty",
+    "btn-export-fac-avail-from-fac": "faculty_availability",
+    "btn-export-availability": "faculty_availability",
+    "btn-export-subjects": "subjects",
+    "btn-export-teaching": "teaching",
+    "btn-export-rooms": "rooms",
+  };
+
+  Object.entries(exportBtnMap).forEach(([btnId, sectionType]) => {
+    const btn = document.getElementById(btnId);
+    if (btn) {
+      btn.addEventListener("click", () => exportSection(sectionType));
+    }
+  });
+
+  // Import trigger buttons
+  const importBtnMap = {
+    "btn-import-faculty": "faculty",
+    "btn-import-availability": "faculty_availability",
+    "btn-import-subjects": "subjects",
+    "btn-import-teaching": "teaching",
+    "btn-import-rooms": "rooms",
+  };
+
+  const fileInput = document.getElementById("input-section-import-file");
+
+  Object.entries(importBtnMap).forEach(([btnId, sectionType]) => {
+    const btn = document.getElementById(btnId);
+    if (btn) {
+      btn.addEventListener("click", () => {
+        currentImportSection = sectionType;
+        if (fileInput) {
+          fileInput.value = "";
+          fileInput.click();
+        }
+      });
+    }
+  });
+
+  // File selection & preview trigger
+  if (fileInput) {
+    fileInput.addEventListener("change", async (e) => {
+      if (!e.target.files || e.target.files.length === 0) return;
+      const file = e.target.files[0];
+      if (!file.name.endsWith(".json")) {
+        showBanner("Please select a valid JSON export file (.json).", "danger");
+        return;
+      }
+
+      showBanner(`Reading and validating ${file.name}...`, "info");
+      const reader = new FileReader();
+      reader.onload = async (evt) => {
+        try {
+          const parsed = JSON.parse(evt.target.result);
+          currentImportData = parsed;
+
+          // Call preview endpoint
+          const res = await fetch("/api/data/import/preview", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              section: currentImportSection,
+              data: parsed,
+            }),
+          });
+          const preview = await res.json();
+
+          if (!res.ok || preview.status !== "ok") {
+            showBanner(preview.error || "File validation failed. Please check structure.", "danger");
+            return;
+          }
+
+          // Populate Import Preview Modal
+          const sectionTitleMap = {
+            faculty: "Faculty Profiles",
+            faculty_availability: "Faculty Availability Matrix & Rules",
+            subjects: "Subjects & Curriculum",
+            teaching: "Teaching Assignments",
+            rooms: "Rooms & Campus Infrastructure",
+          };
+          const secTitle = sectionTitleMap[currentImportSection] || currentImportSection;
+
+          const titleEl = document.getElementById("import-preview-title");
+          if (titleEl) titleEl.textContent = `📥 Import Preview: ${secTitle}`;
+
+          const metaEl = document.getElementById("import-preview-meta");
+          if (metaEl) {
+            metaEl.innerHTML = `File: <strong>${file.name}</strong> &bull; Size: <strong>${(file.size / 1024).toFixed(1)} KB</strong> &bull; Target Section: <strong>${secTitle}</strong>`;
+          }
+
+          const statTotal = document.getElementById("import-stat-total");
+          if (statTotal) statTotal.textContent = preview.total_records || 0;
+
+          const statNew = document.getElementById("import-stat-new");
+          if (statNew) statNew.textContent = preview.new_records || 0;
+
+          const statDup = document.getElementById("import-stat-dup");
+          if (statDup) statDup.textContent = preview.duplicate_records || 0;
+
+          // Warnings / Missing Dependencies
+          const warnBox = document.getElementById("import-preview-warnings");
+          if (warnBox) {
+            if (preview.missing_dependencies && preview.missing_dependencies.length > 0) {
+              warnBox.innerHTML = `<strong>⚠️ Reference Dependency Warnings:</strong><ul style="margin:4px 0 0 16px; padding:0;">${preview.missing_dependencies.map(w => `<li>${w}</li>`).join("")}</ul>`;
+              warnBox.classList.remove("hidden");
+            } else {
+              warnBox.classList.add("hidden");
+              warnBox.innerHTML = "";
+            }
+          }
+
+          // Sample preview records table
+          const tbody = document.getElementById("table-import-preview-body");
+          if (tbody) {
+            tbody.innerHTML = "";
+            const samples = preview.sample_records || [];
+            if (samples.length === 0) {
+              tbody.innerHTML = `<tr><td colspan="3" class="text-center text-muted" style="padding:12px;">No records found in file.</td></tr>`;
+            } else {
+              samples.forEach((item) => {
+                const tr = document.createElement("tr");
+                const isDup = item.status === "duplicate";
+                const badge = isDup
+                  ? `<span class="badge badge-warning">Existing (Match)</span>`
+                  : `<span class="badge badge-success">New Record</span>`;
+                tr.innerHTML = `
+                  <td><strong>${item.id || "—"}</strong></td>
+                  <td>${item.label || item.name || JSON.stringify(item)}</td>
+                  <td>${badge}</td>
+                `;
+                tbody.appendChild(tr);
+              });
+            }
+          }
+
+          openModal("modal-import-preview");
+        } catch (err) {
+          console.error("Error parsing import file:", err);
+          showBanner("Invalid JSON syntax in file: " + err.message, "danger");
+        }
+      };
+      reader.readAsText(file);
+    });
+  }
+
+  // Confirm and Execute Import
+  const btnConfirmExecute = document.getElementById("btn-confirm-import-execute");
+  if (btnConfirmExecute) {
+    btnConfirmExecute.addEventListener("click", async () => {
+      if (!currentImportSection || !currentImportData) {
+        showBanner("No import payload loaded.", "warning");
+        return;
+      }
+
+      const strategyRadio = document.querySelector('input[name="import-dup-strategy"]:checked');
+      const strategy = strategyRadio ? strategyRadio.value : "update";
+
+      btnConfirmExecute.disabled = true;
+      btnConfirmExecute.textContent = "Importing...";
+
+      try {
+        const res = await fetch("/api/data/import/execute", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            section: currentImportSection,
+            strategy: strategy,
+            data: currentImportData,
+          }),
+        });
+        const result = await res.json();
+
+        if (res.ok && result.status === "ok") {
+          closeModal("modal-import-preview");
+          showBanner(result.message || "Data imported successfully!", "success");
+          await refreshAllData();
+          if (currentImportSection === "faculty_availability") {
+            loadFacultyAvailability();
+          }
+        } else {
+          showBanner(result.error || "Failed to execute import.", "danger");
+        }
+      } catch (err) {
+        console.error("Error executing import:", err);
+        showBanner("Network error while executing import: " + err.message, "danger");
+      } finally {
+        btnConfirmExecute.disabled = false;
+        btnConfirmExecute.textContent = "Confirm & Execute Import";
+      }
+    });
+  }
+}
+
+// =============================================================================
+// FACULTY AVAILABILITY MANAGEMENT
+// =============================================================================
+
+let cachedAvailabilityMatrix = [];
+
+async function loadFacultyAvailability() {
+  try {
+    const res = await fetch("/api/faculty-availability");
+    const data = await res.json();
+
+    if (data.status === "ok") {
+      cachedAvailabilityMatrix = data.matrix || [];
+      renderFacultyAvailabilityTable();
+      populateAvailabilityFacultyDropdowns();
+    }
+  } catch (err) {
+    console.error("Error loading faculty availability:", err);
+  }
+}
+
+function populateAvailabilityFacultyDropdowns() {
+  const filterSelect = document.getElementById("avail-filter-faculty");
+  const modalSelect = document.getElementById("avail-input-faculty");
+
+  const facultyList = state.faculty || [];
+
+  if (filterSelect) {
+    const curVal = filterSelect.value || "ALL";
+    filterSelect.innerHTML = `<option value="ALL">All Faculty</option>` +
+      facultyList.map(f => `<option value="${f.id}">${f.name} (${f.id})</option>`).join("");
+    filterSelect.value = curVal;
+  }
+
+  if (modalSelect) {
+    const curVal = modalSelect.value || "";
+    modalSelect.innerHTML = `<option value="">-- Select Faculty --</option>` +
+      facultyList.map(f => `<option value="${f.id}">${f.name} (${f.id})</option>`).join("");
+    if (curVal) modalSelect.value = curVal;
+  }
+}
+
+function renderFacultyAvailabilityTable() {
+  const tbody = document.getElementById("tbody-faculty-availability");
+  const countBadge = document.getElementById("avail-record-count");
+  if (!tbody) return;
+
+  const filterFac = document.getElementById("avail-filter-faculty")?.value || "ALL";
+  const filterDay = document.getElementById("avail-filter-day")?.value || "ALL";
+  const filterStatus = document.getElementById("avail-filter-status")?.value || "ALL";
+
+  let filtered = cachedAvailabilityMatrix.filter(row => {
+    if (filterFac !== "ALL" && row.faculty_id !== filterFac) return false;
+    if (filterDay !== "ALL" && row.day !== filterDay) return false;
+    if (filterStatus !== "ALL" && row.status !== filterStatus) return false;
+    return true;
+  });
+
+  if (countBadge) {
+    countBadge.textContent = `${filtered.length} slots listed (${cachedAvailabilityMatrix.filter(r => r.status === 'NOT_AVAILABLE').length} unavailable)`;
+  }
+
+  if (filtered.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="7" class="text-center text-muted" style="padding:24px;">No availability records matching selected filters.</td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = filtered.map(row => {
+    const isUnavailable = row.status === "NOT_AVAILABLE";
+    const statusBadge = isUnavailable
+      ? `<span class="badge badge-danger" style="font-weight:700;">NOT AVAILABLE</span>`
+      : `<span class="badge badge-success" style="font-weight:700;">FREE</span>`;
+
+    const toggleBtn = isUnavailable
+      ? `<button class="btn btn-xs btn-success btn-toggle-avail" data-fac-id="${row.faculty_id}" data-day="${row.day}" data-start="${row.start_time}" data-end="${row.end_time}">Mark FREE</button>`
+      : `<button class="btn btn-xs btn-warning btn-toggle-avail" data-fac-id="${row.faculty_id}" data-day="${row.day}" data-start="${row.start_time}" data-end="${row.end_time}">Mark Unavailable</button>`;
+
+    const deleteBtn = (row.is_rule && row.rule_id)
+      ? `<button class="btn btn-xs btn-outline-danger btn-delete-avail-rule" data-rule-id="${row.rule_id}" title="Remove rule" style="margin-left:4px;">✕</button>`
+      : ``;
+
+    return `
+      <tr>
+        <td><strong>${row.faculty_id}</strong></td>
+        <td>${row.faculty_name || "—"}</td>
+        <td>${row.day}</td>
+        <td><span class="badge badge-secondary">${row.time_interval || (row.start_time + '–' + row.end_time)}</span></td>
+        <td>${statusBadge}</td>
+        <td style="font-size:12px; color:#64748b;">${row.reason || (row.is_rule ? "Rule override" : "Regular schedule")}</td>
+        <td>
+          <div style="display:flex; align-items:center;">
+            ${toggleBtn}
+            ${deleteBtn}
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join("");
+}
+
+function setupFacultyAvailability() {
+  const tbody = document.getElementById("tbody-faculty-availability");
+  if (tbody) {
+    tbody.addEventListener("click", async (e) => {
+      const toggleBtn = e.target.closest(".btn-toggle-avail");
+      if (toggleBtn) {
+        const facId = toggleBtn.getAttribute("data-fac-id");
+        const day = toggleBtn.getAttribute("data-day");
+        const start = toggleBtn.getAttribute("data-start");
+        const end = toggleBtn.getAttribute("data-end");
+
+        try {
+          const res = await fetch("/api/faculty-availability/toggle", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              faculty_id: facId,
+              day: day,
+              start_time: start,
+              end_time: end,
+            }),
+          });
+          const data = await res.json();
+          if (data.status === "ok") {
+            showBanner(`Availability updated: ${facId} on ${day} is now ${data.new_status}`, "success");
+            await loadFacultyAvailability();
+          } else {
+            showBanner(data.message || "Failed to toggle status", "danger");
+          }
+        } catch (err) {
+          console.error("Error toggling availability:", err);
+          showBanner("Network error while updating availability", "danger");
+        }
+        return;
+      }
+
+      const delBtn = e.target.closest(".btn-delete-avail-rule");
+      if (delBtn) {
+        const ruleId = delBtn.getAttribute("data-rule-id");
+        try {
+          const res = await fetch(`/api/faculty-availability/${ruleId}`, {
+            method: "DELETE",
+          });
+          const data = await res.json();
+          if (data.status === "ok") {
+            showBanner("Availability rule removed. Slot reset to FREE.", "success");
+            await loadFacultyAvailability();
+          } else {
+            showBanner(data.message || "Failed to delete rule", "danger");
+          }
+        } catch (err) {
+          console.error("Error deleting rule:", err);
+          showBanner("Network error while deleting rule", "danger");
+        }
+      }
+    });
+  }
+
+  // Filter change handlers
+  ["avail-filter-faculty", "avail-filter-day", "avail-filter-status"].forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener("change", renderFacultyAvailabilityTable);
+    }
+  });
+
+  const btnRefresh = document.getElementById("btn-refresh-availability");
+  if (btnRefresh) {
+    btnRefresh.addEventListener("click", () => {
+      showBanner("Refreshing faculty availability...", "info");
+      loadFacultyAvailability();
+    });
+  }
+
+  const btnOpenModal = document.getElementById("btn-open-add-availability");
+  if (btnOpenModal) {
+    btnOpenModal.addEventListener("click", () => {
+      populateAvailabilityFacultyDropdowns();
+      openModal("modal-add-availability");
+    });
+  }
+
+  const formAdd = document.getElementById("form-add-availability");
+  if (formAdd) {
+    formAdd.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const facId = document.getElementById("avail-input-faculty").value;
+      const day = document.getElementById("avail-input-day").value;
+      const start = document.getElementById("avail-input-start").value;
+      const end = document.getElementById("avail-input-end").value;
+      const status = document.getElementById("avail-input-status").value;
+      const reason = document.getElementById("avail-input-reason").value.trim();
+
+      if (!facId || !day || !start || !end) {
+        showBanner("Please fill in all required fields.", "warning");
+        return;
+      }
+
+      try {
+        const res = await fetch("/api/faculty-availability", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            faculty_id: facId,
+            day: day,
+            start_time: start,
+            end_time: end,
+            status: status,
+            reason: reason,
+          }),
+        });
+        const data = await res.json();
+        if (data.status === "ok") {
+          closeModal("modal-add-availability");
+          formAdd.reset();
+          showBanner("Faculty availability rule saved successfully!", "success");
+          await loadFacultyAvailability();
+        } else {
+          showBanner(data.message || "Failed to save rule", "danger");
+        }
+      } catch (err) {
+        console.error("Error saving availability rule:", err);
+        showBanner("Network error while saving rule", "danger");
+      }
+    });
+  }
+}
+
+// =============================================================================
+// DEPARTMENT DISPLAY NAME CONFIGURATION
+// =============================================================================
+
+function updateDepartmentNameUI(deptName) {
+  if (!deptName) return;
+  document.querySelectorAll(".brand-department-name").forEach((el) => {
+    el.textContent = deptName;
+  });
+  const inputEl = document.getElementById("set-department-name");
+  if (inputEl && inputEl !== document.activeElement) {
+    inputEl.value = deptName;
+  }
+  document.title = `${deptName} Intelligent Timetable Scheduling Prototype`;
+}
+
+function setupDepartmentNameConfig() {
+  const btnSave = document.getElementById("btn-save-dept-name");
+  const inputEl = document.getElementById("set-department-name");
+  if (btnSave && inputEl) {
+    btnSave.addEventListener("click", async () => {
+      const name = inputEl.value.trim();
+      if (!name) {
+        showBanner("Department name cannot be empty.", "warning");
+        return;
+      }
+      try {
+        const res = await fetch("/api/department/name", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ department_name: name }),
+        });
+        const data = await res.json();
+        if (data.status === "ok") {
+          updateDepartmentNameUI(data.department_name);
+          showBanner(`Department name updated to ${data.department_name} successfully!`, "success");
+        } else {
+          showBanner(data.message || "Failed to update department name", "danger");
+        }
+      } catch (err) {
+        console.error("Error saving department name:", err);
+        showBanner("Network error while saving department name", "danger");
+      }
+    });
+  }
+}
+
+// =============================================================================
 // INTERACTIVE FEATURE HELP TOUR ENGINE
 // =============================================================================
 
@@ -6993,17 +7502,32 @@ const PAGE_HELP_TOURS = {
     },
   ],
 
+  "tab-faculty-availability": [
+    {
+      target: "#table-faculty-availability",
+      title: "Faculty Availability Matrix",
+      desc: "Interactive schedule showing available and blocked slots for all faculty. Click 'Mark Unavailable' or 'Mark FREE' to toggle status in real time.",
+      placement: "top",
+    },
+    {
+      target: "#btn-open-add-availability",
+      title: "Set Availability Rule",
+      desc: "Specify exact blocked time intervals for meetings, research, or leaves.",
+      placement: "bottom",
+    },
+    {
+      target: "#btn-export-availability",
+      title: "Export Availability",
+      desc: "Export complete slot-by-slot faculty availability status and custom rules as JSON.",
+      placement: "bottom",
+    },
+  ],
+
   "tab-subjects": [
     {
       target: "#btn-open-add-subject",
       title: "Add Subject",
       desc: "Create a course specifying Theory or Practical type, academic year, weekly lecture hours, single-lecture duration, and required room/lab type.",
-      placement: "bottom",
-    },
-    {
-      target: "#btn-open-assign-faculty",
-      title: "Assign Faculty to Subjects",
-      desc: "Map qualified professors to specific subjects and divisions/batches, setting primary teaching assignments for automatic timetable generation.",
       placement: "bottom",
     },
     {
@@ -7013,9 +7537,39 @@ const PAGE_HELP_TOURS = {
       placement: "top",
     },
     {
+      target: "#card-academic-divisions",
+      title: "Divisions & Practical Batches",
+      desc: "Configure divisions and auto-split practical batches (e.g. A1, A2) for parallel lab scheduling.",
+      placement: "top",
+    },
+  ],
+
+  "tab-teaching": [
+    {
       target: "#table-assignments",
-      title: "Explicit Teaching Assignments",
-      desc: "Manage division-wise and batch-wise faculty allocations. The multi-agent scheduler uses these assignments as primary hard constraints.",
+      title: "Teaching Assignments",
+      desc: "Direct mapping of faculty to subjects, divisions, and batches across all academic years.",
+      placement: "top",
+    },
+    {
+      target: "#btn-open-assign-faculty",
+      title: "Assign Faculty to Subjects",
+      desc: "Map qualified professors to specific subjects and divisions/batches, setting primary teaching assignments.",
+      placement: "bottom",
+    },
+  ],
+
+  "tab-rooms": [
+    {
+      target: "#floors-container",
+      title: "Campus Floors & Levels",
+      desc: "Manage building floor levels to calculate proximity and minimize walking distances between lectures.",
+      placement: "bottom",
+    },
+    {
+      target: "#table-rooms",
+      title: "Rooms & Laboratories",
+      desc: "Register classrooms, seminar halls, and specialized laboratories with capacities and floor assignments.",
       placement: "top",
     },
   ],

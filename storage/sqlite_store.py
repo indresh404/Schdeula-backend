@@ -208,6 +208,20 @@ class SQLiteStore:
             )
             """)
 
+            # 10b. Faculty Availability
+            cursor.execute("""
+            CREATE TABLE IF NOT EXISTS faculty_availability (
+                id TEXT PRIMARY KEY,
+                faculty_id TEXT NOT NULL,
+                faculty_name TEXT,
+                day TEXT NOT NULL,
+                start_time TEXT NOT NULL,
+                end_time TEXT NOT NULL,
+                status TEXT NOT NULL DEFAULT 'NOT_AVAILABLE',
+                reason TEXT DEFAULT ''
+            )
+            """)
+
             # 9. Global Settings
             cursor.execute("""
             CREATE TABLE IF NOT EXISTS settings (
@@ -521,6 +535,35 @@ class SQLiteStore:
                 )
             conn.commit()
 
+    def get_faculty_availability(self) -> List[Dict[str, Any]]:
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            rows = cursor.execute("SELECT id, faculty_id, faculty_name, day, start_time, end_time, status, reason FROM faculty_availability").fetchall()
+            return [dict(r) for r in rows]
+
+    def save_faculty_availability(self, availability_list: List[Dict[str, Any]]):
+        with self.get_connection() as conn:
+            cursor = conn.cursor()
+            cursor.execute("DELETE FROM faculty_availability")
+            for a in availability_list:
+                cursor.execute(
+                    """
+                    INSERT INTO faculty_availability (id, faculty_id, faculty_name, day, start_time, end_time, status, reason)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                    """,
+                    (
+                        a.get("id"),
+                        a.get("faculty_id"),
+                        a.get("faculty_name", ""),
+                        a.get("day"),
+                        a.get("start_time"),
+                        a.get("end_time"),
+                        a.get("status", "NOT_AVAILABLE"),
+                        a.get("reason", ""),
+                    ),
+                )
+            conn.commit()
+
     def get_settings(self) -> Dict[str, Any]:
         with self.get_connection() as conn:
             cursor = conn.cursor()
@@ -641,6 +684,7 @@ class SQLiteStore:
         building_distances = json_store.read("building_graph.json") or []
         subjects = json_store.read("subjects.json") or []
         assignments = json_store.read("faculty_assignments.json") or []
+        faculty_avail = json_store.read("faculty_availability.json") or []
         settings = json_store.read("settings.json") or {}
         timetable = json_store.read("timetable.json") or {"entries": [], "last_generated": None}
         logs = json_store.read("scheduling_logs.json") or []
@@ -653,6 +697,7 @@ class SQLiteStore:
         self.save_building_distances(building_distances)
         self.save_subjects(subjects)
         self.save_faculty_assignments(assignments)
+        self.save_faculty_availability(faculty_avail)
         self.save_settings(settings)
         self.save_timetable(timetable)
 
@@ -676,6 +721,7 @@ class SQLiteStore:
         json_store.write("building_graph.json", self.get_building_distances())
         json_store.write("subjects.json", self.get_subjects())
         json_store.write("faculty_assignments.json", self.get_faculty_assignments())
+        json_store.write("faculty_availability.json", self.get_faculty_availability())
         json_store.write("settings.json", self.get_settings())
         json_store.write("timetable.json", self.get_timetable())
         json_store.write("scheduling_logs.json", self.get_logs())

@@ -303,8 +303,11 @@ body {
 
 #tab-dashboard,
 #tab-faculty,
+#tab-faculty-availability,
 #tab-subjects,
+#tab-teaching,
 #tab-divisions,
+#tab-rooms,
 #tab-settings {
   max-width: 1400px;
   margin: 0 auto;

@@ -17,12 +17,19 @@ class ConstraintValidator:
         subjects_list: List[Dict[str, Any]],
         settings: Dict[str, Any],
         batches_list: Optional[List[Dict[str, Any]]] = None,
+        faculty_availability: Optional[List[Dict[str, Any]]] = None,
     ):
         self.faculty_map = {f["id"]: f for f in faculty_list}
         self.room_map = {r["id"]: r for r in rooms_list}
         self.subject_map = {s["id"]: s for s in subjects_list}
         self.settings = settings
         self.batches_list = batches_list or []
+        self.faculty_availability_list = faculty_availability or []
+        self.faculty_availability: Dict[str, List[Dict[str, Any]]] = {}
+        for rec in self.faculty_availability_list:
+            fid = rec.get("faculty_id")
+            if fid:
+                self.faculty_availability.setdefault(fid, []).append(rec)
 
         self.working_days = set(self.settings.get("working_days", []))
         self.day_start = time_to_minutes(self.settings.get("day_start_time", "09:00"))
@@ -113,6 +120,23 @@ class ConstraintValidator:
                         "faculty_id": f1,
                         "message": f"Faculty '{fac.get('name', f1)}' is marked as Absent.",
                     })
+
+            # Check Faculty Explicit Unavailable Slot
+            if f1 and f1 in self.faculty_availability:
+                for rule in self.faculty_availability[f1]:
+                    if rule.get("day") == day1 and rule.get("status", "NOT_AVAILABLE") == "NOT_AVAILABLE":
+                        r_s = rule.get("start_time")
+                        r_e = rule.get("end_time")
+                        if r_s and r_e and intervals_overlap(s1, end1, r_s, r_e):
+                            fac_name = self.faculty_map.get(f1, {}).get("name", f1)
+                            reason = rule.get("reason")
+                            reason_msg = f" ({reason})" if reason else ""
+                            hard_conflicts.append({
+                                "type": "FACULTY_UNAVAILABLE",
+                                "entry_id": e1.get("id"),
+                                "faculty_id": f1,
+                                "message": f"FACULTY UNAVAILABLE: Faculty '{fac_name}' is scheduled during an unavailable window on {day1} at {r_s}-{r_e}{reason_msg}.",
+                            })
 
             # Check Room Type
             room = self.room_map.get(r1)

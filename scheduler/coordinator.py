@@ -38,6 +38,7 @@ class SchedulingCoordinator:
         settings_data: Dict[str, Any],
         floors_data: Optional[List[Dict[str, Any]]] = None,
         building_distances_data: Optional[List[Dict[str, Any]]] = None,
+        faculty_availability_data: Optional[List[Dict[str, Any]]] = None,
     ):
         self.faculty_data = faculty_data
         self.rooms_data = rooms_data
@@ -49,9 +50,10 @@ class SchedulingCoordinator:
         self.settings = settings_data
         self.floors_data = floors_data or []
         self.building_distances_data = building_distances_data or []
+        self.faculty_availability_data = faculty_availability_data or []
 
         # Shared Resource Managers
-        self.faculty_manager = FacultyManager(self.faculty_data, self.settings)
+        self.faculty_manager = FacultyManager(self.faculty_data, self.settings, self.faculty_availability_data)
         self.room_manager = RoomManager(self.rooms_data, self.settings)
 
         # Spatial Movement & Dijkstra Engine
