@@ -1,21 +1,23 @@
 @echo off
-title Schedula — Stop Docker
+title Schedula - Stop Docker
 color 0C
 
 echo.
-echo  Stopping Schedula Docker container...
+echo  =================================================================
+echo     SCHEDULA - Stopping Docker Container
+echo  =================================================================
 echo.
 
 cd /d "%~dp0"
 docker compose down
 
-if %errorlevel% equ 0 (
+if %ERRORLEVEL% equ 0 (
     echo.
-    echo  [OK]  Schedula stopped. Your data is safely stored in the
-    echo         Docker volume "schedula_data" and will be there next time.
+    echo  [OK]  Schedula container stopped.
+    echo        All timetable, faculty, and settings are preserved in ./data.
 ) else (
     echo.
-    echo  [WARN] docker compose down returned an error — container may already be stopped.
+    echo  [INFO] docker compose down completed (container may already be stopped).
 )
 
 echo.

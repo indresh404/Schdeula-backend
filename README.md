@@ -164,19 +164,33 @@ pip install -r requirements.txt
 
 ## 6. How to Run Locally
 
-### Option A: One-Click Run (Windows)
+### Option A: One-Click Docker (Recommended)
 Simply double-click:
 ```
-run.bat
+start-docker.bat
 ```
-*(or run `.\run.bat` in Command Prompt / PowerShell)*
+*(or run `docker compose up --build -d` in terminal)*
+
+This automatically:
+- Checks Docker installation and engine status.
+- Builds the production multi-stage image.
+- Launches the Schedula container with persistent `./data` mounting.
+- Verifies the health check and opens `http://localhost:5000` in your browser.
+- To stop the container, double-click `stop-docker.bat` (or run `docker compose down`).
+
+### Option B: One-Click Native Python (Windows)
+Simply double-click:
+```
+start.bat
+```
+*(or `run.bat`)*
 
 This automatically:
 - Detects or initializes the Python virtual environment (`venv`) and installs dependencies if needed.
 - Starts the Flask backend server.
 - Opens your default web browser directly to `http://127.0.0.1:5000`.
 
-### Option B: Manual Run
+### Option C: Manual CLI Run
 With your virtual environment activated:
 ```bash
 python app.py

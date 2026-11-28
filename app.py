@@ -1615,7 +1615,11 @@ def generate_timetable_stream():
             unres_cnt = final_val.get("hard_conflicts_count", 0)
             yield f"event: complete\ndata: {json.dumps({'event': 'COMPLETE', 'success': False, 'message': f'Draft generated with {unres_cnt} unresolved conflicts. Published timetable preserved safely.', 'unresolved_count': unres_cnt, 'scheduled_count': len(draft_entries), 'timetable_entries': draft_entries, 'entries': draft_entries, 'backtracking_attempts': backtrack_cnt, 'validation_report': final_val, 'progress': 100})}\n\n"
 
-    return Response(stream_with_context(event_stream()), mimetype="text/event-stream")
+    resp = Response(stream_with_context(event_stream()), mimetype="text/event-stream")
+    resp.headers["Cache-Control"] = "no-cache, no-transform"
+    resp.headers["X-Accel-Buffering"] = "no"
+    resp.headers["Connection"] = "keep-alive"
+    return resp
 
 
 @app.route("/api/timetable/analytics", methods=["GET"])
